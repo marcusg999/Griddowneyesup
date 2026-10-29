@@ -836,3 +836,91 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
 .index-line:hover { color: var(--acid); }
 .index-line__n { font-family: var(--display); color: var(--acid); font-variant-numeric: tabular-nums; font-size: 14px; }
 .index-line__dots { flex: 1; border-bottom: 1px dotted var(--ink-faint); transform: translateY(-3px); }
+
+/* =========================================================================
+   STANDING POSTURE
+   Deliberately the opposite of an alert: no colour, no urgency, no call to
+   action. Baseline context sits apart from the live digest so the two are
+   never confused (CONTENT_POLICY §9).
+   ========================================================================= */
+
+.posture {
+  border: 1px solid var(--rule-major);
+  border-left: 3px solid var(--ink-faint);
+  padding: 18px 20px;
+  margin: 0 0 14px;
+  max-width: var(--measure);
+}
+
+.posture__status {
+  font-family: var(--hand);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 8px;
+}
+
+.posture__title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+}
+
+.posture__reported {
+  border-left: 2px solid var(--ink-faint);
+  padding-left: 12px;
+  color: var(--ink-dim);
+  font-size: 15px;
+}
+.posture__reported strong { color: var(--ink); }
+
+.posture__inert {
+  font-size: 13.5px;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--rule-major);
+  padding-top: 10px;
+  margin-top: 14px;
+}
+
+.posture__sources { margin: 10px 0 0; padding-left: 18px; }
+.posture__sources li { margin-bottom: 3px; }
+
+/* The horizon gap. Two numbers, stated flat, with no verdict attached —
+   the comparison is the argument and it does not need help. */
+.horizon {
+  display: flex;
+  gap: 36px;
+  align-items: flex-end;
+  margin: 18px 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--rule-major);
+  border-bottom: 1px solid var(--rule-major);
+}
+
+.horizon__pair { display: flex; align-items: baseline; gap: 9px; }
+
+.horizon__n {
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: 42px;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+.horizon__n[data-them='true'] { color: var(--acid); }
+
+.horizon__label { font-size: 14px; color: var(--ink-dim); }
+.horizon__label small {
+  display: block;
+  font-family: var(--hand);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+:root[data-state='grey-sky'] .posture,
+:root[data-state='grey-sky'] .horizon { display: none; }

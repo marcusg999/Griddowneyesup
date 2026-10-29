@@ -10,6 +10,7 @@ import {
   catalogItemSchema,
   kitSchema,
   overlaysSchema,
+  postureSchema,
   skillSchema,
 } from './schema.js';
 
@@ -43,6 +44,7 @@ export function validateContent(): { problems: Problem[]; warnings: Problem[] } 
   const rawItems = read('items.json');
   const rawKits = read('kits.json');
   const rawOverlays = read('overlays.json');
+  const rawPosture = read('posture.json');
 
   const skills = [];
   for (const [i, raw] of (rawSkills as unknown[]).entries()) {
@@ -87,6 +89,26 @@ export function validateContent(): { problems: Problem[]; warnings: Problem[] } 
       continue;
     }
     kits.push(parsed.data);
+  }
+
+  for (const [i, raw] of (rawPosture as unknown[]).entries()) {
+    const parsed = postureSchema.safeParse(raw);
+    if (!parsed.success) {
+      for (const issue of parsed.error.issues) {
+        problems.push({
+          where: `posture[${i}]${issue.path.length ? '.' + issue.path.join('.') : ''}`,
+          message: issue.message,
+        });
+      }
+      continue;
+    }
+    const age = monthsSince(parsed.data.lastReviewed);
+    if (age > STALE_WARN_MONTHS) {
+      warnings.push({
+        where: `posture:${parsed.data.id}`,
+        message: `lastReviewed is ${age.toFixed(0)} months old; posture goes stale faster than skills`,
+      });
+    }
   }
 
   const overlaysParsed = overlaysSchema.safeParse(rawOverlays);

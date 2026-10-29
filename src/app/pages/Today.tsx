@@ -3,6 +3,8 @@ import { t } from '@/i18n';
 import { useReadiness } from '@/state/readiness';
 import { useSupply } from '@/features/supply/useSupply';
 import { CoverageStave } from '@/ui/CoverageStave';
+import { Posture } from '@/ui/Posture';
+import { useContent } from '@/state/content';
 import { tierFor, wholeDays, limitingDays } from '@/features/supply/coverage';
 
 const RESOURCE_LABEL: Record<string, string> = {
@@ -32,6 +34,7 @@ const TIER_LABEL: Record<string, string> = {
 export function Today() {
   const { state, suppressGamification } = useReadiness();
   const { coverage, loading, profile } = useSupply();
+  const { pack } = useContent();
 
   // GREY SKY: four things only. No feed, no coverage, no tiers, no badges.
   if (state === 'grey-sky') return <GreySky />;
@@ -121,6 +124,25 @@ export function Today() {
         {t('threat.nothingNotable.body')}
       </div>
       <p className="meta">{t('threat.digestEnds')}</p>
+
+      {/* Baseline context, kept well apart from the live digest above. It is
+          measured in months and never moves the readiness state. */}
+      {(pack?.posture.length ?? 0) > 0 && (
+        <>
+          <h2>
+            <span className="margin-note" aria-hidden="true">
+              standing
+            </span>
+            Worth knowing
+          </h2>
+          <p className="meta" style={{ marginTop: -6, marginBottom: 14 }}>
+            Background, not an alert. Nothing here needs doing today.
+          </p>
+          {pack?.posture.map((note) => (
+            <Posture key={note.id} note={note} targetDays={profile.targetHorizonDays} />
+          ))}
+        </>
+      )}
 
       <h2>
         <span className="margin-note" aria-hidden="true">

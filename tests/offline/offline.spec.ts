@@ -187,6 +187,35 @@ test.describe('offline release gate', () => {
   });
 });
 
+test.describe('standing posture', () => {
+  test('renders as background and does NOT move the readiness state', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+
+    await expect(page.getByRole('heading', { name: 'Worth knowing' })).toBeVisible();
+    await expect(page.getByText(/Background, not an alert/i)).toBeVisible();
+
+    // CONTENT_POLICY §9.1: no geopolitical or defense item may change the
+    // readiness state. A policy announcement has no threshold that would ever
+    // bring the state back down, so it must never be able to raise it.
+    await expect(page.getByRole('status')).toContainText('Blue Sky');
+    await expect(page.getByText(/does not change your readiness state/i)).toBeVisible();
+
+    // Epistemic status is shown rather than flattened into the prose.
+    await expect(page.getByText(/Reported, not confirmed/i)).toBeVisible();
+  });
+
+  test('is suppressed entirely in Grey Sky', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByTestId('state-grey-sky').click();
+    await page.goto('/');
+
+    await expect(page.getByRole('heading', { name: 'Worth knowing' })).toHaveCount(0);
+    await expect(page.getByText(/FORTRESS/i)).toHaveCount(0);
+  });
+});
+
 test.describe('content pack integrity', () => {
   test('the pack is signed and verifies against the bundled key', async ({ page }) => {
     await page.goto('/');

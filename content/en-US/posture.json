@@ -1,0 +1,29 @@
+[
+  {
+    "id": "fortress-america",
+    "title": "The Pentagon is hardening its own bases against the same failures",
+    "published": "2026-09-30",
+    "epistemicStatus": "mixed",
+    "whatItIs": "On 30 September 2026 the Department of Defense announced FORTRESS America — Federal Operations for Resilience, Troop Resources, Energy, Supply and Survivability. It is a programme to keep major US military installations running through disruptions to power, supply and communications, built on five pillars: energy independence, supply-chain and industrial-base resilience, a strategic defense reserve, installation hardening and cyber resilience, and resilience in space and spectrum. A senior defense official put the assessment scope at roughly 500 installations in the continental United States.",
+    "reported": "Press reporting on internal planning documents puts the target at 90 days of essential operations without civilian support. No public directive confirming that figure has been released. Treat the number as reported, not established.",
+    "whatItMeansForYou": "Nothing is happening. This is a procurement posture, not an event, and it changes nothing you should do today. What it does change is the horizon worth planning against: the institution that would respond to a wide-area event is building itself to run for months without civilian power or supply. Standard household guidance is 72 hours. That gap is the most interesting number in preparedness, and it is the one worth arguing with.",
+    "horizonSignalDays": 90,
+    "citations": [
+      {
+        "source": "US Department of Defense",
+        "title": "FORTRESS America announcement, Marine Corps Base Quantico",
+        "published": "2026-09-30",
+        "basis": "us-federal-work"
+      }
+    ],
+    "pressCitations": [
+      {
+        "source": "International Business Times UK",
+        "title": "Pentagon Prepares for Potential War: US Military Bases Face Reported 90-Day Self-Sufficiency Requirement",
+        "published": "2026",
+        "url": "https://www.ibtimes.co.uk/pentagon-90-day-self-sufficiency-us-military-bases-1827679"
+      }
+    ],
+    "lastReviewed": "2026-10-29"
+  }
+]

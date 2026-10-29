@@ -97,6 +97,58 @@ export const skillSchema = z
     path: ['steps'],
   });
 
+/**
+ * Standing posture. CONTENT_POLICY §9.
+ *
+ * Every claim carries its epistemic status, and any note whose status is not
+ * fully official must say which part is merely reported. The schema enforces
+ * that rather than trusting an author to remember it.
+ */
+export const postureSchema = z
+  .object({
+    id: z.string().regex(/^[a-z0-9-]+$/),
+    title: z.string().min(1),
+    published: isoDate,
+    epistemicStatus: z.enum(['official', 'press-reported', 'mixed']),
+    whatItIs: z.string().min(1),
+    reported: z.string().min(1).optional(),
+    whatItMeansForYou: z.string().min(1),
+    horizonSignalDays: z.number().int().positive().optional(),
+    citations: z.array(citationSchema),
+    pressCitations: z
+      .array(
+        z.object({
+          source: z.string().min(1),
+          title: z.string().min(1),
+          published: z.string().min(1),
+          url: z.string().url().optional(),
+        }),
+      )
+      .optional(),
+    lastReviewed: isoDate,
+  })
+  .refine((n) => n.epistemicStatus === 'official' || (n.reported?.length ?? 0) > 0, {
+    message:
+      'a posture note that is not fully official must state which part is only reported',
+    path: ['reported'],
+  })
+  .refine((n) => n.epistemicStatus === 'press-reported' || n.citations.length > 0, {
+    message: 'a posture note claiming official status needs a primary citation',
+    path: ['citations'],
+  })
+  // §4.1: never editorialize, never predict. Caught mechanically because this
+  // is the content type most likely to drift into forecasting.
+  .refine(
+    (n) =>
+      !/\b(will|imminent|inevitable|coming war|any day now|brace|prepare now)\b/i.test(
+        `${n.title} ${n.whatItIs} ${n.whatItMeansForYou}`,
+      ),
+    {
+      message: 'posture notes must not predict or urge; state what happened and what it means',
+      path: ['whatItMeansForYou'],
+    },
+  );
+
 export const catalogItemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
   name: z.string().min(1),

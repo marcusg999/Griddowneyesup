@@ -401,6 +401,44 @@ at 11 now.*
 
 ---
 
+## Standing posture
+
+### D17 — Geopolitical and defense news informs the horizon, never the state **[CONFIRMED]**
+
+Raised by the request to factor current world events, including the Pentagon's
+FORTRESS America programme, into the readiness state.
+
+**Considered, and declined for the state.** FORTRESS America is real: announced
+30 September 2026 at Marine Corps Base Quantico, standing for Federal
+Operations for Resilience, Troop Resources, Energy, Supply and Survivability,
+across five pillars and roughly 500 continental US installations. The widely
+quoted 90-day self-sufficiency figure comes from press reporting on internal
+planning documents; no public directive confirming it has been released.
+
+It does not drive the readiness state, for three reasons recorded in
+`CONTENT_POLICY.md` §9: the state is local and this is not, driving it from
+policy coverage is precisely the aggregation §4.1 forbids, and a state raised
+by a policy announcement has no threshold that would ever bring it back down.
+
+**Built instead: standing posture.** A new content type with its own schema,
+validation and citation gate. Baseline context, rendered as the opposite of an
+alert, carrying an explicit epistemic status and keeping primary and press
+citations in separate fields. The schema rejects predictive or urging language
+outright.
+
+The useful content of the request survives intact, and arguably lands harder:
+the app now shows the user's own target horizon beside the reported
+institutional one — **3 days against 90** — and says plainly that nothing needs
+doing today. Read flat, FORTRESS is the Pentagon doing for its bases what this
+app asks households to do, which is an argument for the product's thesis rather
+than evidence of an imminent event. That is a stronger and more honest pitch
+than an elevated threat level, and it does not expire.
+
+If you want geopolitics in the state machine anyway, the defensible form is a
+**manual** user-set state — which already exists — never an automatic inference.
+
+---
+
 ## Build order
 
 Per §11, unchanged. The threat feed is the most fun and the least load-bearing,

@@ -86,6 +86,9 @@ contact card and any skill page. Black and white, legible at arm's length.
 - **No fear as a conversion mechanic.** Preparedness is mundane, cheap, boring
   and overwhelmingly about ordinary disruption — a four-day outage, a boil-water
   notice, a job loss. Not the apocalypse.
+- **No geopolitics in the threat state.** World events inform *what horizon is
+  worth planning for*; they never raise the alert level. A state driven by
+  policy news has no threshold that would ever bring it back down.
 - **No gamification of app usage.** Every mechanic rewards real-world state.
   No streaks for opening the app, no leaderboards, no score that decays to
   create urgency.
@@ -110,6 +113,7 @@ disabled.**
 | 3 | Plan builder + PDF export | ⬜ Next |
 | 4 | Skills library rendering and local full-text search | ✅ Rendering + search done; content volume at 6 of 40–60 |
 | 5 | Readiness-state machine and Grey Sky interface | ✅ State machine + Grey Sky in; Watch action queue pending |
+| — | Interface design: *field notebook, read by headlamp* | ✅ See [`docs/DESIGN_CONTRACT.md`](docs/DESIGN_CONTRACT.md) |
 | 6 | Encrypted sync, circles | v2 |
 | 7 | Threat feed, CDN snapshot pipeline, Threat Index | ⬜ |
 | 8 | Notifications | v1.1+ |
@@ -117,8 +121,8 @@ disabled.**
 ### The gate, currently passing
 
 ```
-Shell 65.4 / 150 KB gzipped · content 60.6 / 2048 KB
-29 unit tests · 9 offline tests
+Shell 71.2 / 150 KB gzipped · fonts 68.2 / 100 KB · content 62.8 / 2048 KB
+46 unit tests · 11 offline tests
 ```
 
 The offline suite runs against the production build in a Pixel 5 profile with
