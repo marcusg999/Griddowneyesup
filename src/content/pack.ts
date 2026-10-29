@@ -24,7 +24,11 @@ import type {
  * standing in the dark.
  */
 
-const PACK_BASE = '/content/en-US';
+/**
+ * Resolved against the deployment base so the pack is found whether the app
+ * is served from a domain root or from a project subpath.
+ */
+const PACK_BASE = `${import.meta.env.BASE_URL}content/en-US`.replace(/\/{2,}/g, '/');
 const META_INSTALLED_VERSION = 'contentPackVersion';
 
 export interface LoadedPack {

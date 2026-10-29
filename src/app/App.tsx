@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { Link, Route, Switch, useLocation, useRoute } from 'wouter';
+import { Link, Route, Router, Switch, useLocation, useRoute } from 'wouter';
 import { ContentProvider } from '@/state/content';
 import { ReadinessProvider, useReadiness } from '@/state/readiness';
 import { navigateWithTransition } from '@/ui/viewTransition';
@@ -63,6 +63,23 @@ function TabBar() {
  * Intercepted in the capture phase so this runs before wouter's own handler;
  * without the stopPropagation the navigation would happen twice.
  */
+/**
+ * The deployment prefix, without its trailing slash: empty at a domain root,
+ * `/Griddowneyesup` on a GitHub Pages project site.
+ *
+ * Routes are written root-relative throughout the app. The router adds this
+ * prefix when it renders an href and strips it when it matches a location, so
+ * only code that touches a raw DOM href has to know about it.
+ */
+const ROUTE_BASE = import.meta.env.BASE_URL.replace(/\/+$/, '');
+
+/** A rendered href back to the root-relative path the router expects. */
+function toRoutePath(href: string): string {
+  if (!ROUTE_BASE) return href;
+  if (href === ROUTE_BASE) return '/';
+  return href.startsWith(`${ROUTE_BASE}/`) ? href.slice(ROUTE_BASE.length) : href;
+}
+
 function useTransitionalNavigation() {
   const [, navigate] = useLocation();
 
@@ -82,8 +99,9 @@ function useTransitionalNavigation() {
       event.stopPropagation();
 
       const hero = anchor.querySelector<HTMLElement>('[data-vt-hero]');
+      const path = toRoutePath(href);
       navigateWithTransition(() => {
-        navigate(href);
+        navigate(path);
         window.scrollTo(0, 0);
       }, hero);
     },
@@ -132,6 +150,14 @@ function PrintShell() {
 }
 
 export function App() {
+  return (
+    <Router base={ROUTE_BASE}>
+      <Shell />
+    </Router>
+  );
+}
+
+function Shell() {
   const [location] = useLocation();
 
   if (location.startsWith('/print/')) {

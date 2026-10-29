@@ -1,0 +1,92 @@
+# Deploys the app to GitHub Pages.
+#
+# The release gate from the brief (§2) applies here too — Pages IS shipping —
+# so the offline suite runs before anything is uploaded. A build that cannot
+# cold-boot with the radio off does not get deployed.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a run finish rather than cancelling it: a half-replaced site is worse
+# than a slightly stale one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Validate content
+        run: npm run content:validate
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      # Built at the domain root, which is what the offline suite's preview
+      # server serves. The deployable build is made after the gate passes.
+      - name: Build
+        run: npm run build
+
+      - name: Performance budget
+        run: npm run check:budget
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Offline suite
+        run: npm run test:offline
+
+      # Pages serves a project site from /<repo>/, so the deployed build needs
+      # that prefix baked in. Drop PUBLIC_BASE_PATH if a custom domain is ever
+      # attached — the site is then at a domain root again.
+      - name: Rebuild for the Pages subpath
+        run: |
+          export PUBLIC_BASE_PATH="/${GITHUB_REPOSITORY#*/}/"
+          echo "Building for base $PUBLIC_BASE_PATH"
+          npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-trace
+          path: test-results/
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
