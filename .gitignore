@@ -2,6 +2,7 @@ node_modules
 dist
 .dev-keys
 public/content
+public/snapshot
 src/content/signing-key.generated.ts
 *.tsbuildinfo
 .DS_Store

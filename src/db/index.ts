@@ -11,6 +11,7 @@ import type {
 } from './types';
 import type { Sensitivity } from '@/content/types';
 import type { Contact, Plan } from '@/features/plan/types';
+import type { ThreatSnapshot } from '@/features/threat/types';
 
 /**
  * IndexedDB is the PRIMARY data source, not a cache.
@@ -20,7 +21,7 @@ import type { Contact, Plan } from '@/features/plan/types';
  */
 
 const DB_NAME = 'ballast';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 interface Schema extends DBSchema {
   profile: { key: string; value: unknown };
@@ -37,6 +38,15 @@ interface Schema extends DBSchema {
   content: { key: string; value: unknown };
   /** Pack version, last sync time, install state. */
   meta: { key: string; value: unknown };
+  /**
+   * The last threat digest read for each region. Public data, but stored
+   * locally so the Near-you surface renders from disk rather than waiting on a
+   * network it may not have.
+   *
+   * Named in full to keep it apart from `readinessSnapshots`, which is this
+   * household's own readiness history and a different thing entirely.
+   */
+  threatSnapshots: { key: string; value: unknown };
 }
 
 /**
@@ -53,7 +63,8 @@ type StoreName =
   | 'readinessSnapshots'
   | 'drills'
   | 'content'
-  | 'meta';
+  | 'meta'
+  | 'threatSnapshots';
 
 let dbPromise: Promise<IDBPDatabase<Schema>> | undefined;
 
@@ -77,6 +88,9 @@ export function db(): Promise<IDBPDatabase<Schema>> {
       if (oldVersion < 2) {
         database.createObjectStore('plan');
         database.createObjectStore('contacts');
+      }
+      if (oldVersion < 3) {
+        database.createObjectStore('threatSnapshots');
       }
     },
   });
@@ -117,6 +131,11 @@ export const store = {
   profile: {
     get: () => get<Profile>('profile', 'self'),
     put: (p: Profile) => put('profile', 'self', p),
+  },
+
+  threat: {
+    get: (region: string) => get<ThreatSnapshot>('threatSnapshots', region),
+    put: (snapshot: ThreatSnapshot) => put('threatSnapshots', snapshot.region, snapshot),
   },
 
   plan: {

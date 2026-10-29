@@ -12,6 +12,9 @@ import type { Coverage } from '@/features/supply/coverage';
 import { CoverageStave } from '@/ui/CoverageStave';
 import { Posture } from '@/ui/Posture';
 import { Exposure } from '@/ui/Exposure';
+import { NearYou } from '@/ui/NearYou';
+import { useThreat } from '@/features/threat/useThreat';
+import { threatIndex } from '@/features/threat/band';
 import { useContent } from '@/state/content';
 import {
   bindingResourcesFor,
@@ -49,9 +52,15 @@ export function Today() {
   const { coverage, inventory, loading, profile } = useSupply();
   const { plan, contacts } = usePlan();
   const { pack } = useContent();
+  const { snapshot, loading: digestLoading } = useThreat(profile.countyFips ?? 'default');
 
   // GREY SKY: four things only. No feed, no coverage, no tiers, no badges.
   if (state === 'grey-sky') return <GreySky />;
+
+  // One read of the digest, shared by the surface and the rail, so the two
+  // cannot report different signal counts.
+  const now = new Date();
+  const index = threatIndex(snapshot, now);
 
   const days = limitingDays(coverage, bindingResourcesFor(profile.hazards));
   const measured = coverage.filter((c) => c.dailyNeed > 0);
@@ -125,19 +134,9 @@ export function Today() {
         </>
       )}
 
-      <h2>
-        <span className="margin-note" aria-hidden="true">
-          six signals
-        </span>
-        Near you
-      </h2>
-
-      {/* The designed "nothing notable" state. Most days should show this. */}
-      <div className="empty reveal">
-        <strong>{t('threat.nothingNotable')}</strong>
-        {t('threat.nothingNotable.body')}
-      </div>
-      <p className="meta">{t('threat.digestEnds')}</p>
+      {/* The digest. Reads from IndexedDB and refreshes in the background;
+          nothing here is on a render path that awaits a network. */}
+      <NearYou index={index} loading={digestLoading} now={now} />
 
       {/* Baseline context, kept well apart from the live digest above. It is
           measured in months and never moves the readiness state. */}
@@ -227,9 +226,14 @@ export function Today() {
           <dt>Binding constraint</dt>
           <dd>{wholeDays(days)} days</dd>
           <dt>Signals checked</dt>
-          <dd>6 · none notable</dd>
-          <dt>Last synced</dt>
-          <dd>never — all local</dd>
+          <dd>
+            {index.reportingCount} of {index.sourceCount} ·{' '}
+            {index.notable.length === 0
+              ? 'none notable'
+              : `${index.notable.length} notable`}
+          </dd>
+          <dt>Digest read</dt>
+          <dd>{snapshot ? snapshot.publishedAt.slice(0, 10) : 'never — all local'}</dd>
         </dl>
       </aside>
     </>

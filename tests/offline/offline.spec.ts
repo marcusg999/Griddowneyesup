@@ -274,6 +274,105 @@ test.describe('offline release gate', () => {
     await expect(page.getByText(/Do these first/)).toHaveCount(0);
   });
 
+  test('the digest renders with the network disabled', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+
+    // The band is the Threat Index (D11). It is a word, never a score.
+    await expect(page.locator('.band__label')).toBeVisible();
+    await expect(page.locator('.band__confidence')).toContainText(/of 6 signals reporting/);
+
+    // The default region is a normal day, and §5 makes that the designed
+    // first-class screen rather than a fallback.
+    await expect(page.getByText('Nothing notable near you')).toBeVisible();
+
+    // §5: finite feed. It ends, and it says so.
+    await expect(page.getByText(/no more to scroll/)).toBeVisible();
+  });
+
+  test('the digest says it is a sample rather than passing for real', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+
+    // The ingestion pipeline does not exist yet. Illustrative signals wearing
+    // the authority of a government feed would be the worst thing this surface
+    // could do, so the notice is unmissable and the band cannot move state.
+    await expect(page.locator('.band__sample')).toBeVisible();
+    await expect(page.locator('.band__sample')).toContainText(/live feed is not connected/);
+  });
+
+  test('the band justifies itself, which is why it is a band and not a number', async ({
+    page,
+  }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByLabel(/County FIPS/).fill('06075');
+    await page.locator('#county ~ button', { hasText: 'Save' }).first().click();
+
+    await page.goto('/');
+    await expect(page.locator('.band__label')).toContainText('Active');
+
+    // Still offline: the digest was precached, verified against the bundled
+    // key and stored, all with the radio off.
+    const cards = page.locator('.signal');
+    expect(await cards.count()).toBeGreaterThan(0);
+
+    // Every card carries its source, a direct link and its age (§4.4).
+    await expect(cards.first().locator('.signal__source')).toContainText(/ago/);
+    await expect(cards.first().locator('a[href^="https://"]')).toBeVisible();
+    await expect(cards.first().getByText(/What this means for you/i)).toBeVisible();
+
+    await page.locator('.band__why summary').click();
+    await expect(page.locator('.band__why li').first()).toContainText(/:/);
+  });
+
+  test('a stale signal does not raise the band but keeps its card', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByLabel(/County FIPS/).fill('06075');
+    await page.locator('#county ~ button', { hasText: 'Save' }).first().click();
+    await page.goto('/');
+
+    // The 06075 sample carries a 30-hour-old space weather reading, which is
+    // past its window. It is reported as such rather than silently dropped.
+    await expect(page.locator('.band__confidence')).toContainText(/freshness window/);
+  });
+
+  test('no purchase links reach the digest', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByLabel(/County FIPS/).fill('06075');
+    await page.locator('#county ~ button', { hasText: 'Save' }).first().click();
+    await page.goto('/');
+
+    // Wait for the digest to land before reading the DOM: the surface renders
+    // its loading line first, and collecting links from it would pass for the
+    // wrong reason.
+    await expect(page.locator('.signal').first()).toBeVisible();
+
+    // §7.5: commerce may never appear on a threat surface. The only external
+    // links here are the sources the signals cite.
+    const hrefs = await page.locator('.signal a').evaluateAll((els) =>
+      els.map((e) => e.getAttribute('href') ?? ''),
+    );
+    expect(hrefs.length).toBeGreaterThan(0);
+    for (const href of hrefs) {
+      expect(href).toMatch(/^https:\/\/(www\.)?(weather|airnow|earthquake\.usgs|fema|swpc\.noaa)\./);
+    }
+    await expect(page.locator('.signal').getByText(/buy|shop|price/i)).toHaveCount(0);
+  });
+
+  test('Grey Sky shows no digest at all', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByTestId('state-grey-sky').click();
+    await page.goto('/');
+
+    await expect(page.locator('.band')).toHaveCount(0);
+    await expect(page.locator('.signal')).toHaveCount(0);
+    await expect(page.getByText(/no more to scroll/)).toHaveCount(0);
+  });
+
   test('no render path awaits the network', async ({ page }) => {
     await installThenGoOffline(page);
 

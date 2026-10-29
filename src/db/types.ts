@@ -25,6 +25,8 @@ export const STORE_SENSITIVITY: Record<string, Sensitivity> = {
   drills: 'local',
   content: 'public',
   meta: 'local',
+  threatSnapshots: 'public', // published government data, not this household's
+
 };
 
 export interface HouseholdMember {

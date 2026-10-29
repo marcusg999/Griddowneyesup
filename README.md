@@ -142,14 +142,14 @@ disabled.**
 | 5 | Readiness-state machine and Grey Sky interface | ✅ Done — state machine, Grey Sky, and the Watch action queue |
 | — | Interface design: *field notebook, read by headlamp* | ✅ See [`docs/DESIGN_CONTRACT.md`](docs/DESIGN_CONTRACT.md) |
 | 6 | Encrypted sync, circles | v2 |
-| 7 | Threat feed, CDN snapshot pipeline, Threat Index | ⬜ |
+| 7 | Threat feed, CDN snapshot pipeline, Threat Index | ◐ Client half done — reads a signed snapshot, derives the band, renders the cards. **The ingestion pipeline is not built**, so the digest is sample data, marked as such |
 | 8 | Notifications | v1.1+ |
 
 ### The gate, currently passing
 
 ```
-Shell 87.1 / 150 KB gzipped · fonts 68.2 / 100 KB · content 367.6 / 2048 KB
-135 unit tests · 28 offline tests
+Shell 89.3 / 150 KB gzipped · fonts 68.2 / 100 KB · content 367.6 / 2048 KB
+160 unit tests · 34 offline tests
 ```
 
 The offline suite runs against the production build in a Pixel 5 profile with

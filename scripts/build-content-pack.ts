@@ -10,61 +10,22 @@
  * bundle is the trust root; a signature that travelled with its own key would
  * verify anything an attacker chose to substitute.
  */
-import {
-  createHash,
-  createPublicKey,
-  createSign,
-  generateKeyPairSync,
-} from 'node:crypto';
+import { createHash, createSign } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import MiniSearch from 'minisearch';
 import { validateContent } from './validate-content.js';
+import { loadOrCreateKeyPair } from './signing.js';
 
 const LOCALE = 'en-US';
 const ROOT = process.cwd();
 const CONTENT_DIR = join(ROOT, 'content', LOCALE);
 const OUT_DIR = join(ROOT, 'public', 'content', LOCALE);
-const KEY_DIR = join(ROOT, '.dev-keys');
-const KEY_PATH = join(KEY_DIR, 'content-signing.pem');
 const GENERATED_KEY_TS = join(ROOT, 'src', 'content', 'signing-key.generated.ts');
 
 // ---------------------------------------------------------------------------
 // Signing keys
 // ---------------------------------------------------------------------------
-
-/**
- * Production signs with CONTENT_SIGNING_KEY from the environment. Development
- * generates a local keypair on first build, gitignored, so a fresh clone works
- * and the verification path is genuinely exercised in tests rather than
- * stubbed.
- */
-function loadOrCreateKeyPair(): { privateKey: string; publicKeyDer: Buffer } {
-  const fromEnv = process.env['CONTENT_SIGNING_KEY'];
-  if (fromEnv) {
-    return {
-      privateKey: fromEnv,
-      publicKeyDer: createPublicKey(fromEnv).export({ type: 'spki', format: 'der' }),
-    };
-  }
-
-  if (!existsSync(KEY_PATH)) {
-    mkdirSync(KEY_DIR, { recursive: true });
-    const { privateKey } = generateKeyPairSync('ec', { namedCurve: 'P-256' });
-    writeFileSync(
-      KEY_PATH,
-      privateKey.export({ type: 'pkcs8', format: 'pem' }).toString(),
-      { mode: 0o600 },
-    );
-    console.log('Generated a development signing key at .dev-keys/ (gitignored).');
-  }
-
-  const pem = readFileSync(KEY_PATH, 'utf8');
-  return {
-    privateKey: pem,
-    publicKeyDer: createPublicKey(pem).export({ type: 'spki', format: 'der' }),
-  };
-}
 
 // ---------------------------------------------------------------------------
 // Build
@@ -155,7 +116,7 @@ function build(): void {
 
   // Detached signature over the manifest. The manifest carries every artifact
   // hash, so one signature covers the whole pack.
-  const { privateKey, publicKeyDer } = loadOrCreateKeyPair();
+  const { privateKey, publicKeyDer } = loadOrCreateKeyPair(ROOT);
   const signature = createSign('SHA256').update(manifestBody).end().sign(privateKey);
   writeFileSync(join(OUT_DIR, 'index.json.sig'), signature.toString('base64'));
 

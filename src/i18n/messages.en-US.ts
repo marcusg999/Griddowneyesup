@@ -98,6 +98,19 @@ export const messages = {
   'threat.source': 'Source',
   'threat.digestEnds': 'That is everything. There is no more to scroll.',
 
+  // --- Threat Index (D11) ---------------------------------------------------
+  // A band, never a number. The confidence line is deliberately specific:
+  // "4 of 6 signals reporting" is more use than a confident digit.
+  'band.quiet': 'Quiet',
+  'band.elevated': 'Elevated',
+  'band.active': 'Active',
+  'band.why': 'Why this band',
+  'band.confidence':
+    '{reporting} of {total} {total, plural, one {signal} other {signals}} reporting',
+  'band.stale': '{n, plural, one {# source is} other {# sources are}} past their freshness window',
+  'band.sample':
+    'Sample digest. The live feed is not connected yet, so these are illustrative values in the real shape. Nothing here is a claim about the world, and it cannot change your readiness state.',
+
   // --- Paper (§7) -----------------------------------------------------------
   'print.plan': 'Print household plan',
   'print.rallyCard': 'Print rally card (wallet-sized)',
