@@ -3,7 +3,7 @@ import { t } from '@/i18n';
 import { useContent } from '@/state/content';
 import { useSupply } from '@/features/supply/useSupply';
 import { useReadiness } from '@/state/readiness';
-import { topRungFirst, weightTradeoff } from '@/features/supply/kits';
+import { weightTradeoff } from '@/features/supply/kits';
 import { acquisitionPath } from '@/features/supply/recommend';
 import { attachOffers } from '@/features/commerce/offers';
 import { Offers } from '@/ui/Offers';
@@ -39,16 +39,15 @@ export function Supplies() {
         <>
           <h2>
             <span className="margin-note" aria-hidden="true">
-              climb it
+              top down
             </span>
             The ladder
           </h2>
           <p className="meta" style={{ marginTop: -4 }}>
-            Drawn the way you climb it, so the first rung is at the foot. Start there
-            — each rung is meant to be an easy win, which is the whole point of doing it
-            in this order.
+            Start at the top and work down. The first rung is the one you can finish
+            today, which is the whole point of doing it in this order.
           </p>
-          {topRungFirst(ladder).map(({ status, locked, prerequisite }) => (
+          {ladder.map(({ status, locked, prerequisite }) => (
             <div
               className="card rung reveal"
               key={status.kit.id}
