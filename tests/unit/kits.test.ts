@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  COMPLETION_THRESHOLD,
-  kitStatus,
-  ladderWithLocks,
-  topRungFirst,
-} from '@/features/supply/kits';
+import { COMPLETION_THRESHOLD, kitStatus, ladderWithLocks } from '@/features/supply/kits';
 import type { CatalogItem, KitDefinition, KitId } from '@/content/types';
 import type { InventoryRecord, Profile } from '@/db/types';
 
@@ -148,26 +143,14 @@ describe('the ladder', () => {
     expect(ladder.map((l) => l.status.kit.id)).toEqual(['edc', 'ghb', 'bob']);
   });
 
-  it('draws the ladder top rung first, so the foot is at the foot', () => {
-    const ladder = topRungFirst(ladderWithLocks(kits, statusesFor([])));
-    expect(ladder.map((l) => l.status.kit.id)).toEqual(['bob', 'ghb', 'edc']);
-  });
-
-  it('reverses the drawing without reversing the climb', () => {
-    const drawn = topRungFirst(ladderWithLocks(kits, statusesFor([])));
-
-    // The reachable rung is still Everyday Carry; it has just moved to the
-    // bottom of the list. Nothing became unlockable by being drawn first.
-    const unlocked = drawn.filter((l) => !l.locked).map((l) => l.status.kit.id);
-    expect(unlocked).toEqual(['edc']);
-    expect(drawn[0]?.status.kit.id).toBe('bob');
-    expect(drawn[0]?.locked).toBe(true);
-    expect(drawn[0]?.prerequisite?.id).toBe('ghb');
-  });
-
-  it('does not mutate the ladder it is given', () => {
+  it('leads with the rung the user can act on, so it needs no scrolling', () => {
     const ladder = ladderWithLocks(kits, statusesFor([]));
-    topRungFirst(ladder);
-    expect(ladder.map((l) => l.status.kit.id)).toEqual(['edc', 'ghb', 'bob']);
+
+    // This is a UX contract, not an implementation detail: the first entry is
+    // the reachable one, because that is what sits at the top of the page.
+    // Rendering the ladder the other way up buries it under locked kits.
+    expect(ladder[0]?.status.kit.id).toBe('edc');
+    expect(ladder[0]?.locked).toBe(false);
+    expect(ladder.filter((l) => !l.locked)).toHaveLength(1);
   });
 });
