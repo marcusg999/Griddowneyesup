@@ -99,18 +99,34 @@ contact card and any skill page. Black and white, legible at arm's length.
 
 ## Status
 
-Scoping interview complete (2026-10-29). Implementation underway.
+Scoping interview complete. **Build order step 1 is done and proven: the app
+cold-boots, navigates, searches and mutates data with the network genuinely
+disabled.**
 
 | # | Build step | Status |
 |---|---|---|
-| 1 | Content schema, pack format, offline shell — **prove airplane mode** | 🔨 In progress |
-| 2 | Supply system, gap analysis, kit ladder, achievements | ⬜ Next |
-| 3 | Plan builder + PDF export | ⬜ |
-| 4 | Skills library rendering and local full-text search | ⬜ |
-| 5 | Readiness-state machine and Grey Sky interface | ⬜ |
+| 1 | Content schema, pack format, offline shell — **prove airplane mode** | ✅ Done |
+| 2 | Supply system, gap analysis, kit ladder, achievements | 🔨 Coverage + ladder + weight budgeting in; achievements and rotation next |
+| 3 | Plan builder + PDF export | ⬜ Next |
+| 4 | Skills library rendering and local full-text search | ✅ Rendering + search done; content volume at 6 of 40–60 |
+| 5 | Readiness-state machine and Grey Sky interface | ✅ State machine + Grey Sky in; Watch action queue pending |
 | 6 | Encrypted sync, circles | v2 |
 | 7 | Threat feed, CDN snapshot pipeline, Threat Index | ⬜ |
 | 8 | Notifications | v1.1+ |
+
+### The gate, currently passing
+
+```
+Shell 65.4 / 150 KB gzipped · content 60.6 / 2048 KB
+29 unit tests · 9 offline tests
+```
+
+The offline suite runs against the production build in a Pixel 5 profile with
+the browser context genuinely offline — not mocked. It asserts a cold boot, every
+route, full-text search, an inventory mutation surviving reload, coverage computed
+locally, Grey Sky suppressing every gamification element, and that **no request
+escapes the cache during render** — which is the assertion that keeps the premise
+true through future refactors.
 
 Steps 1–4 ship as a complete, genuinely useful offline product **before any
 network feature exists**. If the app is not valuable with the radio off, no

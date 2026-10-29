@@ -10,5 +10,13 @@
     "composite": true,
     "types": ["node"]
   },
-  "include": ["scripts", "vite.config.ts", "playwright.config.ts", "vitest.config.ts"]
+  // Tests of build-time code live with build-time code, so the zod schemas
+  // stay out of the app project and can never be pulled into the bundle.
+  "include": [
+    "scripts",
+    "tests/node",
+    "vite.config.ts",
+    "playwright.config.ts",
+    "vitest.config.ts"
+  ]
 }

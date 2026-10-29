@@ -1,0 +1,218 @@
+[
+  {
+    "id": "water-boil",
+    "title": "Boil water to make it safe to drink",
+    "category": "water",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 20,
+    "summary": "Boiling is the most reliable way to kill the bacteria, viruses and protozoa in water when you have heat to spare. It is purification, not filtration: it kills things, it does not remove them.",
+    "materials": ["pot-stainless-4qt", "stove-canister", "fuel-canister-230g"],
+    "steps": [
+      { "n": 1, "text": "If the water is cloudy, let it settle, then pour the clear water off the top through a clean cloth, paper towel or coffee filter. Boiling cloudy water works, but sediment shields some organisms and the result tastes bad enough that people avoid drinking it." },
+      { "n": 2, "text": "Bring the clear water to a rolling boil — a boil you cannot stir flat — and hold it there for one full minute. Time it. People consistently under-boil when guessing." },
+      { "n": 3, "text": "Above 6,500 feet of elevation, hold the rolling boil for three minutes instead of one. Water boils cooler at altitude, so it needs longer.", "caution": "If you do not know your elevation, use three minutes. The cost is fuel. The cost of guessing low is illness." },
+      { "n": 4, "text": "Let the water cool on its own. Do not add ice or cold untreated water to speed it up — that re-contaminates everything you just treated." },
+      { "n": 5, "text": "Store it in clean, covered containers. Boiled water tastes flat because the dissolved air has gone; pouring it between two clean containers a few times puts the air back." }
+    ],
+    "failureModes": [
+      { "symptom": "People get sick anyway", "cause": "Treated water poured into a dirty container, or a container lid handled with unwashed hands", "remedy": "Sanitise storage containers before use and treat the lid and pour spout as part of the container." },
+      { "symptom": "Water still tastes and smells wrong after boiling", "cause": "Chemical contamination, which boiling does not address and can concentrate", "remedy": "Stop using that source. Boiling is the wrong tool for a chemical problem." },
+      { "symptom": "Fuel runs out partway through the outage", "cause": "Boiling is fuel-expensive and is usually budgeted optimistically", "remedy": "Hold chemical treatment in reserve for when fuel runs low and keep boiling for the water you will drink soonest." }
+    ],
+    "doesNotDo": [
+      "Does not remove chemical contamination — pesticides, fuel, solvents, industrial runoff. Boiling evaporates water and can leave these MORE concentrated than before.",
+      "Does not remove heavy metals such as lead. Same concentration problem.",
+      "Does not remove salt. Boiling seawater and drinking the result will hurt you.",
+      "Does not remove sediment, cloudiness or bad taste. It kills organisms; it removes nothing.",
+      "Does not protect water after treatment. Boiled water put into a dirty bottle is dirty water."
+    ],
+    "citations": [
+      { "source": "CDC", "title": "Making Water Safe in an Emergency", "published": "2024", "url": "https://www.cdc.gov/healthywater/emergency/making-water-safe.html", "basis": "us-federal-work" },
+      { "source": "EPA", "title": "Emergency Disinfection of Drinking Water", "published": "2023", "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water", "basis": "us-federal-work" }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": ["flood", "hurricane", "earthquake", "grid-down"]
+  },
+  {
+    "id": "water-chemical-bleach",
+    "title": "Disinfect water with unscented household bleach",
+    "category": "water",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 35,
+    "summary": "Chemical disinfection when you have no fuel to boil. Cheap, light, and effective against most organisms — but the product matters, the dose matters, and the contact time matters.",
+    "materials": ["bleach-unscented", "water-container-7gal"],
+    "steps": [
+      { "n": 1, "text": "Check the label. You need sodium hypochlorite between 5% and 9%, with nothing else in it.", "caution": "Do NOT use scented, colour-safe, splash-less, gel, or cleaner-added bleach. These contain additives that are not safe to drink and no amount of waiting makes them safe." },
+      { "n": 2, "text": "If the water is cloudy, let it settle and filter it through a clean cloth until it runs clear. Chlorine is consumed by the organic matter in cloudy water, so a dose that would work on clear water will fall short." },
+      { "n": 3, "text": "For 6% bleach, add 8 drops — about one-eighth of a teaspoon — per gallon of clear water. For 8.25% bleach, use 6 drops per gallon. Double the dose if the water is still cloudy after filtering." },
+      { "n": 4, "text": "Stir it and let it stand for 30 minutes. Contact time is doing the work; cutting it short is the most common mistake." },
+      { "n": 5, "text": "Smell it. It should smell faintly of chlorine. If it does not, repeat the dose and wait another 15 minutes before drinking.", "caution": "If it still does not smell of chlorine after a second dose, discard it and find another source. Bleach loses potency with age and yours may be dead." }
+    ],
+    "failureModes": [
+      { "symptom": "No chlorine smell after two doses", "cause": "Bleach older than about a year, or stored hot, has lost most of its free chlorine", "remedy": "Replace stored bleach annually and write the date on the bottle. Treat an old bottle as cleaning supply, not water treatment." },
+      { "symptom": "Illness despite treatment", "cause": "Dosed cloudy water without filtering first, or did not wait the full contact time", "remedy": "Filter to clear, then dose, then wait by the clock rather than by feel." },
+      { "symptom": "Water tastes strongly of chlorine", "cause": "Overdose", "remedy": "Let it stand uncovered for a few hours, or pour it between clean containers. Mild overdose is far safer than underdose." }
+    ],
+    "doesNotDo": [
+      "Does not reliably kill Cryptosporidium. Chlorine is poor against it; boiling or a filter rated for protozoa is required where Crypto is a risk.",
+      "Is less effective against Giardia than against bacteria and viruses, and needs the full contact time to work at all.",
+      "Does not remove chemical contamination, heavy metals, or salt.",
+      "Does not remove sediment or cloudiness — you must filter first, and the filtering is for the chlorine's benefit, not the taste.",
+      "Does not work with scented, splash-less, gel or cleaner-added bleach. Those are not water treatment products in any dose."
+    ],
+    "citations": [
+      { "source": "EPA", "title": "Emergency Disinfection of Drinking Water", "published": "2023", "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water", "basis": "us-federal-work" },
+      { "source": "CDC", "title": "Making Water Safe in an Emergency", "published": "2024", "url": "https://www.cdc.gov/healthywater/emergency/making-water-safe.html", "basis": "us-federal-work" }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": ["flood", "hurricane", "grid-down"]
+  },
+  {
+    "id": "water-hollow-fibre-filter",
+    "title": "Choose and use a hollow-fibre water filter",
+    "category": "water",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 10,
+    "summary": "A 0.1-micron hollow-fibre filter removes bacteria and protozoa by physically straining them out. It is filtration, not purification. Most of these filters do not remove viruses, and that distinction is the whole reason to read this page.",
+    "materials": ["filter-hollow-fibre"],
+    "steps": [
+      { "n": 1, "text": "Check the rating. You want 0.1 micron absolute — not nominal. A nominal rating is an average pore size, which means some pores are larger and some organisms get through." },
+      { "n": 2, "text": "Pre-filter cloudy water through a cloth. Silt clogs hollow fibres quickly and a clogged filter is a dead filter." },
+      { "n": 3, "text": "Keep the clean side clean. Never let untreated water touch the output nozzle, and never put the output into a bottle that held untreated water.", "caution": "Cross-contamination at the output is the most common way people get sick while using a perfectly good filter." },
+      { "n": 4, "text": "Backflush according to the manufacturer's direction when flow slows. Flow rate is the only warning you get that the filter is loading up." },
+      { "n": 5, "text": "Protect it from freezing. Water trapped in the fibres expands when it freezes and cracks them — and a cracked hollow-fibre filter looks exactly like a working one while passing everything straight through.", "caution": "A filter that has frozen while wet must be discarded. There is no field test that will tell you whether it is still intact." },
+      { "n": 6, "text": "Where viruses are a credible risk — sewage contamination, flood water, dense human activity upstream — follow filtration with chemical treatment or boiling. The filter handles the sediment and protozoa; the second step handles the viruses." }
+    ],
+    "failureModes": [
+      { "symptom": "Flow slows to nothing", "cause": "Silt loading from unfiltered source water", "remedy": "Backflush. Pre-filter through cloth in future." },
+      { "symptom": "Illness after use", "cause": "Either viral contamination the filter was never rated for, or cross-contamination at the output", "remedy": "Add a purification step and keep the output nozzle physically separated from untreated water." },
+      { "symptom": "Filter passes water suspiciously fast after a cold night", "cause": "Freeze damage has cracked the fibres", "remedy": "Discard it. Do not attempt to assess it visually." }
+    ],
+    "doesNotDo": [
+      "Does NOT remove viruses. Viruses are roughly 0.02 to 0.3 micron and pass straight through a 0.1-micron filter. This is the single most important limitation of this tool.",
+      "Does not remove chemical contamination, pesticides, fuel or solvents.",
+      "Does not remove heavy metals such as lead or arsenic.",
+      "Does not remove salt.",
+      "Does not give any warning when it has failed. A freeze-cracked filter produces clear, fast-flowing, contaminated water."
+    ],
+    "citations": [
+      { "source": "CDC", "title": "Making Water Safe in an Emergency", "published": "2024", "url": "https://www.cdc.gov/healthywater/emergency/making-water-safe.html", "basis": "us-federal-work" },
+      { "source": "EPA", "title": "Guide Standard and Protocol for Testing Microbiological Water Purifiers", "published": "1987", "basis": "us-federal-work" }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": ["flood", "hurricane", "grid-down", "wildfire"]
+  },
+  {
+    "id": "water-improvised-column",
+    "title": "Improvised sand and charcoal filtration column",
+    "category": "water",
+    "difficulty": "practiced",
+    "riskTier": "high",
+    "timeRequiredMin": 90,
+    "summary": "A layered sand and charcoal column clears muddy water and improves its taste. Read the next section before you read the steps: this does not make water safe to drink, and the popular belief that it does has killed people.",
+    "materials": ["pot-stainless-4qt", "sanitation-cover-material"],
+    "steps": [
+      { "n": 1, "text": "Understand what you are building. This is a pre-treatment stage that makes water clear enough for boiling or chemical disinfection to work properly. It is a step before purification, never a substitute for it.", "caution": "Water that comes out of this column is not drinkable. It is water that is now ready to be purified." },
+      { "n": 2, "text": "Take a container and make drainage holes in the base. A bucket, a large bottle cut off at the bottom, or a cloth bag all work." },
+      { "n": 3, "text": "Lay a cloth across the bottom to stop the media washing out, then build upward: coarse gravel, then fine gravel, then coarse sand, then fine sand, then crushed charcoal from a wood fire, then another cloth layer on top to stop the inflow digging a channel." },
+      { "n": 4, "text": "Use charcoal from untreated wood only. Charcoal briquettes contain binders, accelerants and sometimes lighter fluid residue.", "caution": "Never use briquettes or any treated or painted wood. You will add contamination rather than remove it." },
+      { "n": 5, "text": "Rinse the column with several litres of water and discard every drop of it. New media sheds dust and fines for a long time." },
+      { "n": 6, "text": "Pour water in slowly so it percolates rather than channels. Fast water finds a path through and touches almost none of the media." },
+      { "n": 7, "text": "Now boil the output for one minute, or treat it chemically for 30 minutes. This is not an optional final step. It is the step that makes the water safe." }
+    ],
+    "failureModes": [
+      { "symptom": "Output is still cloudy", "cause": "Channelling from pouring too fast, or media too coarse", "remedy": "Add a finer sand layer and pour slowly onto a cloth or stone spreader." },
+      { "symptom": "Output tastes of ash", "cause": "Charcoal fines not rinsed out", "remedy": "Keep rinsing and discarding until it runs clean." },
+      { "symptom": "Someone drinks the output untreated and becomes ill", "cause": "The widespread and incorrect belief that this is a water purifier", "remedy": "Label the output container. Treat this as a hard rule in a group, not a preference." }
+    ],
+    "doesNotDo": [
+      "Does NOT make water microbiologically safe. It does not reliably remove bacteria, viruses or protozoa. Water from this column must still be boiled or chemically treated.",
+      "Does not remove chemical contamination, heavy metals or salt. The charcoal layer adsorbs some organic compounds and improves taste, but this is not activated carbon and it is not a treatment you can rely on.",
+      "Does not sterilise anything. Nothing in the column kills organisms.",
+      "Does not have any indicator of failure. Clear, pleasant-tasting water from this column can carry a full pathogen load."
+    ],
+    "citations": [
+      { "source": "CDC", "title": "Making Water Safe in an Emergency", "published": "2024", "url": "https://www.cdc.gov/healthywater/emergency/making-water-safe.html", "basis": "us-federal-work" },
+      { "source": "EPA", "title": "Emergency Disinfection of Drinking Water", "published": "2023", "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water", "basis": "us-federal-work" }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": ["flood", "grid-down"]
+  },
+  {
+    "id": "sanitation-twin-bucket",
+    "title": "Build and run a twin-bucket emergency toilet",
+    "category": "sanitation",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 30,
+    "summary": "When the water stops, the toilet stops. Sanitation failure causes more illness in prolonged outages than any other single factor, and it is also the problem households plan for least. Two buckets and a bag of sawdust solve it.",
+    "materials": ["toilet-bucket-kit", "sanitation-cover-material", "soap-bar", "hand-sanitiser"],
+    "steps": [
+      { "n": 1, "text": "Stop flushing immediately if the water supply or the sewer is compromised. A toilet that will not drain, or a sewer backing up, turns the bathroom into the worst room in the house within a day." },
+      { "n": 2, "text": "Set up two buckets and keep them separate: one for urine, one for solids. Separating the two cuts odour dramatically and roughly halves the volume of waste you must store, because urine is the bulk and solids are the hazard." },
+      { "n": 3, "text": "Line the solids bucket with a heavy bag and put a two-inch layer of cover material in the bottom — sawdust, wood shavings, peat or dry soil." },
+      { "n": 4, "text": "After each use of the solids bucket, add enough cover material to hide the surface completely. Covered waste does not smell and does not attract flies. Flies are the mechanism by which this becomes everybody's problem." },
+      { "n": 5, "text": "Urine is nearly sterile when it leaves a healthy person and can be diluted and poured outside well away from any water source, garden bed or well head." },
+      { "n": 6, "text": "Seal each full solids bag, double-bag it, and store it in a covered container outside and away from where people walk and children play. Do not bury it near a well or a watercourse.", "caution": "Do not burn it, and do not compost it in an ordinary garden compost heap. Neither reaches a temperature that reliably kills pathogens." },
+      { "n": 7, "text": "Put soap, water and hand sanitiser immediately next to the buckets, not across the room. Hand hygiene at the point of use is what actually breaks the transmission chain, and distance is the reason people skip it." }
+    ],
+    "failureModes": [
+      { "symptom": "Strong smell within a day", "cause": "Not enough cover material, or urine and solids mixed", "remedy": "Separate the streams and cover more generously. If you can see the surface, you have not used enough." },
+      { "symptom": "Flies", "cause": "Uncovered waste, or a bucket left open between uses", "remedy": "Cover after every use and keep a lid on between uses." },
+      { "symptom": "Household gastrointestinal illness spreading", "cause": "Hand hygiene failure, almost always", "remedy": "Move hand-washing supplies to arm's reach of the bucket and make it the household's one non-negotiable rule." },
+      { "symptom": "Cover material runs out on day four", "cause": "Everyone underestimates the quantity", "remedy": "Budget roughly a gallon of cover material per person per week and store more than you think you need. It is cheap and it is the whole system." }
+    ],
+    "doesNotDo": [
+      "Does not treat or sterilise waste. It contains and covers it. The bags remain hazardous until properly disposed of.",
+      "Does not make the waste safe to compost in a normal garden heap, or safe to burn.",
+      "Does not substitute for hand hygiene. The buckets reduce exposure; soap and water break transmission.",
+      "Does not solve greywater — washing and cooking water still needs somewhere to go.",
+      "Does not work indefinitely. It buys weeks, not months, and the limit is storage space for sealed bags."
+    ],
+    "citations": [
+      { "source": "CDC", "title": "Keep Food and Water Safe After a Disaster or Emergency", "published": "2024", "url": "https://www.cdc.gov/healthywater/emergency/", "basis": "us-federal-work" },
+      { "source": "FEMA", "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)", "published": "2004", "basis": "us-federal-work" },
+      { "source": "EPA", "title": "Guidance on Emergency Sanitation and Safe Drinking Water", "published": "2023", "basis": "us-federal-work" }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": ["grid-down", "earthquake", "flood", "hurricane"]
+  },
+  {
+    "id": "psych-decide-under-stress",
+    "title": "Making decisions when you are frightened and tired",
+    "category": "psychological",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 15,
+    "summary": "Stress does predictable things to judgement: it narrows attention, biases you toward whatever you did last time, and makes doing nothing feel like a decision. Knowing the failure modes in advance is most of the defence.",
+    "materials": ["nav-paper-map"],
+    "steps": [
+      { "n": 1, "text": "Decide the big things before you are frightened. Evacuation triggers, rally points and who collects which child are decisions to make on an ordinary Tuesday. Written down, they survive a bad night; held in your head, they do not." },
+      { "n": 2, "text": "Watch for tunnelling. Under stress people fixate on one problem — usually the loudest or most recent — and stop noticing the others. Deliberately widen your view every so often: water, warmth, people, exit." },
+      { "n": 3, "text": "Treat 'wait and see' as a choice, not a pause. It is sometimes correct. It is also what people do when a decision is uncomfortable, and the two feel identical from the inside. Say out loud what you are waiting FOR and what you will do when you see it." },
+      { "n": 4, "text": "Eat, drink and sleep on purpose. Low blood sugar and sleep debt degrade judgement faster and earlier than almost anyone estimates, and the first thing to go is the ability to notice that your judgement has degraded." },
+      { "n": 5, "text": "Give one person the decision at any moment, especially in a group. Shared responsibility reliably produces no decision at all. Rotate it when that person is tired." },
+      { "n": 6, "text": "Write down what you decide and when. Memory under stress is unreliable, and in a multi-day event you will genuinely not remember whether you turned the gas off." }
+    ],
+    "failureModes": [
+      { "symptom": "Hours pass with nothing decided", "cause": "Diffused responsibility in a group, or waiting for information that is not coming", "remedy": "Name a decision-maker and a deadline. An adequate decision on time beats a good one too late." },
+      { "symptom": "Fixating on one task while something important goes unattended", "cause": "Attentional tunnelling, a normal stress response", "remedy": "Set a recurring check: water, warmth, people, exit. Out loud, on a timer." },
+      { "symptom": "Arguments escalating out of proportion", "cause": "Sleep debt, hunger and uncertainty, not the thing being argued about", "remedy": "Feed everyone and reconvene. Name the real cause; it defuses most of it." }
+    ],
+    "doesNotDo": [
+      "Does not make you calm. The physiological stress response happens regardless of preparation; the aim is to function while it is happening, not to avoid it.",
+      "Does not substitute for a written plan. These are habits that help you execute a plan, not a replacement for having one.",
+      "Does not address clinical anxiety, PTSD or acute psychological crisis, which are outside the scope of this library and need professional care.",
+      "Does not make group conflict go away. It reduces the conflict caused by exhaustion, which is most of it but not all of it."
+    ],
+    "citations": [
+      { "source": "FEMA", "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)", "published": "2004", "basis": "us-federal-work" },
+      { "source": "US Department of Veterans Affairs, National Center for PTSD", "title": "Psychological First Aid: Field Operations Guide", "published": "2006", "basis": "us-federal-work" }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": ["grid-down", "earthquake", "wildfire", "hurricane", "civil-disruption"]
+  }
+]

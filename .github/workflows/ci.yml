@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Content gate. CONTENT_POLICY §3: a high-risk skill with no citation,
+      # or any skill that does not state what it does NOT do, fails here.
+      - name: Validate content
+        run: npm run content:validate
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Build
+        run: npm run build
+
+      # §8 performance budget: usable on a five-year-old mid-range Android
+      # over 3G. A bundle regression is invisible on a laptop.
+      - name: Performance budget
+        run: npm run check:budget
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      # THE RELEASE GATE. §2: "a build that fails the offline test suite does
+      # not ship." Cold boot offline, navigate every route, search the
+      # library, mutate inventory, and confirm Grey Sky hides gamification.
+      - name: Offline suite
+        run: npm run test:offline
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-trace
+          path: test-results/
+          retention-days: 7

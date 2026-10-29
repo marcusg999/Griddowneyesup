@@ -1,0 +1,84 @@
+{
+  "hazard": [
+    {
+      "id": "wildfire",
+      "name": "Wildfire",
+      "addsItems": ["n95-respirator", "docs-waterproof-pouch", "nav-paper-map"],
+      "criticalItems": ["n95-respirator", "nav-paper-map"]
+    },
+    {
+      "id": "flood",
+      "name": "Flood",
+      "addsItems": ["docs-waterproof-pouch", "water-stored-gal", "bleach-unscented", "shoes-sturdy"],
+      "criticalItems": ["docs-waterproof-pouch", "shoes-sturdy"]
+    },
+    {
+      "id": "hurricane",
+      "name": "Hurricane",
+      "addsItems": ["water-container-7gal", "radio-noaa-crank", "tarp-heavy", "duct-tape", "cash-small-bills"],
+      "criticalItems": ["water-container-7gal", "radio-noaa-crank"]
+    },
+    {
+      "id": "earthquake",
+      "name": "Earthquake",
+      "addsItems": ["shoes-sturdy", "utility-shutoff-wrench", "whistle", "n95-respirator"],
+      "criticalItems": ["shoes-sturdy", "utility-shutoff-wrench", "whistle"]
+    },
+    {
+      "id": "winter-storm",
+      "name": "Winter storm",
+      "addsItems": ["blanket-wool", "fuel-canister-230g", "battery-aa", "food-shelf-stable-day"],
+      "criticalItems": ["blanket-wool"]
+    },
+    {
+      "id": "grid-down",
+      "name": "Extended grid-down",
+      "addsItems": ["toilet-bucket-kit", "sanitation-cover-material", "powerbank-20k", "radio-noaa-crank", "cash-small-bills", "food-bulk-staple-day"],
+      "criticalItems": ["toilet-bucket-kit", "sanitation-cover-material"]
+    },
+    {
+      "id": "civil-disruption",
+      "name": "Civil disruption",
+      "addsItems": ["cash-small-bills", "nav-paper-map", "docs-waterproof-pouch", "food-shelf-stable-day"],
+      "criticalItems": ["cash-small-bills"]
+    },
+    {
+      "id": "nuclear-radiological",
+      "name": "Nuclear / radiological",
+      "addsItems": ["n95-respirator", "water-stored-gal", "food-shelf-stable-day", "radio-noaa-crank", "duct-tape"],
+      "criticalItems": ["radio-noaa-crank", "water-stored-gal"]
+    }
+  ],
+  "dependent": [
+    {
+      "id": "infant",
+      "name": "Infant",
+      "addsItems": ["water-stored-gal", "hand-sanitiser", "soap-bar"],
+      "criticalItems": ["water-stored-gal"]
+    },
+    {
+      "id": "child",
+      "name": "Child",
+      "addsItems": ["food-shelf-stable-day", "water-stored-gal", "headlamp-led"],
+      "criticalItems": ["water-stored-gal"]
+    },
+    {
+      "id": "elder",
+      "name": "Elder",
+      "addsItems": ["meds-prescription-30d", "firstaid-kit-household", "blanket-wool"],
+      "criticalItems": ["meds-prescription-30d"]
+    },
+    {
+      "id": "mobility",
+      "name": "Mobility or accessibility needs",
+      "addsItems": ["meds-prescription-30d", "powerbank-20k", "whistle"],
+      "criticalItems": ["powerbank-20k", "whistle"]
+    },
+    {
+      "id": "pet",
+      "name": "Pet",
+      "addsItems": ["water-stored-gal", "food-shelf-stable-day", "docs-waterproof-pouch"],
+      "criticalItems": ["water-stored-gal"]
+    }
+  ]
+}
