@@ -552,6 +552,39 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
 .rung__bar { height: 2px; background: var(--rule-major); margin-top: 9px; position: relative; }
 .rung__bar i { position: absolute; inset: 0 auto 0 0; background: var(--acid); display: block; }
 
+/* --- WATCH action queue --------------------------------------------------
+   Numbered, because in this state the order IS the content: the first entry is
+   the one to do if you only do one thing. The figures are set in Inter rather
+   than Redaction for the same reason the coverage numerals are — Redaction's
+   zero is a filled rectangle at a glance, and a queue position has to be read,
+   not admired.
+
+   The cards here also escape the .card:nth-of-type rotation, since each sits
+   alone inside its own <li>. That is wanted: the casual off-axis stack suits
+   Blue Sky browsing and does not suit a list someone is working down. */
+.queue { list-style: none; margin: 0; padding: 0; counter-reset: queue; }
+.queue > li { counter-increment: queue; }
+
+.queue .card {
+  display: grid;
+  grid-template-columns: 2.6ch 1fr;
+  column-gap: 13px;
+  align-items: start;
+}
+
+.queue .card::before {
+  content: counter(queue);
+  grid-row: 1 / span 2;
+  font-family: var(--body);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  font-size: 20px;
+  line-height: 1.15;
+  color: var(--acid);
+}
+
+.queue__why { margin: 5px 0 0; }
+
 /* --- Motion: scroll choreography ----------------------------------------
    CSS scroll-driven animation, so the choreography costs zero JavaScript and
    nothing is added to the render path. */

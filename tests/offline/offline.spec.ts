@@ -202,6 +202,78 @@ test.describe('offline release gate', () => {
     await expect(page.getByText(/the ladder/i)).toHaveCount(0);
   });
 
+  test('WATCH shows an action queue derived from this household, not a checklist', async ({
+    page,
+  }) => {
+    await installThenGoOffline(page);
+
+    await page.goto('/settings');
+    await page.getByTestId('state-watch').click();
+    await page.goto('/');
+
+    await expect(page.getByRole('heading', { name: 'Do these first' })).toBeVisible();
+    const entries = page.locator('.queue > li');
+    expect(await entries.count()).toBeGreaterThan(0);
+
+    // An empty household gets the entries its own gaps imply.
+    await expect(page.getByText('Agree one place to meet')).toBeVisible();
+    await expect(page.getByText('Name someone two states away')).toBeVisible();
+
+    // And NOT the ones it cannot be known to need. No fuel spend is recorded,
+    // so no fuel entry; no prescriptions logged, so nothing about refills.
+    await expect(page.getByText(/Fill the tank/)).toHaveCount(0);
+    await expect(page.getByText(/Ask for the refill/)).toHaveCount(0);
+
+    // In WATCH the reading suggestions give way to the queue entirely.
+    await expect(page.getByText(/Worth doing/)).toHaveCount(0);
+  });
+
+  test('the WATCH queue follows the inventory it is derived from', async ({ page }) => {
+    await installThenGoOffline(page);
+
+    await page.goto('/settings');
+    await page.getByTestId('state-watch').click();
+
+    // With nothing stored, the water entry has to improvise.
+    await page.goto('/');
+    await expect(page.getByText(/Fill the bathtub/)).toBeVisible();
+
+    // An empty container holds no water, so the shortfall stands — but the
+    // instruction changes, because now there is something to fill.
+    await page.goto('/supplies');
+    await page.getByLabel('Which kit').selectOption('home');
+    await page.getByLabel('What').selectOption('water-container-7gal');
+    await page.getByRole('button', { name: /^Add to/ }).click();
+
+    await page.goto('/');
+    await expect(page.getByText('Fill the 1 container you already own')).toBeVisible();
+    await expect(page.getByText(/Fill the bathtub/)).toHaveCount(0);
+  });
+
+  test('the WATCH queue carries no purchase links', async ({ page }) => {
+    await installThenGoOffline(page);
+
+    await page.goto('/settings');
+    await page.getByTestId('state-watch').click();
+    await page.goto('/');
+
+    // CONTENT_POLICY §7.5: `today` is a commerce-forbidden surface, and the
+    // queue renders there. Suppression is absence, not invisibility.
+    await expect(page.locator('.queue a[href^="http"]')).toHaveCount(0);
+    await expect(page.locator('.queue').getByText(/buy|shop|\$/i)).toHaveCount(0);
+  });
+
+  test('Grey Sky does not show the WATCH queue', async ({ page }) => {
+    await installThenGoOffline(page);
+
+    await page.goto('/settings');
+    await page.getByTestId('state-grey-sky').click();
+    await page.goto('/');
+
+    await expect(page.locator('.queue')).toHaveCount(0);
+    await expect(page.getByText(/Do these first/)).toHaveCount(0);
+  });
+
   test('no render path awaits the network', async ({ page }) => {
     await installThenGoOffline(page);
 

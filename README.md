@@ -139,7 +139,7 @@ disabled.**
 | 2 | Supply system, gap analysis, kit ladder, achievements | ✅ Done |
 | 3 | Plan builder + printable documents | ✅ Done |
 | 4 | Skills library rendering and local full-text search | ✅ Done — **50 skills written**, at the top of the 40–60 target |
-| 5 | Readiness-state machine and Grey Sky interface | ✅ State machine + Grey Sky in; Watch action queue pending |
+| 5 | Readiness-state machine and Grey Sky interface | ✅ Done — state machine, Grey Sky, and the Watch action queue |
 | — | Interface design: *field notebook, read by headlamp* | ✅ See [`docs/DESIGN_CONTRACT.md`](docs/DESIGN_CONTRACT.md) |
 | 6 | Encrypted sync, circles | v2 |
 | 7 | Threat feed, CDN snapshot pipeline, Threat Index | ⬜ |
@@ -148,8 +148,8 @@ disabled.**
 ### The gate, currently passing
 
 ```
-Shell 85.2 / 150 KB gzipped · fonts 68.2 / 100 KB · content 367.6 / 2048 KB
-115 unit tests · 24 offline tests
+Shell 87.1 / 150 KB gzipped · fonts 68.2 / 100 KB · content 367.6 / 2048 KB
+135 unit tests · 28 offline tests
 ```
 
 The offline suite runs against the production build in a Pixel 5 profile with
