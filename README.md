@@ -77,8 +77,11 @@ very low for hurricane.* Sourced, citable, free.
 
 **Say what it does not do.** Filtration and purification are different operations
 and conflating them kills people. A sand-and-charcoal column improves clarity and
-taste; it does not make water microbiologically safe. Every skill in the library
-carries a required `doesNotDo` field — enforced by schema, not by discipline.
+taste; it does not make water microbiologically safe. Every one of the 50 skills
+carries a required `doesNotDo` field — enforced by schema, not by discipline — and
+every high-risk skill carries a stamp line you cannot scroll past. *Boiling spares
+spores. CO has no smell. 20 feet, no exceptions. Do not rub limbs. Two different
+doses. Never taste it.*
 
 **Paper is the last backup.** The most likely failure mode is a dead phone, and
 this app lives on a phone. Five printable documents — household plan,
@@ -129,7 +132,7 @@ disabled.**
 | 1 | Content schema, pack format, offline shell — **prove airplane mode** | ✅ Done |
 | 2 | Supply system, gap analysis, kit ladder, achievements | ✅ Done |
 | 3 | Plan builder + printable documents | ✅ Done |
-| 4 | Skills library rendering and local full-text search | ✅ Rendering + search done; content volume at 6 of 40–60 |
+| 4 | Skills library rendering and local full-text search | ✅ Done — **50 skills written**, at the top of the 40–60 target |
 | 5 | Readiness-state machine and Grey Sky interface | ✅ State machine + Grey Sky in; Watch action queue pending |
 | — | Interface design: *field notebook, read by headlamp* | ✅ See [`docs/DESIGN_CONTRACT.md`](docs/DESIGN_CONTRACT.md) |
 | 6 | Encrypted sync, circles | v2 |

@@ -25,7 +25,7 @@ async function installThenGoOffline(page: Page): Promise<void> {
   // is the thing the offline claim rests on.
   await expect(page.getByRole('link', { name: 'Skills' })).toBeVisible();
   await page.goto('/skills');
-  await expect(page.getByText(/of 6 skills/)).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByText(/\d+ of \d+ skills/)).toBeVisible({ timeout: 15_000 });
 
   await page.context().setOffline(true);
 }
@@ -72,15 +72,48 @@ test.describe('offline release gate', () => {
     await installThenGoOffline(page);
     await page.goto('/skills');
 
-    await expect(page.getByText('6 of 6 skills')).toBeVisible();
+    // Count-agnostic: the library grows, and a gate pinned to its size would
+    // fail on every content commit rather than on a real regression.
+    const counter = page.getByText(/^\d+ of \d+ skills$/);
+    await expect(counter).toBeVisible();
+    const all = Number((await counter.textContent())?.match(/of (\d+)/)?.[1] ?? 0);
+    expect(all).toBeGreaterThan(1);
 
     await page.getByLabel('Search the library').fill('purification');
-    await expect(page.getByText(/^[1-5] of 6 skills$/)).toBeVisible();
+    await expect(counter).toBeVisible();
+    const matched = Number((await counter.textContent())?.match(/^(\d+)/)?.[1] ?? -1);
+    expect(matched, 'search should narrow the library').toBeGreaterThan(0);
+    expect(matched, 'search should narrow the library').toBeLessThan(all);
 
     await page.getByLabel('Search the library').fill('bleach');
     await expect(
       page.getByRole('heading', { name: /unscented household bleach/i }),
     ).toBeVisible();
+  });
+
+  test('search ranks the right skill first', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/skills');
+
+    /*
+     * Relevance, not just recall. Fuzzy OR matching once put the charcoal
+     * filtration column at the top of a search for "carbon monoxide" — a near
+     * match on "charcoal" with nothing matching "monoxide" at all.
+     */
+    const expectations: Array<[string, RegExp]> = [
+      ['carbon monoxide', /poisoning anyone/i],
+      ['botulism', /home canning/i],
+      ['tourniquet', /stopping serious bleeding/i],
+      ['bleach', /disinfecting surfaces/i],
+    ];
+
+    for (const [query, topResult] of expectations) {
+      await page.getByLabel('Search the library').fill(query);
+      await expect(
+        page.locator('.skill-card__title').first(),
+        `"${query}" should rank the right skill first`,
+      ).toHaveText(topResult);
+    }
   });
 
   test('renders a skill, with its limits above the steps', async ({ page }) => {
@@ -356,7 +389,7 @@ test.describe('content pack integrity', () => {
     await expect(page.getByText(/Pack \d{4}-\d{2}-\d{2}\./)).toBeVisible({
       timeout: 15_000,
     });
-    await expect(page.getByText(/6 skills, 30 items/)).toBeVisible();
+    await expect(page.getByText(/\d+ skills, \d+ items/)).toBeVisible();
   });
 });
 

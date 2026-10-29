@@ -142,20 +142,21 @@ useful survival, sanitation, navigation and first-aid manuals. Filtering happens
 at the document level and fails closed on anything unclassified. See
 `CONTENT_POLICY.md`.
 
-### D08 — 40–60 deep skills in v1 **[CONFIRMED]**
+### D08 — 40–60 deep skills in v1 **[CONFIRMED — 50 written]**
 
-Depth is the differentiator. Target distribution:
+Depth is the differentiator. Target distribution, and what was written:
 
-| Category | Count | Note |
-|---|---|---|
-| Water | 10 | Filtration and purification kept rigorously distinct — see below |
-| Food | 8 | Storage, preservation, rationing, cooking without power |
-| Sanitation & waste | 6 | Leading killer in grid-down; weighted accordingly, not as an afterthought |
-| Heat & shelter | 6 | |
-| Power | 5 | Generation and storage |
-| Medical | 5 | Trained-layperson scope only, per §5 |
-| Comms & navigation | 5 | |
-| Psychological & decision-making | 5 | Sleep, group conflict, stress, grey man principles |
+| Category | Target | Written | Note |
+|---|---|---|---|
+| Water | 10 | **10** | Filtration and purification kept rigorously distinct — see below |
+| Food | 8 | **8** | Storage, outage safety, rationing, cooking without power, home canning |
+| Sanitation & waste | 6 | **6** | Leading killer in grid-down; weighted accordingly, not as an afterthought |
+| Heat & shelter | 6 | **6** | The carbon-monoxide cluster. Highest fatality density in the library |
+| Power | 5 | **5** | Generation, storage, and the backfeed hazard |
+| Medical | 5 | **5** | Trained-layperson scope only, per §5. No dosing guidance anywhere |
+| Comms & navigation | 5 | **5** | |
+| Psychological & decision-making | 5 | **5** | Sleep, group conflict, children, not being the interesting one |
+| **Total** | **50** | **50** | 28 at `riskTier: high`, 127 citations, all public-domain federal |
 
 Homestead content excluded per D02.
 

@@ -532,5 +532,4214 @@
       "civil-disruption"
     ],
     "stampLine": "Not a plan"
+  },
+  {
+    "id": "water-storage",
+    "title": "Store water before you need it",
+    "category": "water",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 45,
+    "summary": "Stored water is the cheapest preparedness there is and the one most households skip. One gallon per person per day, in containers that will not fail, rotated before anyone has to think about it.",
+    "stampLine": "Containers fail",
+    "materials": [
+      "water-stored-gal",
+      "water-container-7gal",
+      "bleach-unscented"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Plan one gallon per person per day. That is the federal figure and it covers drinking and minimal hygiene — not bathing, not laundry, not flushing. Add more for hot climates, pregnancy, illness and anyone nursing."
+      },
+      {
+        "n": 2,
+        "text": "Count pets. A medium dog drinks roughly a half to one gallon a day. Households that plan carefully for people still forget the animals."
+      },
+      {
+        "n": 3,
+        "text": "Buy commercially bottled water if you can. It is sealed, dated and someone else's quality-control problem. Keep it in the original sealed container and respect the date on it."
+      },
+      {
+        "n": 4,
+        "text": "If you fill your own, use food-grade containers only. Sanitise each one with a teaspoon of unscented bleach in a quart of water, swirl it over every interior surface, rinse, then fill from a safe tap.",
+        "caution": "Never reuse milk jugs or fruit-juice bottles. Milk protein and fruit sugars cannot be fully washed out and will grow bacteria. Milk jug plastic also degrades and splits."
+      },
+      {
+        "n": 5,
+        "text": "Label every container with the date you filled it and replace self-filled water every six months. Write it on the container, not in your phone."
+      },
+      {
+        "n": 6,
+        "text": "Store away from sunlight, away from heat, and off bare concrete — concrete can leach into plastic over time and will transmit floor heat. A cool interior cupboard beats a garage."
+      },
+      {
+        "n": 7,
+        "text": "Split the storage across at least two locations. One burst container or one inaccessible room should not take out your entire supply."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Container splits and floods the storage area",
+        "cause": "Reused milk jugs, or a stack taller than the bottom container can carry",
+        "remedy": "Food-grade containers only, and stack no more than two high unless the container is rated for it."
+      },
+      {
+        "symptom": "Water tastes stale or plastic",
+        "cause": "Dissolved air lost in storage, or heat and sunlight",
+        "remedy": "Pour between two clean containers to re-aerate. Move the store somewhere cool and dark."
+      },
+      {
+        "symptom": "Six months pass and nobody rotates it",
+        "cause": "The date lives in somebody's head",
+        "remedy": "Write the date on the container and let the app's rotation queue surface it."
+      }
+    ],
+    "doesNotDo": [
+      "Storing water does not purify it. Water that was unsafe when you bottled it is unsafe six months later.",
+      "A sealed container does not sterilise its contents. Sanitising the container before filling is a separate step and it matters.",
+      "Stored water does not cover sanitation. Flushing a toilet uses more water in one flush than a person drinks in a day, which is why the bucket toilet exists.",
+      "A date on commercial bottled water is a quality date, not a safety cliff — but it is also not an invitation to ignore rotation entirely."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Making Water Safe in an Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/making-water-safe.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "earthquake",
+      "hurricane",
+      "winter-storm",
+      "flood"
+    ]
+  },
+  {
+    "id": "water-sources-in-home",
+    "title": "Find the water already inside your house",
+    "category": "water",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 30,
+    "summary": "A typical house holds thirty to fifty gallons of drinkable water in the water heater alone, plus more in the pipes and the toilet tanks. Most people never find it because they do not know it is there and do not know how to get it out.",
+    "stampLine": "Not the toilet bowl",
+    "materials": [
+      "pot-stainless-4qt",
+      "water-container-7gal",
+      "utility-shutoff-wrench"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Shut the incoming water off first, at the main. If the supply is contaminated, every minute it stays open is more contaminated water entering your tank and pipes."
+      },
+      {
+        "n": 2,
+        "text": "Turn the water heater OFF before you draw from it. Gas to pilot or off; electric breaker off.",
+        "caution": "An electric element that fires in an empty or partly empty tank will burn out, and a gas heater left on can damage the tank. Turn it off and leave it off until the supply is restored and the tank is refilled."
+      },
+      {
+        "n": 3,
+        "text": "Open a hot tap somewhere high in the house. This lets air in; without it the tank will barely trickle."
+      },
+      {
+        "n": 4,
+        "text": "Attach a hose to the drain valve at the base of the heater, or hold a container under it, and open the valve. Expect sediment in the first flow — let it settle and pour the clear water off."
+      },
+      {
+        "n": 5,
+        "text": "Drain the pipes separately: open the highest faucet in the house to admit air, then collect from the lowest."
+      },
+      {
+        "n": 6,
+        "text": "Toilet TANK water — the cistern on the back, not the bowl — is usable if nobody has put a chemical cleaner, dye or 'bloo' tablet in it. Treat it before drinking.",
+        "caution": "The bowl is never a drinking source, treated or not. Neither is a waterbed: the vinyl is treated with algaecides and plasticisers that are not safe to drink."
+      },
+      {
+        "n": 7,
+        "text": "Do not forget the ice in the freezer, and any water already in jugs, kettles and a filled bath."
+      },
+      {
+        "n": 8,
+        "text": "Treat everything you recover unless it came from a sealed container. Boil for one minute, or use the chemical method. Recovering water and purifying it are two separate jobs."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Almost nothing comes out of the heater",
+        "cause": "No air admitted",
+        "remedy": "Open a hot tap on an upper floor and try again."
+      },
+      {
+        "symptom": "Water is rusty or full of grit",
+        "cause": "Years of sediment at the bottom of the tank",
+        "remedy": "Let it settle, decant the clear water, then filter and treat. Flushing the heater annually prevents this."
+      },
+      {
+        "symptom": "Heater damaged when power returned",
+        "cause": "Left switched on while empty",
+        "remedy": "Breaker off before draining, and back on only after the tank is full again."
+      }
+    ],
+    "doesNotDo": [
+      "Recovering this water does not make it safe. It still needs boiling or chemical treatment unless it came from a sealed bottle.",
+      "It does not help if the contamination arrived through the mains before you shut the valve — which is why shutting off first is step one, not step eight.",
+      "The toilet bowl is not a source. Neither is a waterbed, a swimming pool, or a hot tub: pool and spa water carries chemical treatment loads that boiling concentrates rather than removes.",
+      "Draining the heater does not refill it. Until mains supply returns you have taken a one-time withdrawal."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Making Water Safe in an Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/making-water-safe.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "EPA",
+        "title": "Emergency Disinfection of Drinking Water",
+        "published": "2023",
+        "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "earthquake",
+      "hurricane",
+      "grid-down",
+      "flood"
+    ]
+  },
+  {
+    "id": "water-boil-notice",
+    "title": "What a boil-water notice actually requires",
+    "category": "water",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 10,
+    "summary": "A boil-water notice means your utility cannot currently guarantee the water is free of organisms. It is the most common water emergency in the country by a wide margin, and most households under one are still brushing their teeth from the tap.",
+    "stampLine": "Not for chemicals",
+    "materials": [
+      "pot-stainless-4qt",
+      "bleach-unscented"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Read which kind of notice it is. A boil-water notice is about microorganisms. A 'do not drink' or chemical advisory is a different thing entirely and boiling makes it worse, not better.",
+        "caution": "If the advisory names a chemical, do not boil. Boiling concentrates chemical contamination. Use bottled water until the utility says otherwise."
+      },
+      {
+        "n": 2,
+        "text": "For a boil notice: bring water to a rolling boil for one minute, three minutes above 6,500 feet. Then cool it and store it covered."
+      },
+      {
+        "n": 3,
+        "text": "Apply it to everything that reaches a mouth. Drinking, ice, brushing teeth, washing produce, making formula, mixing juice, and the pet's bowl."
+      },
+      {
+        "n": 4,
+        "text": "Throw out ice made during the notice period, and run the icemaker through a discard cycle after it lifts."
+      },
+      {
+        "n": 5,
+        "text": "For dishes: wash in hot soapy water, then sanitise in a solution of one teaspoon of unscented bleach per gallon of water for at least a minute, and air-dry. A dishwasher with a sanitising cycle and a hot final rinse is also acceptable."
+      },
+      {
+        "n": 6,
+        "text": "Showering and bathing are generally acceptable for healthy adults, but do not swallow the water. Supervise children, who will. Sponge-bathe infants rather than bathing them."
+      },
+      {
+        "n": 7,
+        "text": "When the notice lifts, flush your household plumbing: run every cold tap for several minutes, replace water filter cartridges, and drain and refill the water heater if the utility advises it."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Someone in the household is ill anyway",
+        "cause": "Toothbrushing, ice from before the notice, or the pet bowl",
+        "remedy": "Put a sign on the kitchen tap. Treating this as a household rule rather than an individual choice is what makes it work."
+      },
+      {
+        "symptom": "Advisory lifted and the water still tastes wrong",
+        "cause": "Plumbing not flushed, old filter cartridge still in place",
+        "remedy": "Flush all taps and change filters."
+      },
+      {
+        "symptom": "Boiling was applied to a chemical advisory",
+        "cause": "The two notices get confused constantly",
+        "remedy": "Read the notice. If it names a chemical, boiling is the wrong tool and increases the dose."
+      }
+    ],
+    "doesNotDo": [
+      "Boiling does NOT address chemical contamination. If the advisory names a chemical, boiling concentrates it. This is the single most dangerous confusion in household water safety.",
+      "A boil notice does not mean the water is definitely contaminated — it means the utility cannot currently prove it is not. Treat it as real anyway.",
+      "Boiling does not clean the container you pour it into, the lid, or your hands.",
+      "A household filter pitcher is not a substitute for boiling during a notice. Most are designed for taste and chlorine, not for microbiology."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Keep Food and Water Safe After a Disaster or Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Making Water Safe in an Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/making-water-safe.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "EPA",
+        "title": "Emergency Disinfection of Drinking Water",
+        "published": "2023",
+        "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "flood",
+      "hurricane",
+      "earthquake",
+      "grid-down"
+    ]
+  },
+  {
+    "id": "water-snow-and-ice",
+    "title": "Getting water from snow and ice",
+    "category": "water",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 40,
+    "summary": "Snow looks like free water and is the most expensive water there is: eating it costs you body heat you may not be able to spare, and it is not clean. Melt it, treat it, and drink it warm.",
+    "stampLine": "Do not eat snow",
+    "materials": [
+      "pot-stainless-4qt",
+      "stove-canister",
+      "fuel-canister-230g"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Do not eat snow. Melting it inside your body costs a great deal of heat at exactly the moment you need it, and in cold conditions that is how mild hypothermia becomes serious hypothermia.",
+        "caution": "This is the single most common winter mistake. Someone who is already cold and eats snow for thirst gets colder and dehydrates faster."
+      },
+      {
+        "n": 2,
+        "text": "Collect from a clean undisturbed area, away from roads, paths, animal tracks and anything downwind of a road. Grey or pink snow is not clean snow."
+      },
+      {
+        "n": 3,
+        "text": "Start the pot with a little liquid water if you have any. A pot of dry snow over direct heat will scorch and give the whole batch a burnt taste before it melts."
+      },
+      {
+        "n": 4,
+        "text": "Add snow gradually and keep the pot wet. Expect a poor yield — fresh powder is mostly air, and ten pots of snow make about one pot of water. Old compacted snow and ice yield far more per pot of fuel."
+      },
+      {
+        "n": 5,
+        "text": "Prefer ice to snow when you have the choice. It melts with less fuel for the same volume of water."
+      },
+      {
+        "n": 6,
+        "text": "Treat the melt the same as any surface water: bring it to a rolling boil for one minute, three above 6,500 feet. Snow is not distilled and falls through whatever is in the air."
+      },
+      {
+        "n": 7,
+        "text": "Drink it warm rather than cold. Warm fluids help maintain core temperature; cold fluids work against it."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Whole batch tastes burnt",
+        "cause": "Dry snow scorched on a hot pot base",
+        "remedy": "Always keep a little water in the pot and add snow to it."
+      },
+      {
+        "symptom": "Fuel runs out far faster than expected",
+        "cause": "Melting snow is fuel-expensive and is almost always underestimated",
+        "remedy": "Budget fuel for melting separately from fuel for cooking, and gather ice rather than powder where possible."
+      },
+      {
+        "symptom": "Someone gets colder while drinking plenty",
+        "cause": "Eating snow or drinking the melt cold",
+        "remedy": "Melt it, warm it, and never eat snow for thirst."
+      }
+    ],
+    "doesNotDo": [
+      "Melting snow does not purify it. Snow is not sterile and is not distilled — it forms around airborne particles and collects whatever it falls through.",
+      "Does not remove chemical contamination, road salt, or anything deposited from traffic or industry.",
+      "Does not help with hydration if eaten frozen. It costs more body heat than it returns.",
+      "Freshly fallen snow being 'clean looking' does not make it safe. Clear and pleasant does not mean treated.",
+      "Does not apply to sea ice without care: new sea ice is salty and drinking it will dehydrate you faster than drinking nothing."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Making Water Safe in an Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/making-water-safe.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "winter-storm",
+      "grid-down"
+    ]
+  },
+  {
+    "id": "water-rainwater",
+    "title": "Collecting rainwater you can actually use",
+    "category": "water",
+    "difficulty": "practiced",
+    "riskTier": "high",
+    "timeRequiredMin": 90,
+    "summary": "Rain is the easiest volume of water to collect and the easiest to collect badly. The rain is reasonably clean; your roof is not.",
+    "stampLine": "The roof is dirty",
+    "materials": [
+      "water-container-7gal",
+      "pot-stainless-4qt",
+      "bleach-unscented",
+      "filter-hollow-fibre"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Check your state and local rules first. Rainwater collection is encouraged in some jurisdictions, restricted in others, and the restrictions are usually about volume and water rights rather than safety."
+      },
+      {
+        "n": 2,
+        "text": "Know your roof. Asphalt shingle sheds granules and petroleum compounds. Treated wood shakes shed preservative. Older painted or flashed roofs may shed lead. Metal and tile are the cleanest common surfaces.",
+        "caution": "Do not collect drinking water from a roof with lead flashing, lead-based paint, or asbestos cement sheet. For those, collect for flushing and washing only."
+      },
+      {
+        "n": 3,
+        "text": "Divert the first flush. The first several gallons carry the accumulated bird droppings, dust, pollen and debris from the whole dry period. A simple standpipe that fills before flow reaches the barrel will do it."
+      },
+      {
+        "n": 4,
+        "text": "Screen the inlet. A fine mesh keeps out leaves, insects and — critically — mosquitoes, which will breed in an open barrel within days."
+      },
+      {
+        "n": 5,
+        "text": "Use an opaque, covered, food-grade container. Light grows algae; an open container is a drowning risk for small children and an invitation to everything else."
+      },
+      {
+        "n": 6,
+        "text": "Let the collected water settle, draw from above the sediment, filter for clarity, then purify — boil for one minute or treat chemically. Clearing it and making it safe are two different operations."
+      },
+      {
+        "n": 7,
+        "text": "Label the barrel plainly as untreated. In a household under stress, an unlabelled barrel of clear water will be drunk."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Water smells and grows green",
+        "cause": "Light reaching the container",
+        "remedy": "Opaque container, sealed lid, screened inlet."
+      },
+      {
+        "symptom": "Mosquito larvae in the barrel",
+        "cause": "Unscreened opening",
+        "remedy": "Fine mesh on every opening including the overflow."
+      },
+      {
+        "symptom": "Persistent grit and a chemical taste",
+        "cause": "Asphalt shingle roof shedding granules and compounds",
+        "remedy": "Use this supply for flushing and washing, and find another source for drinking."
+      }
+    ],
+    "doesNotDo": [
+      "Collecting rainwater does not purify it. Roof runoff carries bird and rodent droppings, which means it carries the organisms in them.",
+      "A first-flush diverter does not make the rest safe. It removes the worst of the debris; it removes no pathogens.",
+      "Does not remove what your roofing material contributes — lead, asbestos fibres, wood preservative or asphalt compounds are not removed by filtering or boiling.",
+      "Does not remove chemical contamination from the air in an industrial or wildfire-smoke area.",
+      "A screened, covered barrel does not stop the water going stale. Rotate it or use it for non-drinking purposes."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Making Water Safe in an Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/making-water-safe.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "EPA",
+        "title": "Emergency Disinfection of Drinking Water",
+        "published": "2023",
+        "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Rainwater Collection",
+        "published": "2023",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "flood"
+    ]
+  },
+  {
+    "id": "water-household-filters",
+    "title": "What your kitchen filter pitcher is for",
+    "category": "water",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 10,
+    "summary": "The filter jug in the fridge and the cartridge on the tap are taste-and-odour devices. In an emergency people reach for them first because they are already there, and they are close to useless for the thing that will actually make someone ill.",
+    "stampLine": "Taste, not safety",
+    "materials": [
+      "filter-hollow-fibre",
+      "bleach-unscented",
+      "pot-stainless-4qt"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Read what the filter is certified for. A carbon pitcher is usually certified for chlorine taste and odour, and sometimes for lead. That is a different certification from microbiological purification."
+      },
+      {
+        "n": 2,
+        "text": "Treat any filter without an explicit microbiological claim as a taste device. If the box does not claim to remove bacteria, protozoa or viruses, it does not."
+      },
+      {
+        "n": 3,
+        "text": "During a boil notice, boil first and filter afterwards if you want the taste improved. Filtering first and skipping the boil is the dangerous order."
+      },
+      {
+        "n": 4,
+        "text": "Replace the cartridge on schedule, and replace it after any period when it filtered questionable water. A loaded carbon cartridge is a warm, wet, nutrient-rich place and will grow things.",
+        "caution": "A cartridge that has sat wet and unused for weeks is worse than no filter at all. Discard it rather than resuming use."
+      },
+      {
+        "n": 5,
+        "text": "Keep a filter that does make a microbiological claim — a 0.1-micron hollow-fibre or equivalent — as your actual emergency filter, and keep it separate from the kitchen jug so the two never get confused."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Household falls ill despite 'filtering' everything",
+        "cause": "A taste filter used as a purifier",
+        "remedy": "Boil or chemically treat. Use the pitcher for taste afterwards."
+      },
+      {
+        "symptom": "Filtered water tastes worse than the tap",
+        "cause": "Exhausted or colonised cartridge",
+        "remedy": "Replace it. Do not try to clean or dry it out for reuse."
+      }
+    ],
+    "doesNotDo": [
+      "A carbon pitcher filter does NOT remove bacteria, protozoa or viruses unless it explicitly claims to. Almost none do.",
+      "It does not purify, sterilise or disinfect. It improves taste and odour and sometimes reduces specific chemicals it is certified for.",
+      "It does not make boil-notice water safe, and using it that way is the most likely way for a prepared household to still get sick.",
+      "It does not protect itself: a wet cartridge left unused becomes a culture medium.",
+      "A refrigerator door filter is the same device in a different housing and carries the same limits."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Making Water Safe in an Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/making-water-safe.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "EPA",
+        "title": "Emergency Disinfection of Drinking Water",
+        "published": "2023",
+        "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "EPA",
+        "title": "Guide Standard and Protocol for Testing Microbiological Water Purifiers",
+        "published": "1987",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "flood",
+      "grid-down",
+      "hurricane"
+    ]
+  },
+  {
+    "id": "food-outage-safety",
+    "title": "What to keep and what to throw out after an outage",
+    "category": "food",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 20,
+    "summary": "The fridge holds about four hours. A full freezer holds about forty-eight. Everything that follows is arithmetic from those two numbers, and the one rule that overrides all of it is that you never taste food to find out.",
+    "stampLine": "Never taste it",
+    "materials": [
+      "food-shelf-stable-day"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Keep both doors shut. A closed refrigerator holds safe temperature for about four hours; a full freezer for about forty-eight, or about twenty-four if it is half full. Every opening spends that budget."
+      },
+      {
+        "n": 2,
+        "text": "Fill the empty space in the freezer now, before you need it. Containers of water frozen solid make a half-empty freezer behave like a full one and give you drinking water afterwards."
+      },
+      {
+        "n": 3,
+        "text": "Put a thermometer in the fridge and one in the freezer. Guessing by touch is how people get this wrong, and an appliance thermometer costs very little."
+      },
+      {
+        "n": 4,
+        "text": "When power returns, read the thermometers before you open anything else. Frozen food at 40°F or below, or still holding ice crystals, is safe and may be refrozen — though the texture will suffer."
+      },
+      {
+        "n": 5,
+        "text": "Discard any perishable — meat, poultry, fish, eggs, soft cheese, cut fruit, leftovers — that has been above 40°F for four hours or more.",
+        "caution": "Discard it unopened and untasted. Some of the organisms that cause serious illness produce no smell, no taste and no visible change."
+      },
+      {
+        "n": 6,
+        "text": "Discard anything that came into contact with floodwater, including sealed packaging that is not fully waterproof. Screw-top jars, crimped caps and cardboard are not waterproof."
+      },
+      {
+        "n": 7,
+        "text": "Work through the food in order: fridge first, then freezer, then the shelf-stable store. The shelf-stable store is the one that will still be there next week."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Food looked and smelled fine and someone got ill",
+        "cause": "Pathogenic organisms frequently produce no sensory change at all",
+        "remedy": "Use the clock and the thermometer, not your nose. This is why the rule is absolute."
+      },
+      {
+        "symptom": "Freezer thawed far sooner than expected",
+        "cause": "Half-empty freezer, or the door opened repeatedly to check",
+        "remedy": "Keep it full with water containers and resist opening it."
+      },
+      {
+        "symptom": "Refrozen food is mushy and unpleasant",
+        "cause": "Ice crystals rupturing cell walls on the first thaw",
+        "remedy": "Normal and not a safety problem. Use it in cooked dishes rather than served plain."
+      }
+    ],
+    "doesNotDo": [
+      "Smelling or tasting food does NOT tell you whether it is safe. Several of the organisms that cause serious illness produce no odour, no off taste and no visible change.",
+      "Refreezing does not restore quality, and it does not make unsafe food safe — it only preserves food that was still safe when you refroze it.",
+      "A full freezer does not hold for 48 hours if the door is opened. The figure assumes it stays shut.",
+      "Cooking does not reliably rescue food that has been warm for hours. Some bacterial toxins are heat-stable and survive cooking even when the bacteria do not.",
+      "These timings do not apply to food that touched floodwater, regardless of temperature."
+    ],
+    "citations": [
+      {
+        "source": "FoodSafety.gov (USDA/HHS)",
+        "title": "Food Safety During Power Outages",
+        "published": "2024",
+        "url": "https://www.foodsafety.gov/food-safety-charts/food-safety-during-power-outage",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "USDA Food Safety and Inspection Service",
+        "title": "Keeping Food Safe During an Emergency",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Keep Food and Water Safe After a Disaster or Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "hurricane",
+      "winter-storm",
+      "flood"
+    ]
+  },
+  {
+    "id": "food-shelf-stable-store",
+    "title": "Build a food store you will actually eat",
+    "category": "food",
+    "difficulty": "novice",
+    "riskTier": "low",
+    "timeRequiredMin": 60,
+    "summary": "The most common food-storage mistake is buying a pallet of something nobody in the house likes and discovering that fact during the emergency. Store what you already eat, store more of it, and eat it in order.",
+    "materials": [
+      "food-shelf-stable-day",
+      "food-bulk-staple-day"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Start from your own shopping list, not from a survival list. Buy two of what you already buy one of, and you have a rotating store within a month without a single unfamiliar item."
+      },
+      {
+        "n": 2,
+        "text": "Budget around 2,000 calories per adult per day as a planning figure, more for physical work or cold. Children eat less by weight and more by appetite than people expect."
+      },
+      {
+        "n": 3,
+        "text": "Weight the first week toward food that needs no cooking and no water: canned goods with pull tabs, nut butters, crackers, dried fruit, tinned fish, shelf-stable milk."
+      },
+      {
+        "n": 4,
+        "text": "Add bulk staples — rice, beans, oats, pasta — only after the no-cook tier exists. They are by far the cheapest calories and they need both water and heat, so they are a second-line resource, not a first."
+      },
+      {
+        "n": 5,
+        "text": "Store a manual can opener with the food, not in a drawer. More than one household has discovered their entire store was behind an electric opener."
+      },
+      {
+        "n": 6,
+        "text": "Rotate by eating. Put new purchases at the back and cook from the front. A store you eat from never expires and never needs a special trip to replace."
+      },
+      {
+        "n": 7,
+        "text": "Include comfort. Coffee, tea, sweets, something familiar for a child. Morale is a real logistical input over a week-long event and it costs almost nothing to plan for."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Store expires untouched",
+        "cause": "Stocked with food the household does not normally eat",
+        "remedy": "Buy what you eat. The rotation problem solves itself."
+      },
+      {
+        "symptom": "Plenty of calories, nobody will eat them",
+        "cause": "Monotony, or unfamiliar food during an already stressful week",
+        "remedy": "Variety and familiarity, and at least a few things people actually like."
+      },
+      {
+        "symptom": "Cannot open the cans",
+        "cause": "Electric opener, or the manual one lives somewhere else",
+        "remedy": "A manual opener stored with the food, and a second one in the kit."
+      }
+    ],
+    "doesNotDo": [
+      "A food store does not replace water. Dehydrated and bulk staples increase your water requirement rather than reducing it.",
+      "It does not feed you without a way to open it, and for staples, without heat and water.",
+      "Shelf-stable does not mean indefinite. Oils go rancid, cans corrode at the seam, and heat shortens everything.",
+      "A long-shelf-life bucket meal does not address dietary restrictions, allergies or medical diets, and the emergency is a bad time to discover that."
+    ],
+    "citations": [
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "USDA Food Safety and Inspection Service",
+        "title": "Keeping Food Safe During an Emergency",
+        "published": "2023",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "winter-storm",
+      "hurricane",
+      "civil-disruption"
+    ]
+  },
+  {
+    "id": "food-cooking-without-power",
+    "title": "Cooking when the power is out",
+    "category": "food",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 30,
+    "summary": "Most of the people hurt cooking during an outage are not hurt by fire. They are poisoned by carbon monoxide from a device that was working exactly as designed, indoors, where it should never have been.",
+    "stampLine": "Never indoors",
+    "materials": [
+      "stove-canister",
+      "fuel-canister-230g",
+      "pot-stainless-4qt"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Cook outdoors. Charcoal grills, camp stoves, gas grills and any fuel-burning cooker belong outside, away from doors, windows and vents.",
+        "caution": "Never burn charcoal indoors, in a garage, in a tent, on a balcony or in a vehicle. Charcoal produces lethal amounts of carbon monoxide and has killed people in rooms with windows open. A camp stove is not an indoor appliance either."
+      },
+      {
+        "n": 2,
+        "text": "A gas cooktop that lights with a match may still work when the electricity is out. The oven usually will not, because the electronic ignition and controls need power. Never use a gas oven or cooktop for heating the room."
+      },
+      {
+        "n": 3,
+        "text": "Have a carbon monoxide alarm with working batteries, and know that it is a last defence rather than a permission slip."
+      },
+      {
+        "n": 4,
+        "text": "Cook in order of perishability: fridge food first, then freezer, then shelf-stable. One cooking session that uses up several thawing items is better fuel economy than several small ones."
+      },
+      {
+        "n": 5,
+        "text": "Keep a lid on the pot. It roughly halves the fuel needed to reach a boil, and fuel is the constraint."
+      },
+      {
+        "n": 6,
+        "text": "Favour one-pot meals and foods that rehydrate rather than simmer. Soaking beans overnight in treated water and then boiling is far cheaper in fuel than boiling them from dry."
+      },
+      {
+        "n": 7,
+        "text": "Have at least one meal plan that needs no heat at all, for the days when fuel has to be saved for water treatment."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Headache, dizziness and nausea in several people at once",
+        "cause": "Carbon monoxide. It is odourless and the early symptoms read exactly like flu",
+        "remedy": "Get everyone outside into fresh air immediately and call emergency services. Do not re-enter to investigate."
+      },
+      {
+        "symptom": "Fuel exhausted after two days",
+        "cause": "Boiling with the lid off, and cooking food that needs long simmering",
+        "remedy": "Lid on, one-pot meals, soak before boiling, and reserve fuel for water."
+      },
+      {
+        "symptom": "Gas cooktop will not light",
+        "cause": "Electronic ignition needs power",
+        "remedy": "A match or lighter at the burner usually works on an older cooktop. Never do this with an oven."
+      }
+    ],
+    "doesNotDo": [
+      "Opening a window does NOT make indoor charcoal or camp-stove use safe. This has killed people in ventilated rooms and is the central misunderstanding of this topic.",
+      "A carbon monoxide alarm does not make an unsafe practice safe. It tells you that you have already made a mistake.",
+      "A gas oven is never a room heater, and using it as one is a recognised cause of fatal poisoning.",
+      "Cooking does not make unsafe food safe — see what to keep and what to throw out after an outage.",
+      "A camp stove does not run indefinitely on one canister. Budget fuel for water treatment first and cooking second."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Keep Food and Water Safe After a Disaster or Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "US Consumer Product Safety Commission",
+        "title": "Portable Generator and Carbon Monoxide Safety Alert",
+        "published": "2017",
+        "url": "https://www.cpsc.gov/s3fs-public/Portable-Generator-Safety-Alert-2017_5123.pdf",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "winter-storm",
+      "hurricane",
+      "earthquake"
+    ]
+  },
+  {
+    "id": "food-rationing",
+    "title": "Rationing food, and why you should not ration water",
+    "category": "food",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 15,
+    "summary": "The instinct under scarcity is to stretch everything. For food that is often correct. For water it is wrong, and the official guidance says so plainly: drink what you need today and look for more tomorrow.",
+    "stampLine": "Do not ration water",
+    "materials": [
+      "food-shelf-stable-day",
+      "water-stored-gal"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Do not ration drinking water unless an authority instructs you to. Drink what your body needs today. A dehydrated person makes worse decisions, works less effectively and becomes a casualty rather than a help.",
+        "caution": "Rationing water to stretch a supply is a well-documented way to arrive at the end of the emergency both out of water and already dehydrated. Reduce the demand instead: reduce activity, stay cool, stay out of the sun."
+      },
+      {
+        "n": 2,
+        "text": "Reduce water demand rather than water intake. Rest in the coolest available place, work in the cooler parts of the day, and eat less salty food."
+      },
+      {
+        "n": 3,
+        "text": "For food, know the real timescale. A healthy adult tolerates substantially reduced intake for days without danger. Thirst is urgent in hours; hunger is not."
+      },
+      {
+        "n": 4,
+        "text": "Feed children, pregnant and nursing people, the ill and the elderly on their normal schedule. They have far less margin than a healthy adult and should not be rationed to match the group."
+      },
+      {
+        "n": 5,
+        "text": "Eat the food that will spoil first, not the food you like least. Spoilage sets the order, not preference."
+      },
+      {
+        "n": 6,
+        "text": "Eat less if water is short. Digestion, and protein digestion especially, costs water. If water is the binding constraint, a large meal makes it worse."
+      },
+      {
+        "n": 7,
+        "text": "Decide the ration openly and as a household. Unexplained portion changes read as unfairness and cause more trouble than hunger does."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "People are dehydrated despite water remaining in store",
+        "cause": "Rationing water by instinct",
+        "remedy": "Drink to need. Cut demand, not intake."
+      },
+      {
+        "symptom": "Arguments about portions",
+        "cause": "Rationing decided privately and applied silently",
+        "remedy": "Decide it in the open, state the reason, and apply it to the adults first."
+      },
+      {
+        "symptom": "A child becomes unwell quickly",
+        "cause": "Children rationed on the same terms as adults",
+        "remedy": "Children, pregnant and nursing people, the ill and the elderly are not rationed."
+      }
+    ],
+    "doesNotDo": [
+      "Rationing water does NOT extend your endurance. It brings forward the point at which you stop functioning, which is why the federal guidance says not to.",
+      "Eating less does not reduce your water requirement to zero — but eating more, especially protein, increases it.",
+      "Rationing does not apply to children, pregnant or nursing people, the ill or the elderly.",
+      "Going without food does not make you tougher. It makes you cold, slow and bad-tempered, and all three have consequences in an emergency.",
+      "This is general guidance for short-duration emergencies, not medical advice for anyone with diabetes or any condition requiring regular intake."
+    ],
+    "citations": [
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Keep Food and Water Safe After a Disaster or Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "civil-disruption",
+      "hurricane"
+    ]
+  },
+  {
+    "id": "food-home-canning-safety",
+    "title": "Home canning, and the one mistake that kills",
+    "category": "food",
+    "difficulty": "experienced",
+    "riskTier": "high",
+    "timeRequiredMin": 240,
+    "summary": "Home canning is genuinely useful and genuinely dangerous, and the danger concentrates in a single error: processing low-acid food in a boiling-water bath instead of a pressure canner. Botulinum spores survive boiling. The toxin they then produce is among the most lethal substances known.",
+    "stampLine": "Boiling spares spores",
+    "materials": [
+      "pot-stainless-4qt"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Separate your food into high-acid and low-acid before anything else. High-acid — most fruit, properly acidified pickles, jams — can be processed in a boiling-water bath. Low-acid — all vegetables, meat, poultry, fish, soups, and anything mixed — requires a pressure canner.",
+        "caution": "This single distinction is the whole safety story. A boiling-water bath cannot reach the temperature needed to destroy botulinum spores in low-acid food. No amount of extra boiling time substitutes for pressure."
+      },
+      {
+        "n": 2,
+        "text": "Use a tested, current recipe from a federal or extension source, and follow it exactly: the jar size, the headspace, the processing time and the pressure are all part of the safety margin, not suggestions."
+      },
+      {
+        "n": 3,
+        "text": "Do not scale, substitute or improvise. Adding extra vegetables to a tested tomato recipe lowers its acidity and moves it out of the category the processing time was validated for."
+      },
+      {
+        "n": 4,
+        "text": "Adjust processing for altitude. Water boils cooler and pressure canners read differently as elevation rises, and published tables give the correction."
+      },
+      {
+        "n": 5,
+        "text": "Check every seal after cooling. A properly sealed lid is concave and does not flex. Refrigerate and eat anything that did not seal, rather than re-processing it."
+      },
+      {
+        "n": 6,
+        "text": "Label every jar with contents and date, and use within a year for best quality."
+      },
+      {
+        "n": 7,
+        "text": "Before eating any home-canned low-acid food, boil it for ten minutes — longer at altitude — as a final safeguard. Botulinum toxin, unlike the spores, is destroyed by heat."
+      },
+      {
+        "n": 8,
+        "text": "Discard without tasting any jar that is bulging, leaking, spurting on opening, cracked, mouldy, discoloured, foamy, or that smells wrong.",
+        "caution": "Do not taste to check. Do not feed it to an animal to check. Dispose of it sealed, so no person or animal can reach it, and wash everything it touched."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "A jar spurts or foams on opening",
+        "cause": "Gas production from microbial growth",
+        "remedy": "Discard sealed and untasted. Clean every surface it contacted."
+      },
+      {
+        "symptom": "Jar failed to seal",
+        "cause": "Chipped rim, debris on the rim, incorrect headspace, reused single-use lid",
+        "remedy": "Refrigerate and use within days. Do not re-process."
+      },
+      {
+        "symptom": "Jars seal but spoil months later",
+        "cause": "Under-processing, or an untested recipe",
+        "remedy": "Return to a tested recipe and verify your pressure gauge annually."
+      }
+    ],
+    "doesNotDo": [
+      "A boiling-water bath does NOT make low-acid food safe. Botulinum spores survive boiling, and this is the error that causes the deaths.",
+      "A good seal does NOT mean the contents are safe. Botulinum grows precisely in a sealed, oxygen-free jar, and it produces no bulge, no smell and no off taste in many cases.",
+      "Looking, smelling and tasting do not detect botulinum toxin. Tasting to check is how people are poisoned.",
+      "An electric multicooker is not a pressure canner unless it is specifically tested and labelled for canning. Most are not.",
+      "Home canning does not preserve nutritional content indefinitely, and it does not rescue produce that was already spoiling."
+    ],
+    "citations": [
+      {
+        "source": "USDA / National Center for Home Food Preservation",
+        "title": "Complete Guide to Home Canning",
+        "published": "2015",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Botulism: Prevention",
+        "published": "2024",
+        "url": "https://www.cdc.gov/botulism/prevention.html",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down"
+    ]
+  },
+  {
+    "id": "food-infant-feeding",
+    "title": "Feeding an infant in an emergency",
+    "category": "food",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 20,
+    "summary": "An infant has almost no margin. Dehydration that an adult would shrug off is an emergency in a baby, and the water used to make formula matters more than any other water in the household.",
+    "stampLine": "No margin",
+    "materials": [
+      "water-stored-gal",
+      "pot-stainless-4qt",
+      "hand-sanitiser",
+      "soap-bar"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "If the infant is breastfed, continue. Breastfeeding during an emergency is the most reliable, safest and most portable option available, and stress does not stop milk production — though it can slow letdown, which rest and fluids help."
+      },
+      {
+        "n": 2,
+        "text": "Ready-to-feed liquid formula is the safest option when formula is needed, because it requires no water and no mixing. Prioritise it in your store over powder for exactly this reason."
+      },
+      {
+        "n": 3,
+        "text": "If using concentrate or powder, make it with safe water only — bottled, or water boiled for one minute and cooled. Powdered infant formula is not a sterile product.",
+        "caution": "Never dilute formula to stretch it. Over-diluted formula causes water intoxication and malnutrition, and it has killed infants. Make it exactly to the label."
+      },
+      {
+        "n": 4,
+        "text": "Prepare one feed at a time and discard what is not taken within an hour. Do not save a partly finished bottle for later."
+      },
+      {
+        "n": 5,
+        "text": "Wash hands with soap and safe water before preparing any feed; use sanitiser only when soap and water are not available."
+      },
+      {
+        "n": 6,
+        "text": "Clean bottles and teats with safe water and soap, then sanitise by boiling for five minutes if the water supply is in question."
+      },
+      {
+        "n": 7,
+        "text": "Watch for dehydration: fewer than six wet nappies a day, no tears when crying, a dry mouth, unusual sleepiness, or a sunken soft spot. Any of these is a reason to seek medical help urgently.",
+        "caution": "Do not give an infant under one year plain water, juice, or home-made rehydration mixtures as a substitute for feeding. Seek medical care."
+      },
+      {
+        "n": 8,
+        "text": "Keep a written record of feeds when the household is disrupted. Under stress people genuinely lose track of when a baby last fed."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Formula running low and feeds stretched",
+        "cause": "The instinct to ration",
+        "remedy": "Never dilute. Seek supply through emergency services, shelters or a pharmacy — formula is one of the first things relief operations distribute."
+      },
+      {
+        "symptom": "Infant unsettled and feeding poorly after a disruption",
+        "cause": "Stress and routine disruption, affecting both infant and carer",
+        "remedy": "Quiet, warmth, skin contact, and rest and fluids for the feeding parent."
+      },
+      {
+        "symptom": "No safe water for formula",
+        "cause": "Supply interrupted",
+        "remedy": "Ready-to-feed liquid formula needs none. This is why it belongs in the store."
+      }
+    ],
+    "doesNotDo": [
+      "Diluting formula does NOT stretch it safely. It causes water intoxication and malnutrition and has killed infants.",
+      "Boiling water does not make powdered formula sterile — the powder itself is not a sterile product, which is why safe water and prompt use both matter.",
+      "Plain water, juice, cow's milk or a home-made rehydration mixture is not a substitute for formula or breast milk in an infant under one year.",
+      "This page does not cover illness in an infant. Vomiting, diarrhoea, fever or refusal to feed in a baby is a reason to reach a clinician, not to self-manage.",
+      "Hand sanitiser does not replace soap and water for preparing a feed when soap and water are available."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Infant Formula Preparation and Storage",
+        "published": "2024",
+        "url": "https://www.cdc.gov/nutrition/infantandtoddlernutrition/formula-feeding/infant-formula-preparation-and-storage.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Keep Food and Water Safe After a Disaster or Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Infant and Young Child Feeding in Emergencies",
+        "published": "2023",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "flood",
+      "hurricane",
+      "winter-storm"
+    ]
+  },
+  {
+    "id": "food-no-cook-first-week",
+    "title": "Eating for a week with no heat and no water to spare",
+    "category": "food",
+    "difficulty": "novice",
+    "riskTier": "low",
+    "timeRequiredMin": 25,
+    "summary": "The first days of an outage are the ones where fuel is most uncertain and water most precious. A no-cook plan removes food from the list of things competing for both.",
+    "materials": [
+      "food-shelf-stable-day",
+      "multitool"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Build the first three days entirely from food that needs no heat and no added water: tinned fish and meat, beans in their liquid, nut butters, crackers, oatcakes, dried fruit, nuts, shelf-stable milk, tinned fruit in juice."
+      },
+      {
+        "n": 2,
+        "text": "Prefer pull-tab cans, and keep a manual opener anyway. Tabs break."
+      },
+      {
+        "n": 3,
+        "text": "Use the liquid in the can. Bean and vegetable liquid is water you have already paid for and it is sterile until opened."
+      },
+      {
+        "n": 4,
+        "text": "Front-load the fridge. The first day's eating should come out of the refrigerator, which is on the shortest clock."
+      },
+      {
+        "n": 5,
+        "text": "Keep one meal per person per day that needs no preparation at all, for the hours when someone is too tired, too cold or too busy to assemble anything."
+      },
+      {
+        "n": 6,
+        "text": "Plan for the washing up: a no-cook plan that generates a sink of greasy dishes has quietly spent the water it was supposed to save. Eat from packaging, and keep paper plates in the store."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Water disappears faster than expected",
+        "cause": "Cooking and washing up, not drinking",
+        "remedy": "No-cook meals and disposable or wiped plates for the first days."
+      },
+      {
+        "symptom": "Nobody wants to eat",
+        "cause": "Cold food, cold house, stress",
+        "remedy": "Keep one hot drink per person per day in the fuel budget. It does more for morale than a hot meal."
+      },
+      {
+        "symptom": "The can opener is missing",
+        "cause": "It lives in a drawer, not in the store",
+        "remedy": "One stored with the food, one in the go bag."
+      }
+    ],
+    "doesNotDo": [
+      "A no-cook plan does not meet long-term nutritional needs. It is a bridge over the first few days, not a diet.",
+      "It does not remove the need for water — it reduces it. People still drink.",
+      "It does not suit everyone: infants, people with dietary or medical restrictions, and anyone with chewing or swallowing difficulty need planning of their own.",
+      "Canned food is not indefinitely safe once opened. Without refrigeration, an opened can is a few hours of food, not a day's."
+    ],
+    "citations": [
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "USDA Food Safety and Inspection Service",
+        "title": "Keeping Food Safe During an Emergency",
+        "published": "2023",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "winter-storm",
+      "hurricane",
+      "earthquake"
+    ]
+  },
+  {
+    "id": "food-bulk-staples",
+    "title": "Bulk staples: the cheapest calories and their conditions",
+    "category": "food",
+    "difficulty": "practiced",
+    "riskTier": "medium",
+    "timeRequiredMin": 120,
+    "summary": "Rice, beans, oats and pasta are the cheapest survival calories available by a very wide margin. They also arrive with conditions attached — water, heat and time — which is why they belong behind the no-cook tier rather than in front of it.",
+    "materials": [
+      "food-bulk-staple-day",
+      "pot-stainless-4qt",
+      "stove-canister",
+      "water-stored-gal"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Choose staples that store well: white rice, dried beans and lentils, rolled oats, pasta, salt, sugar, honey. Brown rice and wholegrain flour contain oil and go rancid in months rather than years."
+      },
+      {
+        "n": 2,
+        "text": "Store in food-grade buckets with sealed lids, or in mylar bags inside buckets. The bucket keeps rodents out; the bag keeps air and light out."
+      },
+      {
+        "n": 3,
+        "text": "Use oxygen absorbers sized to the container. They remove the oxygen that supports insect life and oxidation, and they are the difference between two years and twenty."
+      },
+      {
+        "n": 4,
+        "text": "Freeze newly bought grain for several days before packing it if you can. It kills insect eggs that arrived with the grain, which is where pantry moth infestations actually come from."
+      },
+      {
+        "n": 5,
+        "text": "Store cool, dark and dry, off bare concrete, and label every container with contents and date."
+      },
+      {
+        "n": 6,
+        "text": "Budget the water. Dried beans need soaking and then an hour or more of boiling; rice needs roughly twice its volume in water. A staple store without a water store is a store of nothing."
+      },
+      {
+        "n": 7,
+        "text": "Cook at least one meal from your bulk store before you depend on it. Beans in particular take far longer than people expect and some people's digestion needs a gradual introduction."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Pantry moths throughout the store",
+        "cause": "Insect eggs present in the grain when it was packed",
+        "remedy": "Freeze new grain before packing, and use oxygen absorbers in sealed containers."
+      },
+      {
+        "symptom": "Rancid, soapy-smelling grain",
+        "cause": "Wholegrain products stored too long, or stored warm",
+        "remedy": "Store white rice rather than brown for long terms, and keep the store cool."
+      },
+      {
+        "symptom": "Beans will not soften however long they are boiled",
+        "cause": "Very old beans, or hard water",
+        "remedy": "Rotate the store. Old beans are a known and frustrating failure, and a pinch of baking soda in the soak helps."
+      }
+    ],
+    "doesNotDo": [
+      "Bulk staples do NOT feed you without water and heat. They increase your water requirement substantially.",
+      "An oxygen absorber does not sterilise, does not kill adult insects reliably, and does not rescue grain that was already infested.",
+      "A sealed bucket is not rodent-proof if it is not actually sealed; rodents chew through thin plastic readily.",
+      "Staples alone are not adequate nutrition over weeks. They are calories, not a diet, and lack fat, vitamins and variety.",
+      "A twenty-year storage claim assumes cool, dark and dry. In a hot garage the real figure is a small fraction of that."
+    ],
+    "citations": [
+      {
+        "source": "USDA Food Safety and Inspection Service",
+        "title": "Keeping Food Safe During an Emergency",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "USDA / National Center for Home Food Preservation",
+        "title": "Storing Food Safely",
+        "published": "2015",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "civil-disruption"
+    ]
+  },
+  {
+    "id": "heat-one-warm-room",
+    "title": "Heat one room, not a house",
+    "category": "heat-shelter",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 45,
+    "summary": "A house without heating cannot be kept warm. A single room can. Choosing the room before you are cold, and committing to it, is most of the work.",
+    "materials": [
+      "blanket-wool",
+      "duct-tape",
+      "tarp-heavy"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Pick the room now. Small, interior if possible, few windows, below the top floor, with a door you can close. A small room with four bodies in it stays markedly warmer than a large one."
+      },
+      {
+        "n": 2,
+        "text": "Close the rest of the house. Shut doors to unused rooms and close their heating vents; put a rolled towel at the base of the door to the chosen room."
+      },
+      {
+        "n": 3,
+        "text": "Deal with the windows. Close curtains and blinds at dusk, and open south-facing ones during daylight for solar gain. Plastic sheeting taped over the frame makes a real difference and so does a blanket hung over the curtain rail."
+      },
+      {
+        "n": 4,
+        "text": "Get off the floor. Floors conduct heat away faster than air does. Mattresses, cushions, rugs and cardboard between people and the floor are worth more than another blanket on top."
+      },
+      {
+        "n": 5,
+        "text": "Build a smaller volume inside the room. A blanket fort over a bed, or a tent pitched indoors, traps body heat in a space small enough for bodies to actually warm."
+      },
+      {
+        "n": 6,
+        "text": "Sleep together where that is appropriate, and keep pets in the room. Shared body heat is the single largest heat source you have when the power is out."
+      },
+      {
+        "n": 7,
+        "text": "Eat and drink warm. Digestion produces heat, and a hot drink raises both core temperature and morale for very little fuel."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Room never gets warm despite everyone being in it",
+        "cause": "Too large a room, or heat draining through the floor and windows",
+        "remedy": "Move to a smaller room, insulate under people, cover the windows."
+      },
+      {
+        "symptom": "People keep leaving the warm room",
+        "cause": "No light, nothing to do, no food in the room",
+        "remedy": "Move lighting, food, water and entertainment into the room so there is no reason to leave it."
+      },
+      {
+        "symptom": "Condensation and damp bedding",
+        "cause": "Several people breathing in a sealed small room",
+        "remedy": "Ventilate briefly but regularly. Damp bedding insulates far worse than dry."
+      }
+    ],
+    "doesNotDo": [
+      "Sealing a room does NOT make it safe to run a fuel-burning heater inside it. The better sealed the room, the faster carbon monoxide accumulates.",
+      "This does not keep a house from freezing. Pipes in the unheated part of the house are still at risk and may need draining.",
+      "It does not substitute for proper cold-weather clothing and bedding, and it does not help someone who is already hypothermic.",
+      "Candles are not a heat source. They are a significant fire risk and, in a sealed room, an oxygen consumer."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Hypothermia and Cold Stress",
+        "published": "2024",
+        "url": "https://www.cdc.gov/disasters/winter/staysafe/hypothermia.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "NOAA National Weather Service",
+        "title": "Winter Weather Safety",
+        "published": "2024",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "winter-storm",
+      "grid-down"
+    ]
+  },
+  {
+    "id": "heat-indoor-heating-devices",
+    "title": "Heating without power, without poisoning anyone",
+    "category": "heat-shelter",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 20,
+    "summary": "Every winter, people who survived the storm are killed by the thing they used to stay warm. Carbon monoxide is colourless, odourless, and its early symptoms are indistinguishable from being cold, tired and stressed — which everyone already is.",
+    "stampLine": "CO has no smell",
+    "materials": [
+      "blanket-wool",
+      "headlamp-led",
+      "battery-aa"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Install carbon monoxide alarms on every sleeping level, with batteries you have actually tested, before any cold weather. This is the one item in this topic that belongs in the house year-round.",
+        "caution": "Carbon monoxide is odourless and colourless. You will not smell it, and the early symptoms — headache, dizziness, nausea, confusion — are exactly what a cold, tired, stressed person expects to feel anyway."
+      },
+      {
+        "n": 2,
+        "text": "Never burn charcoal indoors. Not in a fireplace, not in a garage, not on a balcony, not in a tent. Charcoal produces lethal concentrations of carbon monoxide and has killed people in rooms with windows open."
+      },
+      {
+        "n": 3,
+        "text": "Never use a gas oven, gas cooktop or camp stove to heat a room. They are not designed for it and are not vented for it."
+      },
+      {
+        "n": 4,
+        "text": "Never run a generator indoors, in a garage, in a crawlspace or in a porch, even with doors and windows open. Keep it outdoors and at least 20 feet from any door, window or vent."
+      },
+      {
+        "n": 5,
+        "text": "Unvented fuel-burning heaters — kerosene, propane 'portable buddy' types — are legal in some places and not others and are only as safe as their ventilation and their oxygen-depletion sensor. If you use one, follow the manufacturer's clearances exactly, never run it while sleeping, and crack a window."
+      },
+      {
+        "n": 6,
+        "text": "A wood stove or fireplace is fine if the flue is open, the chimney has been swept, and the fire is screened. A blocked or unswept flue puts the combustion products into the room."
+      },
+      {
+        "n": 7,
+        "text": "Keep anything that burns at least three feet from anything that can catch — bedding, curtains, furniture, clothing left to dry."
+      },
+      {
+        "n": 8,
+        "text": "If an alarm sounds, or several people have headache and nausea at once, get everyone outside into fresh air immediately and call emergency services from outside. Do not go back in to investigate or to open windows.",
+        "caution": "Do not re-enter the building. People die going back in."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Several household members feel ill at the same time",
+        "cause": "Carbon monoxide. Simultaneous onset across several people is the signature",
+        "remedy": "Everyone outside now; call from outside; do not re-enter."
+      },
+      {
+        "symptom": "Alarm sounds and is assumed faulty",
+        "cause": "Alarms are usually assumed to be wrong",
+        "remedy": "Treat every activation as real. Leave, then investigate from outside."
+      },
+      {
+        "symptom": "Fire starts overnight",
+        "cause": "Heater too close to bedding, or a candle left burning",
+        "remedy": "Three feet of clearance, nothing burning while people sleep."
+      }
+    ],
+    "doesNotDo": [
+      "Opening a window does NOT make indoor charcoal, generator or camp-stove use safe. This is the central and most lethal misunderstanding in winter preparedness.",
+      "A carbon monoxide alarm does not prevent poisoning. It warns you that it has already started, and only if its batteries are good.",
+      "An oxygen-depletion sensor on a portable heater does not detect carbon monoxide. It detects falling oxygen, which is a different thing and can lag behind a dangerous CO level.",
+      "Your nose does not detect carbon monoxide. There is nothing to smell.",
+      "Surviving a CO exposure does not mean you are fine. Delayed neurological effects are well documented, and anyone exposed should be assessed by a clinician."
+    ],
+    "citations": [
+      {
+        "source": "US Consumer Product Safety Commission",
+        "title": "Portable Generator and Carbon Monoxide Safety Alert",
+        "published": "2017",
+        "url": "https://www.cpsc.gov/s3fs-public/Portable-Generator-Safety-Alert-2017_5123.pdf",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Carbon Monoxide Poisoning: Prevention",
+        "published": "2024",
+        "url": "https://www.cdc.gov/carbon-monoxide/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "winter-storm",
+      "grid-down",
+      "hurricane"
+    ]
+  },
+  {
+    "id": "heat-hypothermia",
+    "title": "Recognising and handling hypothermia",
+    "category": "heat-shelter",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 15,
+    "summary": "Hypothermia does not announce itself. The person affected is the least able to notice it, because the first thing the cold takes is judgement — which is why somebody else has to be watching.",
+    "stampLine": "Do not rub limbs",
+    "materials": [
+      "blanket-wool",
+      "firstaid-kit-household"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Know the signs. Shivering, then slurred or mumbled speech, fumbling hands, stumbling, confusion, drowsiness and poor judgement. In infants, bright red cold skin and unusual stillness."
+      },
+      {
+        "n": 2,
+        "text": "Treat shivering that STOPS as a worsening sign, not an improvement. As core temperature falls far enough the body stops shivering, and that is the point at which this becomes an emergency.",
+        "caution": "Severe hypothermia is a medical emergency. Call 911 or your local emergency number."
+      },
+      {
+        "n": 3,
+        "text": "Get the person out of the cold. If you cannot get indoors, shelter them from wind, and insulate them from the ground — the ground takes heat faster than the air does."
+      },
+      {
+        "n": 4,
+        "text": "Remove wet clothing and replace it with dry coverings. Wet clothing against skin will keep cooling them however many blankets go on top."
+      },
+      {
+        "n": 5,
+        "text": "Warm the core first, gently: warm dry compresses to the neck, chest and groin. Blankets, and shared body heat if that is what you have."
+      },
+      {
+        "n": 6,
+        "text": "Do not rub or massage the arms and legs, and do not rewarm with a hot bath, a heat lamp or a direct heat source.",
+        "caution": "Rubbing the limbs and rapid external rewarming both drive cold blood from the extremities back toward the core and place additional strain on the heart. Warm the core, slowly."
+      },
+      {
+        "n": 7,
+        "text": "Give warm, sweet, non-alcoholic drinks only if the person is fully conscious and able to swallow. Never force fluids on someone who is not alert. Never give alcohol — it feels warming and accelerates heat loss."
+      },
+      {
+        "n": 8,
+        "text": "Handle them gently and keep them horizontal. If there are no signs of life, begin CPR and continue while help is coming."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Person insists they are fine and resists help",
+        "cause": "Impaired judgement is an early symptom, not stubbornness",
+        "remedy": "Do not take their assessment. Act on what you observe."
+      },
+      {
+        "symptom": "Condition worsens after being brought inside and warmed",
+        "cause": "Rapid external rewarming or vigorous handling",
+        "remedy": "Warm the core gently and slowly. Keep them still and horizontal."
+      },
+      {
+        "symptom": "Shivering stopped and was read as recovery",
+        "cause": "The most dangerous misreading in cold injury",
+        "remedy": "Treat cessation of shivering as deterioration and call for emergency help."
+      }
+    ],
+    "doesNotDo": [
+      "Rubbing the arms and legs does NOT help and can make things worse by driving cold blood to the core.",
+      "A hot bath, heat lamp or direct heat does not safely rewarm a hypothermic person. Rapid external rewarming is dangerous.",
+      "Alcohol does not warm anyone. It dilates surface vessels, increases heat loss, and impairs the judgement that is already failing.",
+      "This page is not a substitute for emergency medical care, and nothing here treats severe hypothermia — it buys time until help arrives.",
+      "It does not cover frostbite, which is a different injury with different handling, or immersion in cold water."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Hypothermia and Cold Stress",
+        "published": "2024",
+        "url": "https://www.cdc.gov/disasters/winter/staysafe/hypothermia.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "NOAA National Weather Service",
+        "title": "Winter Weather Safety",
+        "published": "2024",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "US Department of Veterans Affairs, National Center for PTSD",
+        "title": "Psychological First Aid: Field Operations Guide",
+        "published": "2006",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "winter-storm",
+      "grid-down"
+    ]
+  },
+  {
+    "id": "heat-extreme-heat-no-power",
+    "title": "Extreme heat with no air conditioning",
+    "category": "heat-shelter",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 20,
+    "summary": "Heat kills more people in the United States in a typical year than any other weather hazard, and an outage during a heatwave removes the thing most households rely on entirely. It is also the hazard where a fan can make things worse.",
+    "stampLine": "Fans can mislead",
+    "materials": [
+      "water-stored-gal",
+      "n95-respirator"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Drink before you are thirsty, and keep drinking. Thirst lags behind need in the heat, and in older adults it lags further."
+      },
+      {
+        "n": 2,
+        "text": "Find the coolest part of the building — usually the lowest floor, interior, away from windows — and stay in it during the hottest hours."
+      },
+      {
+        "n": 3,
+        "text": "Close windows, blinds and curtains during the day on the sunlit side, and open up at night if the outside air has actually dropped below the inside temperature. Check before you open; sometimes it has not."
+      },
+      {
+        "n": 4,
+        "text": "Understand what a fan does. Moving air helps while sweat can still evaporate. Above roughly 95°F a fan blows hot air across you and can increase heat gain rather than relieve it.",
+        "caution": "Do not rely on a fan as your only cooling measure in very high temperatures. The CDC is explicit that fans are not protective in extreme heat."
+      },
+      {
+        "n": 5,
+        "text": "Wet skin, not just wet clothing. A damp cloth on the neck, wrists and ankles, a cool shower, or a basin of water for the feet moves real heat."
+      },
+      {
+        "n": 6,
+        "text": "Leave if you can. A public cooling centre, a library, a shopping centre or a friend's house with power is a better answer than enduring it. This is the hazard where leaving is most often correct."
+      },
+      {
+        "n": 7,
+        "text": "Check on neighbours, particularly older people living alone, people with chronic illness and anyone without transport. Heat deaths concentrate among people who were alone."
+      },
+      {
+        "n": 8,
+        "text": "Know heat stroke: body temperature very high, hot skin, confusion, slurred speech, loss of consciousness, and sometimes no sweating at all. It is a medical emergency.",
+        "caution": "Call 911 immediately for suspected heat stroke, move the person to shade or indoors, and cool them aggressively with water and air movement while you wait. Do not give fluids to someone who is not fully conscious."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Someone deteriorates despite drinking plenty",
+        "cause": "Heat stroke is a failure of thermoregulation, not simple dehydration",
+        "remedy": "Cool aggressively and call emergency services. Water alone will not fix it."
+      },
+      {
+        "symptom": "House hotter at night than outside",
+        "cause": "Thermal mass holding the day's heat with windows shut",
+        "remedy": "Ventilate once outside air is genuinely cooler, and check rather than assume."
+      },
+      {
+        "symptom": "An older relative is found unwell",
+        "cause": "Reduced thirst sensation, medications affecting heat regulation, and being alone",
+        "remedy": "Daily check-ins during any heat event. Put it in the plan."
+      }
+    ],
+    "doesNotDo": [
+      "A fan does NOT protect you in extreme heat. Above roughly 95°F it can add heat rather than remove it, and treating it as sufficient is a documented cause of death.",
+      "Drinking water does not prevent or treat heat stroke. Heat stroke is a breakdown of temperature regulation and needs aggressive cooling and emergency care.",
+      "Salt tablets are not a recommended response and can cause harm.",
+      "This page does not cover heat illness in infants, who overheat far faster than adults, or anyone whose medication affects heat tolerance — ask a clinician in advance.",
+      "Alcohol and large amounts of caffeine do not help and contribute to fluid loss."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Heat Stress and Heat-Related Illness",
+        "published": "2024",
+        "url": "https://www.cdc.gov/heat-health/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "wildfire"
+    ]
+  },
+  {
+    "id": "heat-sealing-a-room",
+    "title": "Sealing a room, and when it is the wrong answer",
+    "category": "heat-shelter",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 30,
+    "summary": "Sealing a room is the correct response to a short, passing outdoor airborne hazard. It is a temporary measure with a hard time limit, and the limit is the part people forget.",
+    "stampLine": "Hours, not days",
+    "materials": [
+      "duct-tape",
+      "tarp-heavy",
+      "n95-respirator",
+      "radio-noaa-crank",
+      "water-stored-gal"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "First decide whether to shelter or to leave. Sealing is for a plume that will pass. If authorities say evacuate, evacuate — a sealed room is not a defence against a sustained release."
+      },
+      {
+        "n": 2,
+        "text": "Choose an interior room, above ground level for heavier-than-air hazards, with as few windows and doors as possible. Take a radio, water, your phone and medication with you."
+      },
+      {
+        "n": 3,
+        "text": "Shut off anything that moves outside air in: air conditioning, forced-air heating, bathroom and kitchen extractors. Close the fireplace damper."
+      },
+      {
+        "n": 4,
+        "text": "Seal the gaps with plastic sheeting and duct tape — around the door, over vents, over windows. Pre-cut the sheeting to size and label each piece now, because doing this under pressure in the dark is how it fails."
+      },
+      {
+        "n": 5,
+        "text": "Plan on about ten square feet of floor space per person, which gives enough air for several hours in a well-sealed room."
+      },
+      {
+        "n": 6,
+        "text": "Keep the radio on and stay until authorities say the hazard has passed. They will usually also tell you to then open everything up and ventilate.",
+        "caution": "A sealed room has a time limit. Carbon dioxide accumulates from breathing, and the better the seal the sooner that matters. This is a measure for hours, not days."
+      },
+      {
+        "n": 7,
+        "text": "Never run any fuel-burning device in a sealed room. The sealing that protects you from the outside is exactly what concentrates combustion products inside."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Headache and drowsiness after some hours",
+        "cause": "Carbon dioxide build-up in a well-sealed small room",
+        "remedy": "This is the time limit arriving. Ventilate if the outside hazard has passed, and follow the radio."
+      },
+      {
+        "symptom": "Tape will not hold",
+        "cause": "Dusty or painted surfaces, or sheeting cut too small",
+        "remedy": "Pre-cut and label sheeting in advance, and wipe surfaces before taping."
+      },
+      {
+        "symptom": "Sealed in and the hazard did not pass",
+        "cause": "Sealing chosen when evacuation was advised",
+        "remedy": "Follow the instruction given. Sealing is for a passing plume."
+      }
+    ],
+    "doesNotDo": [
+      "Sealing a room does NOT provide protection for days. Carbon dioxide from breathing sets a hard limit measured in hours.",
+      "It does not protect against a sustained release, and it is not an alternative to evacuation when evacuation is advised.",
+      "It does not make it safe to run a heater, stove or generator inside — a sealed room concentrates carbon monoxide faster than an unsealed one.",
+      "Plastic and tape do not create an airtight seal in a real house. They reduce exchange; they do not eliminate it.",
+      "It does nothing for radiation from an external source — distance and shielding mass do that, not plastic sheeting."
+    ],
+    "citations": [
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "US Department of Homeland Security / Ready.gov",
+        "title": "Shelter in Place Guidance",
+        "published": "2024",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "nuclear-radiological",
+      "wildfire",
+      "civil-disruption"
+    ]
+  },
+  {
+    "id": "heat-clothing-and-layering",
+    "title": "Dressing for a house with no heating",
+    "category": "heat-shelter",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 20,
+    "summary": "Clothing is the cheapest heating system you own and the only one that works without fuel. The principles are unglamorous, decades old, and reliably ignored until somebody is cold.",
+    "materials": [
+      "blanket-wool",
+      "shoes-sturdy"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Layer in three functions: a thin layer against the skin that moves moisture, an insulating middle layer that traps air, and an outer layer that stops wind. Each does a different job and skipping one is why people are cold in a large coat."
+      },
+      {
+        "n": 2,
+        "text": "Avoid cotton against the skin in the cold. It absorbs moisture, holds it, and stops insulating. Wool and synthetics keep working damp; cotton does not.",
+        "caution": "Wet clothing against skin draws heat away many times faster than dry. Getting sweaty inside the house and then sitting still is a real route into cold injury."
+      },
+      {
+        "n": 3,
+        "text": "Vent before you sweat. If you are working — clearing snow, moving water — remove a layer early. Sweat that cools on you afterwards is the problem."
+      },
+      {
+        "n": 4,
+        "text": "Cover the head, neck and hands. These lose heat disproportionately, and a hat and scarf buy more warmth per gram than another jumper."
+      },
+      {
+        "n": 5,
+        "text": "Keep feet dry and loose. Tight boots or several tight socks restrict circulation and make cold feet worse rather than better."
+      },
+      {
+        "n": 6,
+        "text": "Sleep in dry clothes, never the ones you wore all day, and keep tomorrow's clothes in the bed with you so they are warm when you put them on."
+      },
+      {
+        "n": 7,
+        "text": "Put a layer under you as well as over you when sleeping. Compressed insulation beneath a body does almost nothing; the cold comes up."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Cold despite wearing everything available",
+        "cause": "Cotton base layers, damp clothing, or no wind layer",
+        "remedy": "Dry wool or synthetic next to skin, and something windproof outermost."
+      },
+      {
+        "symptom": "Cold feet that will not warm up",
+        "cause": "Too many socks in a boot sized for one pair",
+        "remedy": "Loosen. Circulation does more than insulation at the extremities."
+      },
+      {
+        "symptom": "Wakes cold in the night",
+        "cause": "Nothing insulating underneath, or sleeping in day clothes that are slightly damp",
+        "remedy": "Insulate below, change into dry clothes to sleep."
+      }
+    ],
+    "doesNotDo": [
+      "Clothing does not generate heat. It slows loss. A person who is not eating and not moving will still get cold in excellent clothing.",
+      "A single heavy coat does not substitute for layers — it cannot be adjusted, so you sweat in it and then freeze.",
+      "Cotton does not insulate when damp, and 'cotton kills' is a mountaineering cliché because it is accurate.",
+      "This does not treat someone who is already hypothermic — see the hypothermia page, which is a different procedure.",
+      "More socks do not mean warmer feet if they make the boot tight."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Hypothermia and Cold Stress",
+        "published": "2024",
+        "url": "https://www.cdc.gov/disasters/winter/staysafe/hypothermia.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "NOAA National Weather Service",
+        "title": "Winter Weather Safety",
+        "published": "2024",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "winter-storm",
+      "grid-down"
+    ]
+  },
+  {
+    "id": "power-generator-safety",
+    "title": "Running a generator without killing anyone",
+    "category": "power",
+    "difficulty": "practiced",
+    "riskTier": "high",
+    "timeRequiredMin": 40,
+    "summary": "A portable generator has two ways of killing people who are nowhere near it. One is carbon monoxide, which kills the household. The other is backfeed, which kills the lineworker restoring your power.",
+    "stampLine": "20 feet, no exceptions",
+    "materials": [
+      "multitool",
+      "headlamp-led"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Outdoors only. Never in a house, a garage, a basement, a crawlspace, a shed or a covered porch — not with the door open, not with a fan running, not for five minutes."
+      },
+      {
+        "n": 2,
+        "text": "Put the exhaust at least 20 feet from any door, window or vent, pointed away from the building. The Consumer Product Safety Commission is explicit that 20 feet is the figure, and that it applies regardless of a shorter distance in the manufacturer's manual.",
+        "caution": "Some manuals say five feet. The CPSC's testing says twenty. Use twenty."
+      },
+      {
+        "n": 3,
+        "text": "Fit carbon monoxide alarms indoors on every sleeping level before you ever run the generator."
+      },
+      {
+        "n": 4,
+        "text": "Run appliances from the generator with heavy-gauge outdoor-rated extension cords, plugged directly into the generator's outlets."
+      },
+      {
+        "n": 5,
+        "text": "NEVER plug a generator into a wall outlet to power the house. That is backfeed. It energises the utility line outside and can electrocute the lineworker working to restore your supply, and it can destroy your own wiring when the supply returns.",
+        "caution": "If you want the generator to run house circuits, a licensed electrician installs a transfer switch. There is no safe improvised version of this, and the person it kills is someone else."
+      },
+      {
+        "n": 6,
+        "text": "Let it cool before refuelling. Petrol spilled on a hot engine ignites. Store fuel in approved containers, outside, away from the house and away from any pilot light."
+      },
+      {
+        "n": 7,
+        "text": "Keep it dry and out of standing water, on a level surface, and keep hands dry when touching it. Run it under an open canopy, never an enclosed one."
+      },
+      {
+        "n": 8,
+        "text": "Start it once every few months with the fuel you actually have, and run it under load. A generator that has never been started is a heavy object with a pull cord."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Household unwell with headaches while the generator runs",
+        "cause": "Exhaust too close to the building, or wind carrying it to a vent",
+        "remedy": "Everyone outside, call emergency services from outside, and reposition to 20 feet and downwind before any restart."
+      },
+      {
+        "symptom": "Generator will not start when needed",
+        "cause": "Stale fuel, varnished carburettor, flat starter battery",
+        "remedy": "Run it quarterly under load, use fuel stabiliser, and keep it serviced."
+      },
+      {
+        "symptom": "Breaker trips repeatedly",
+        "cause": "Load exceeds the generator's rating, or a high starting surge from a motor",
+        "remedy": "Add loads one at a time, largest motor first, and total the running watts before plugging anything in."
+      }
+    ],
+    "doesNotDo": [
+      "A generator in a garage with the door open is NOT safe. This specific arrangement has killed many people and is the most common fatal mistake with these machines.",
+      "Backfeeding through a wall outlet does not just risk your own wiring — it can kill a lineworker on the pole. There is no safe improvised version of a transfer switch.",
+      "A carbon monoxide alarm does not make a badly placed generator safe. It tells you it is already too late.",
+      "A generator does not power a house. It powers a few appliances on cords, unless an electrician has fitted a transfer switch.",
+      "A newer generator with a CO shutoff sensor reduces risk but does not remove it, and does not change the 20-foot rule."
+    ],
+    "citations": [
+      {
+        "source": "US Consumer Product Safety Commission",
+        "title": "Portable Generator and Carbon Monoxide Safety Alert",
+        "published": "2017",
+        "url": "https://www.cpsc.gov/s3fs-public/Portable-Generator-Safety-Alert-2017_5123.pdf",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Carbon Monoxide Poisoning: Prevention",
+        "published": "2024",
+        "url": "https://www.cdc.gov/carbon-monoxide/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "OSHA",
+        "title": "Using Portable Generators Safely",
+        "published": "2023",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "hurricane",
+      "winter-storm"
+    ]
+  },
+  {
+    "id": "power-budget",
+    "title": "Work out what you actually need to power",
+    "category": "power",
+    "difficulty": "novice",
+    "riskTier": "low",
+    "timeRequiredMin": 30,
+    "summary": "People buy power capacity before they know what they need it for, and then discover that the big number on the box is not the number that mattered. Do the arithmetic first; it takes twenty minutes and it is almost always reassuring.",
+    "materials": [
+      "powerbank-20k",
+      "battery-aa",
+      "headlamp-led"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "List only what genuinely must run. For most households that is phones, a light or two, a radio, and any medical device. Everything else is comfort, and comfort can wait a few days."
+      },
+      {
+        "n": 2,
+        "text": "Find each device's draw in watts, usually on a label or the charger. Multiply watts by the hours you need it, and you have watt-hours — the unit that actually matters."
+      },
+      {
+        "n": 3,
+        "text": "Add it up per day. A phone is roughly 15 watt-hours for a full charge. An LED lamp might be 5 watts for 5 hours, so 25. A small radio is a couple of watt-hours. Most households land between 50 and 150 watt-hours a day, which is far less than people assume."
+      },
+      {
+        "n": 4,
+        "text": "Now match that to storage. A 20,000 mAh power bank holds roughly 74 watt-hours, so it covers a day or two of the essential list and several phone charges."
+      },
+      {
+        "n": 5,
+        "text": "Treat medical equipment separately and first. A CPAP, oxygen concentrator, nebuliser or powered wheelchair has a hard requirement and usually a large one. Talk to the supplier about battery options and register with your utility's medical priority list now.",
+        "caution": "Do not plan medical power from an estimate. Get the actual draw and the actual runtime from the supplier, and have a plan that does not depend on the grid."
+      },
+      {
+        "n": 6,
+        "text": "Separate the things that need no electricity at all. A hand-crank radio, a mechanical can opener, a paper map and a book remove themselves from the budget entirely."
+      },
+      {
+        "n": 7,
+        "text": "Decide the order you will shed load in before you need to. Phones and medical first, light second, everything else last."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Power bank flat on day one",
+        "cause": "A laptop or a tablet quietly consuming most of the capacity",
+        "remedy": "Charge phones only, and put the laptop on the non-essential list."
+      },
+      {
+        "symptom": "Bought a large battery and still short",
+        "cause": "Sized on peak watts rather than daily watt-hours",
+        "remedy": "Budget in watt-hours per day; it is the number that determines how long you last."
+      },
+      {
+        "symptom": "Power bank was flat when the outage started",
+        "cause": "Self-discharge over months",
+        "remedy": "Top it up every three months. Put it in the rotation queue."
+      }
+    ],
+    "doesNotDo": [
+      "A watt-hour budget does not cover medical equipment adequately — that needs real figures from the device supplier, not an estimate from a label.",
+      "It does not account for the surge a motor draws at startup, which can be several times its running draw and is what trips generator breakers.",
+      "Capacity printed on a power bank is cell capacity, not delivered capacity. Expect to get roughly two thirds of the headline number out of it.",
+      "Cold weather reduces battery capacity substantially, and the figures above assume room temperature."
+    ],
+    "citations": [
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "US Department of Energy",
+        "title": "Energy Saver: Appliance Energy Use",
+        "published": "2023",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "winter-storm",
+      "hurricane"
+    ]
+  },
+  {
+    "id": "power-keeping-phones-alive",
+    "title": "Making a phone last four days",
+    "category": "power",
+    "difficulty": "novice",
+    "riskTier": "low",
+    "timeRequiredMin": 15,
+    "summary": "A modern phone will run for days rather than hours if you stop it doing the two things that drain it: holding the screen on, and hunting for a signal that is not there.",
+    "materials": [
+      "powerbank-20k",
+      "headlamp-led"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Charge everything the moment a warning is issued, not when the lights go out. This is the single highest-value minute in the whole topic."
+      },
+      {
+        "n": 2,
+        "text": "Turn the screen brightness right down and shorten the auto-lock. The display is usually the largest single consumer."
+      },
+      {
+        "n": 3,
+        "text": "Put it in airplane mode when you are not using it. A phone with no signal burns power searching at full transmit power, and that search is often the second largest drain.",
+        "caution": "Agree a check-in schedule with your household first — airplane mode means you will not receive calls or emergency alerts while it is on. Come out of it at agreed times."
+      },
+      {
+        "n": 4,
+        "text": "Switch to low-power mode immediately, and turn off background refresh, location services and automatic updates."
+      },
+      {
+        "n": 5,
+        "text": "Send texts rather than making calls. A text is a tiny burst of data that will often get through a congested network when a voice call will not, and it costs a fraction of the battery."
+      },
+      {
+        "n": 6,
+        "text": "Use a separate torch. Using the phone as a flashlight is an expensive way to find the bathroom."
+      },
+      {
+        "n": 7,
+        "text": "Download what you need while you still have a connection: offline maps, your documents, this library. Anything you have to fetch later costs radio time."
+      },
+      {
+        "n": 8,
+        "text": "Keep the phone warm in cold weather. Battery capacity drops sharply in the cold, and a phone that dies at 40% was simply cold. Inside a coat, not in a pocket against a window."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Battery falls fast despite light use",
+        "cause": "No signal, radio searching at full power",
+        "remedy": "Airplane mode between agreed check-in times."
+      },
+      {
+        "symptom": "Phone dies showing 40%",
+        "cause": "Cold",
+        "remedy": "Warm it against your body and it will usually recover some charge."
+      },
+      {
+        "symptom": "Power bank will not charge the phone",
+        "cause": "Flat power bank, or a cable that only carries power one way",
+        "remedy": "Top up power banks quarterly and test the actual cable you have stored."
+      }
+    ],
+    "doesNotDo": [
+      "Saving battery does not create a signal. If the network is down, a full battery does not help you call anyone.",
+      "Airplane mode means you will not receive emergency alerts or calls while it is enabled — which is why the check-in schedule matters.",
+      "A phone is not a substitute for a weather radio. Cell networks fail in exactly the conditions where you most need the forecast.",
+      "This does not help if the phone is your only copy of your plan. Print it."
+    ],
+    "citations": [
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "Federal Communications Commission",
+        "title": "Tips for Communicating in an Emergency",
+        "published": "2023",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "hurricane",
+      "earthquake",
+      "wildfire"
+    ]
+  },
+  {
+    "id": "power-small-solar",
+    "title": "Small solar: what a folding panel will and will not do",
+    "category": "power",
+    "difficulty": "practiced",
+    "riskTier": "medium",
+    "timeRequiredMin": 45,
+    "summary": "A portable panel is genuinely useful for the small loads that matter and routinely oversold for everything else. The rating on the box is a laboratory number you will not see in your garden.",
+    "materials": [
+      "powerbank-20k",
+      "battery-aa"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Match the panel to the job: keeping phones, lamps, a radio and a power bank going. That is a job a 20 to 100 watt folding panel does well."
+      },
+      {
+        "n": 2,
+        "text": "Expect substantially less than the rated output. The rating assumes full perpendicular sun, cool panel temperature and a clean surface. Real figures are commonly half to two thirds of that, and much less under cloud or smoke."
+      },
+      {
+        "n": 3,
+        "text": "Aim it. A panel pointed at the sun produces several times what a flat panel produces, and repointing it two or three times a day is the cheapest performance upgrade available."
+      },
+      {
+        "n": 4,
+        "text": "Charge a battery, not a device. Direct charging stops every time a cloud passes and some devices handle that badly. Panel to power bank to device is more reliable."
+      },
+      {
+        "n": 5,
+        "text": "Keep it cool and clean. Panels lose efficiency as they heat, so a small air gap beneath helps, and dust or ash on the surface costs real output."
+      },
+      {
+        "n": 6,
+        "text": "Do not leave it unattended outdoors in a populated area. It is a visible, portable, valuable object."
+      },
+      {
+        "n": 7,
+        "text": "Test the full chain — panel, cable, controller, battery, device — before you need it. Mismatched connectors are the most common reason a kit does not work on the day."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Panel produces almost nothing",
+        "cause": "Cloud, smoke, poor angle, or shade across any part of the panel",
+        "remedy": "Reaim it, and clear any partial shading — on many panels a shadow across one cell disproportionately cuts the whole output."
+      },
+      {
+        "symptom": "Device charges then stops repeatedly",
+        "cause": "Intermittent cloud and direct device charging",
+        "remedy": "Charge a power bank and run the device from that."
+      },
+      {
+        "symptom": "Cables do not fit",
+        "cause": "Connector standards vary between manufacturers",
+        "remedy": "Assemble and test the whole chain before storing it."
+      }
+    ],
+    "doesNotDo": [
+      "A folding panel does NOT run a house, a fridge, electric heating or well pump. It charges small batteries.",
+      "It does not produce its rated wattage in practice. Treat the label as a ceiling you will not reach.",
+      "It does not work meaningfully under heavy wildfire smoke, which is exactly the scenario where people reach for it.",
+      "It does not charge overnight or through the shortest winter days in any useful quantity.",
+      "A panel without a battery is not a power system. The battery is the part that makes it useful."
+    ],
+    "citations": [
+      {
+        "source": "US Department of Energy",
+        "title": "Solar Photovoltaic Technology Basics",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "hurricane"
+    ]
+  },
+  {
+    "id": "power-battery-safety",
+    "title": "Storing and handling batteries safely",
+    "category": "power",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 20,
+    "summary": "A lithium cell that is damaged, overheated or short-circuited does not simply fail. It vents, burns extremely hot, cannot be smothered, and reignites. The precautions are small and the failure is not.",
+    "stampLine": "Water, not smother",
+    "materials": [
+      "battery-aa",
+      "powerbank-20k"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Store loose cells so the terminals cannot touch metal or each other. A loose 9V or a lithium cell in a drawer with keys and coins is a fire waiting for contact; tape the terminals or use a case."
+      },
+      {
+        "n": 2,
+        "text": "Keep batteries cool and dry and out of direct sun. A car glovebox in summer is one of the worst places in your household."
+      },
+      {
+        "n": 3,
+        "text": "Never mix old and new cells, or different chemistries, in the same device. Mismatched cells drive the weak one into reverse and it leaks or vents."
+      },
+      {
+        "n": 4,
+        "text": "Remove batteries from anything you are storing for months. Alkaline leakage destroys more torches and radios than any other cause."
+      },
+      {
+        "n": 5,
+        "text": "Inspect lithium packs for swelling, dents, punctures or a hot charge. A swollen pack is a failed pack: stop using it, do not charge it, and get it out of the house.",
+        "caution": "Never charge a swollen, punctured or water-damaged lithium battery, and never charge one unattended overnight on a soft surface. Charge on a hard, non-flammable surface where you can see it."
+      },
+      {
+        "n": 6,
+        "text": "Use the charger designed for the cell. Charging lithium cells on an improvised or mismatched charger is a common route to thermal runaway."
+      },
+      {
+        "n": 7,
+        "text": "For a lithium fire, use large amounts of water to cool it, and call the fire service. Water does not put the reaction out but it carries away heat, which is what stops it spreading.",
+        "caution": "Do not try to smother a lithium battery fire — it supplies its own oxidiser and will keep burning. Expect it to reignite. Get people out and call emergency services."
+      },
+      {
+        "n": 8,
+        "text": "Dispose of lithium cells at a proper recycling point, never in household waste or kerbside recycling. They start fires in collection trucks and facilities regularly."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Device corroded and dead in storage",
+        "cause": "Alkaline cells left in it",
+        "remedy": "Remove batteries from stored equipment and store them alongside."
+      },
+      {
+        "symptom": "Power bank hot or swollen",
+        "cause": "Ageing cells, heat, or a bad charge cycle",
+        "remedy": "Stop using it. Do not charge it. Take it to a recycling point."
+      },
+      {
+        "symptom": "Torch flat despite rarely being used",
+        "cause": "Self-discharge, or a switch nudged on in a bag",
+        "remedy": "Lithium primary cells for long storage, and store the torch with a battery reversed so it cannot switch on."
+      }
+    ],
+    "doesNotDo": [
+      "Smothering a lithium fire does NOT put it out. The cell supplies its own oxidiser; water is for cooling and the fire service is for the rest.",
+      "A battery that looks fine is not necessarily fine. Internal damage from a drop may not show on the outside.",
+      "Freezing a battery does not restore capacity and may damage it. Cold reduces available capacity temporarily, not permanently.",
+      "Alkaline and lithium cells are not interchangeable in every device — voltage curves differ, and some electronics object.",
+      "This does not cover vehicle or home storage batteries, which are a different scale of hazard entirely."
+    ],
+    "citations": [
+      {
+        "source": "US Consumer Product Safety Commission",
+        "title": "Lithium-Ion Battery Safety",
+        "published": "2024",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "US Fire Administration",
+        "title": "Lithium-Ion Battery Fire Safety",
+        "published": "2024",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down"
+    ]
+  },
+  {
+    "id": "sanitation-handwashing",
+    "title": "Handwashing when water is scarce",
+    "category": "sanitation",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 10,
+    "summary": "In a prolonged outage, the thing most likely to make your household ill is not the water supply or the food. It is hands. Handwashing is the single highest-return action in this entire library and it is the first thing that gets skipped.",
+    "stampLine": "Sanitiser is second best",
+    "materials": [
+      "soap-bar",
+      "hand-sanitiser",
+      "water-stored-gal"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Soap and water first, every time it is available. Soap physically lifts organisms off skin and the rinse carries them away — that mechanism works on things alcohol does not touch."
+      },
+      {
+        "n": 2,
+        "text": "Wash at the moments that matter: before preparing or eating food, after using the toilet or handling waste, after handling anything from floodwater, after caring for someone ill, and after handling animals."
+      },
+      {
+        "n": 3,
+        "text": "Use very little water with a tippy-tap: a bottle or jug with a small hole, hung so it trickles. Wet hands, turn it off, lather twenty seconds, rinse briefly. A litre washes many pairs of hands this way."
+      },
+      {
+        "n": 4,
+        "text": "Catch the greywater in a basin and use it to flush, rather than letting it soak away."
+      },
+      {
+        "n": 5,
+        "text": "Use alcohol sanitiser of at least 60% when soap and water genuinely are not available. Cover all surfaces of both hands and rub until dry — about twenty seconds."
+      },
+      {
+        "n": 6,
+        "text": "Wash rather than sanitise when hands are visibly dirty or greasy. Alcohol works poorly through soil and grease.",
+        "caution": "Alcohol sanitiser is not effective against some of the organisms most likely to circulate in a sanitation emergency, including norovirus and Cryptosporidium. When those are a risk, soap and water are the answer."
+      },
+      {
+        "n": 7,
+        "text": "Put the handwashing station where the activity is — next to the bucket toilet and next to the food preparation area, at arm's reach. Distance is the entire reason people skip it."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Household illness spreading despite clean water and food",
+        "cause": "Hand-to-mouth transmission, almost always",
+        "remedy": "Station at the point of use, and treat it as the household's one non-negotiable rule."
+      },
+      {
+        "symptom": "Soap runs out",
+        "cause": "Bar soap used for everything",
+        "remedy": "Store more than feels reasonable. It is light, cheap and lasts indefinitely."
+      },
+      {
+        "symptom": "People use sanitiser instead of washing",
+        "cause": "It is easier and the station is inconvenient",
+        "remedy": "Make washing the easy option by moving the station, not by exhortation."
+      }
+    ],
+    "doesNotDo": [
+      "Hand sanitiser does NOT replace soap and water. It is less effective on visibly soiled hands and does not work well against norovirus or Cryptosporidium — two of the most likely organisms in a sanitation emergency.",
+      "Washing does not sterilise your hands. It reduces the load, which is enough.",
+      "Sanitiser below 60% alcohol is substantially less effective, and some products marketed as sanitiser contain none.",
+      "Gloves are not a substitute for washing. They become contaminated exactly as hands do, and people touch their face through them.",
+      "Washing does not help if the water you rinse with is contaminated — use treated water for the final rinse where the supply is in doubt."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Handwashing: Clean Hands Save Lives",
+        "published": "2024",
+        "url": "https://www.cdc.gov/clean-hands/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Keep Food and Water Safe After a Disaster or Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "flood",
+      "hurricane",
+      "earthquake"
+    ]
+  },
+  {
+    "id": "sanitation-surface-disinfection",
+    "title": "Disinfecting surfaces with bleach, and why it is not the water ratio",
+    "category": "sanitation",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 20,
+    "summary": "Bleach appears twice in emergency guidance at two wildly different strengths, and the two get confused constantly. The dose that disinfects a worktop is dozens of times stronger than the dose that makes water drinkable.",
+    "stampLine": "Two different doses",
+    "materials": [
+      "bleach-unscented",
+      "soap-bar",
+      "water-stored-gal"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Know which job you are doing. Treating drinking water is roughly 8 drops of 6% bleach per gallon. Disinfecting a surface is roughly a third of a cup per gallon — a vastly stronger solution.",
+        "caution": "Never drink surface-disinfection solution, and never expect water-treatment dosing to disinfect a surface. Mixing these up in either direction causes harm: one poisons, the other leaves you thinking a surface is clean when it is not."
+      },
+      {
+        "n": 2,
+        "text": "Clean before you disinfect. Visible soil, grease and organic matter consume chlorine and shield organisms beneath. Wash with soap and water first, always."
+      },
+      {
+        "n": 3,
+        "text": "Mix fresh. A bleach solution loses strength within about a day, faster in light and warmth. Yesterday's bottle is mostly salt water."
+      },
+      {
+        "n": 4,
+        "text": "Let it sit. Contact time is doing the work — leave the surface visibly wet for at least a minute, longer for a rougher surface, then air dry or rinse food surfaces with safe water."
+      },
+      {
+        "n": 5,
+        "text": "Ventilate, and wear gloves and eye protection. Bleach damages skin, eyes and airways at disinfection strength."
+      },
+      {
+        "n": 6,
+        "text": "NEVER mix bleach with ammonia, with any acid including vinegar, or with any other cleaning product.",
+        "caution": "Bleach and ammonia produce chloramine gas. Bleach and acid produce chlorine gas. Both have killed people cleaning in poorly ventilated rooms, and this happens most often during the cleanup after a flood."
+      },
+      {
+        "n": 7,
+        "text": "After floodwater, discard rather than disinfect anything porous that was soaked: upholstered furniture, mattresses, carpet, particleboard, and most soft toys. They cannot be reliably disinfected."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Surfaces disinfected but illness continues",
+        "cause": "Soil not cleaned off first, or contact time too short",
+        "remedy": "Clean, then disinfect, then leave it wet for a full minute."
+      },
+      {
+        "symptom": "Solution seems to do nothing",
+        "cause": "Old bleach, or solution mixed days ago",
+        "remedy": "Replace stored bleach annually and mix fresh each day."
+      },
+      {
+        "symptom": "Coughing and burning eyes while cleaning",
+        "cause": "Product mixing, or poor ventilation",
+        "remedy": "Leave the area, get fresh air, and never combine cleaning products."
+      }
+    ],
+    "doesNotDo": [
+      "Surface disinfection strength is NOT safe to drink, and water-treatment strength does NOT disinfect surfaces. These are different operations with different doses and confusing them is the central hazard of this topic.",
+      "Bleach does not work through dirt. Cleaning first is not optional, it is what makes the disinfection effective.",
+      "A bleach solution does not keep. It is substantially weaker within a day.",
+      "Disinfecting does not rescue porous items soaked in floodwater — they are discarded, not cleaned.",
+      "Scented, splash-less, gel and cleaner-added bleaches are not suitable for disinfection dosing in the way plain sodium hypochlorite is, and they are never suitable for water."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Cleaning and Disinfecting Your Home",
+        "published": "2024",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Clean Up Safely After a Disaster",
+        "published": "2024",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "EPA",
+        "title": "Emergency Disinfection of Drinking Water",
+        "published": "2023",
+        "url": "https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "flood",
+      "grid-down",
+      "hurricane"
+    ]
+  },
+  {
+    "id": "sanitation-greywater",
+    "title": "Greywater: using the same litre three times",
+    "category": "sanitation",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 25,
+    "summary": "Washing water is not drinking water and it is not sewage. Used in the right order it does three jobs, and ignoring it is how a household with plenty of stored water still runs out.",
+    "materials": [
+      "water-container-7gal",
+      "soap-bar",
+      "toilet-bucket-kit"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Work down the cleanliness ladder, never up. Rinse water from dishes or hands becomes wash water for floors; floor water becomes flush water. The same litre does three jobs on the way down."
+      },
+      {
+        "n": 2,
+        "text": "Catch it. A basin in the sink and a bucket in the shower collect water that otherwise goes down the drain while your stored supply is shrinking."
+      },
+      {
+        "n": 3,
+        "text": "Keep food-preparation rinse water separate from anything that has touched bodies or cleaning. Clean to dirty, one direction only."
+      },
+      {
+        "n": 4,
+        "text": "Use it within a day. Greywater with food particles and warmth grows bacteria quickly and will smell within hours in summer."
+      },
+      {
+        "n": 5,
+        "text": "Use plain, low-phosphate, unscented soap if you intend to put greywater on soil, and keep it off anything you will eat.",
+        "caution": "Do not put greywater on vegetables you will eat raw, do not let it pool where children or pets play, and never discharge it into a watercourse or near a well head."
+      },
+      {
+        "n": 6,
+        "text": "Do not store greywater for more than a day, and never store it in a container that could be mistaken for drinking water. Label it clearly."
+      },
+      {
+        "n": 7,
+        "text": "If the sewer itself is compromised, stop putting anything down the drain at all and switch fully to the bucket system — including greywater, which will back up through the same failed line."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "House smells within a day",
+        "cause": "Greywater stored too long, or food particles in it",
+        "remedy": "Use it the same day, strain food solids out, and keep containers covered."
+      },
+      {
+        "symptom": "Someone drinks from the greywater container",
+        "cause": "Unlabelled clear water in a familiar container",
+        "remedy": "Label every container, and never use a drinking-water container for greywater."
+      },
+      {
+        "symptom": "Drains back up",
+        "cause": "Sewer compromised while greywater is still going down it",
+        "remedy": "Stop all drain use and switch entirely to buckets."
+      }
+    ],
+    "doesNotDo": [
+      "Greywater is not drinking water, and no amount of settling or straining makes it so. It carries soap, grease, food and skin bacteria.",
+      "It is not safe for watering food crops you eat raw.",
+      "It does not keep. A day is the practical limit before it becomes a smell and a health problem of its own.",
+      "Reusing it does not help if the sewer line itself has failed — then it has nowhere to go.",
+      "It does not replace the bucket toilet. Greywater and blackwater are different problems and must stay separate."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Keep Food and Water Safe After a Disaster or Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "EPA",
+        "title": "Water Reuse and Recycling",
+        "published": "2023",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "earthquake",
+      "flood"
+    ]
+  },
+  {
+    "id": "sanitation-long-outage-waste",
+    "title": "Waste over weeks, not days",
+    "category": "sanitation",
+    "difficulty": "practiced",
+    "riskTier": "high",
+    "timeRequiredMin": 45,
+    "summary": "The twin-bucket system buys you weeks. The limiting factor is not the buckets, it is where the sealed bags go, and households discover that at about day ten.",
+    "stampLine": "Storage is the limit",
+    "materials": [
+      "toilet-bucket-kit",
+      "sanitation-cover-material",
+      "soap-bar",
+      "duct-tape"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Work out the volume before you need to. An adult produces roughly a litre of solid waste a week, plus cover material, plus bag. For a household of four over a month that is a meaningful pile, and it has to go somewhere."
+      },
+      {
+        "n": 2,
+        "text": "Designate the storage location now: outside, shaded, off the ground, in a secondary sealed container such as a lidded bin, away from where people walk, children play and food is prepared."
+      },
+      {
+        "n": 3,
+        "text": "Double-bag, seal each bag individually, and do not overfill — a bag that splits during handling is the worst moment in this entire topic."
+      },
+      {
+        "n": 4,
+        "text": "Keep cover material coming. Budget roughly a gallon per person per week, and have a resupply plan: sawdust from a timber yard, leaf mould, dry soil, shredded paper."
+      },
+      {
+        "n": 5,
+        "text": "Follow local authority instructions for disposal as soon as they are issued. Most jurisdictions set up collection points after an event, and that is the correct destination."
+      },
+      {
+        "n": 6,
+        "text": "If burial is genuinely the only option and authorities permit it, site it at least 200 feet from any well, spring, watercourse or garden bed, downhill of any water source, and at least two feet deep with soil over it.",
+        "caution": "Never burn human waste, and never compost it in an ordinary garden heap. Neither reaches a temperature that reliably kills pathogens, and burning disperses them."
+      },
+      {
+        "n": 7,
+        "text": "Keep urine separate throughout and dispose of it separately — it is the bulk of the volume and much less hazardous, and separating it roughly halves the storage problem."
+      },
+      {
+        "n": 8,
+        "text": "Handle bags with gloves, wash hands immediately afterwards, and keep a dedicated set of outer clothing or gloves for the job."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Running out of storage space around day ten",
+        "cause": "Only the bucket was planned, not the destination",
+        "remedy": "Designate and prepare the secondary storage before the event, and separate urine to halve the volume."
+      },
+      {
+        "symptom": "Flies and smell at the storage point",
+        "cause": "Bags not sealed individually, or storage in sun",
+        "remedy": "Seal each bag, store in a lidded bin, keep it shaded."
+      },
+      {
+        "symptom": "Cover material gone by the end of week one",
+        "cause": "Universally underestimated",
+        "remedy": "A gallon per person per week, plus a resupply source identified in advance."
+      }
+    ],
+    "doesNotDo": [
+      "This does not treat or sterilise waste. It contains it. The bags stay hazardous until properly disposed of.",
+      "Burning does not make it safe and disperses pathogens in smoke. Ordinary garden composting does not reach a temperature that kills them.",
+      "It does not work indefinitely — it buys weeks, bounded entirely by storage space.",
+      "It does not address a failed sewer line, which also affects every drain in the house including greywater.",
+      "Burial is not permitted everywhere and is not a default. Follow local authority instruction first."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Keep Food and Water Safe After a Disaster or Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "EPA",
+        "title": "Guidance on Emergency Sanitation and Safe Drinking Water",
+        "published": "2023",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "earthquake",
+      "flood",
+      "hurricane"
+    ]
+  },
+  {
+    "id": "sanitation-personal-hygiene",
+    "title": "Staying clean enough, including the parts nobody plans for",
+    "category": "sanitation",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 25,
+    "summary": "Menstruation does not pause for an emergency, incontinence does not either, and neither appears on most preparedness lists. Planning for them costs almost nothing and their absence causes real distress and real infection risk.",
+    "materials": [
+      "soap-bar",
+      "hand-sanitiser",
+      "water-stored-gal",
+      "toilet-bucket-kit"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Stock menstrual supplies for at least the household's target horizon, plus margin. Stress can bring periods forward, make them heavier, or trigger one unexpectedly."
+      },
+      {
+        "n": 2,
+        "text": "Include both disposable and reusable options. Reusables need water to clean; disposables need somewhere to put them. Having both means neither constraint traps you."
+      },
+      {
+        "n": 3,
+        "text": "Plan disposal: sealed bags into the solid waste stream, never down a toilet that may not be flushing, and never into greywater."
+      },
+      {
+        "n": 4,
+        "text": "Stock incontinence supplies for anyone who needs them, at the same depth as medication. Running out is both a dignity problem and a skin-infection problem."
+      },
+      {
+        "n": 5,
+        "text": "Sponge-bathe rather than shower. A basin, a litre of warm water, a cloth and soap cleans a person properly. Prioritise hands, face, armpits, groin and feet, in that order."
+      },
+      {
+        "n": 6,
+        "text": "Keep feet dry and change socks. Trench foot and fungal infection are genuine cold and wet-weather casualties and they disable people quietly.",
+        "caution": "Skin that stays wet breaks down. For anyone immobile or incontinent, keeping skin clean and dry is the difference between discomfort and a pressure sore that needs medical care."
+      },
+      {
+        "n": 7,
+        "text": "Keep a small privacy provision in the plan — a sheet, a tarp, a corner. Dignity is not a luxury over a two-week event and its absence stops people drinking and using the toilet when they should."
+      },
+      {
+        "n": 8,
+        "text": "Pack for this in the go bag too, not only the home kit. Evacuation does not pause it either."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Supplies run out mid-event",
+        "cause": "Planned for an average cycle rather than a stressed one",
+        "remedy": "Overstock. It is light, cheap and stores indefinitely."
+      },
+      {
+        "symptom": "Skin breakdown in someone immobile",
+        "cause": "Wet skin, infrequent changing, no washing water allocated",
+        "remedy": "Allocate water for hygiene specifically, change and dry regularly, and seek medical help early."
+      },
+      {
+        "symptom": "People stop drinking enough",
+        "cause": "Avoiding an unpleasant or non-private toilet",
+        "remedy": "Make the toilet tolerable and private. It is a hydration intervention as much as a dignity one."
+      }
+    ],
+    "doesNotDo": [
+      "This does not cover medical treatment of infection. Skin breakdown, a urinary infection or a wound that is not healing needs a clinician, not a hygiene routine.",
+      "Sponge-bathing does not substitute for proper washing over long periods, particularly for anyone immobile.",
+      "Hand sanitiser is not body-cleaning and should not be used as such — it dries and damages skin.",
+      "Reusable products do not help when water is the binding constraint, which is why both kinds belong in the store."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Handwashing: Clean Hands Save Lives",
+        "published": "2024",
+        "url": "https://www.cdc.gov/clean-hands/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Keep Food and Water Safe After a Disaster or Emergency",
+        "published": "2024",
+        "url": "https://www.cdc.gov/healthywater/emergency/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "flood",
+      "hurricane",
+      "earthquake"
+    ]
+  },
+  {
+    "id": "medical-kit-building",
+    "title": "A first aid kit that matches the likely injuries",
+    "category": "medical",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 60,
+    "summary": "Most bought kits are a hundred plasters and nothing that handles the injuries an outage actually produces: deep cuts from broken glass, burns, sprains and the slow problems of people who cannot reach a pharmacy.",
+    "materials": [
+      "firstaid-kit-household",
+      "meds-prescription-30d",
+      "headlamp-led",
+      "n95-respirator"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Start from the likely injuries, not from a kit list. In a storm or outage those are lacerations from glass and debris, burns from improvised cooking and heating, falls and sprains in the dark, and chronic conditions going unmanaged."
+      },
+      {
+        "n": 2,
+        "text": "Stock enough bleeding control to matter: several sterile gauze pads, roller bandages, and at least one proper trauma dressing. A box of small plasters does not address a bleeding wound."
+      },
+      {
+        "n": 3,
+        "text": "Include irrigation. A large syringe or a squeeze bottle for flushing a wound with clean water does more to prevent infection than any ointment."
+      },
+      {
+        "n": 4,
+        "text": "Add the unglamorous items people actually run out of: disposable gloves, tape, scissors or shears, tweezers, a thermometer, elastic wrap for sprains, burn dressings, and eye wash."
+      },
+      {
+        "n": 5,
+        "text": "Write a household medication list and keep a copy in the kit: everyone's prescriptions by generic name, doses as prescribed, allergies, conditions, and the prescriber's details. This single page is the most useful thing in the kit if you reach a clinician who has never met you."
+      },
+      {
+        "n": 6,
+        "text": "Keep a surplus of each maintenance medication, arranged in advance with the prescriber, and rotate it so it never expires. This is the highest-value medical item in the household for anyone who takes something daily."
+      },
+      {
+        "n": 7,
+        "text": "Take a class. Bleeding control and CPR are taught in a couple of hours, widely and cheaply, and reading about them is not the same thing.",
+        "caution": "A kit is equipment, not capability. Items you have never used will not help you under stress."
+      },
+      {
+        "n": 8,
+        "text": "Check it twice a year against the rotation queue: expired items out, used items replaced, batteries in the torch."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Kit opened and nothing in it fits the problem",
+        "cause": "A retail kit built for paper cuts",
+        "remedy": "Build around real injuries: bleeding, burns, sprains, chronic conditions."
+      },
+      {
+        "symptom": "Nobody knows how to use the contents",
+        "cause": "Equipment bought, training skipped",
+        "remedy": "A bleeding-control and CPR class for at least two people in the household."
+      },
+      {
+        "symptom": "Everything in it expired",
+        "cause": "Kit treated as a purchase rather than a stock",
+        "remedy": "Put the kit in the rotation queue with a date."
+      }
+    ],
+    "doesNotDo": [
+      "A kit does not make anyone capable. Equipment without training is weight.",
+      "It does not substitute for emergency medical care, and nothing in it treats a serious injury — it buys time.",
+      "It does not cover prescription medicine. This library covers what a trained layperson can do. It does not cover invasive procedures, and it gives no dosing guidance for any prescription or controlled medicine.",
+      "It does not replace a written medication list, which is often more use to a clinician than anything else you carry.",
+      "A kit in the car is not a kit in the house. Injuries happen where you are."
+    ],
+    "citations": [
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Emergency Wound Care After a Natural Disaster",
+        "published": "2024",
+        "url": "https://www.cdc.gov/disasters/woundcare.html",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "earthquake",
+      "hurricane",
+      "grid-down",
+      "winter-storm"
+    ]
+  },
+  {
+    "id": "medical-bleeding-control",
+    "title": "Stopping serious bleeding",
+    "category": "medical",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 20,
+    "summary": "Someone bleeding heavily from a limb can die in minutes, which is less time than an ambulance usually takes even on a good day. This is the one medical skill where an untrained bystander most reliably saves a life, and it is taught in two hours.",
+    "stampLine": "Minutes, not hours",
+    "materials": [
+      "firstaid-kit-household",
+      "duct-tape"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Make sure the scene is safe for you first. A second casualty helps nobody."
+      },
+      {
+        "n": 2,
+        "text": "Call 911 or send someone to call. Do this before you start, or while you work if you are alone with a phone on speaker."
+      },
+      {
+        "n": 3,
+        "text": "Find the bleeding. Clothing hides a great deal — expose the wound rather than guessing from the outside."
+      },
+      {
+        "n": 4,
+        "text": "Press hard, directly on the wound, with both hands, using a cloth or dressing if available and your hands if not. Most bleeding stops with firm, sustained, direct pressure.",
+        "caution": "Hard means hard, and sustained means you do not lift it to look. Checking whether it has worked restarts the bleeding."
+      },
+      {
+        "n": 5,
+        "text": "If it is a deep wound you can pack, press gauze or clean cloth firmly into the wound cavity and keep pressing from outside."
+      },
+      {
+        "n": 6,
+        "text": "If the bleeding is from a limb and direct pressure is not controlling it, apply a tourniquet high and tight — a few inches above the wound, never over a joint. Tighten until the bleeding stops, which will hurt.",
+        "caution": "Write down the time you applied it. Do not loosen or remove a tourniquet once applied; that is a decision for the people who take over. A correctly applied tourniquet is painful, and pain is not a reason to release it."
+      },
+      {
+        "n": 7,
+        "text": "Keep the person warm and lying down, keep talking to them, and keep the pressure on until someone takes over."
+      },
+      {
+        "n": 8,
+        "text": "Learn this properly. Bleeding control is taught free or cheaply through widely available classes and it is a different thing in your hands than on a page."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Bleeding restarts every time it seems to stop",
+        "cause": "Pressure lifted to check",
+        "remedy": "Do not lift. Add dressing on top of soaked dressing and keep pressing."
+      },
+      {
+        "symptom": "Tourniquet does not stop the bleeding",
+        "cause": "Not tight enough, or placed over a joint",
+        "remedy": "Tighten further, or place a second one above the first. It must be tight enough to stop arterial flow."
+      },
+      {
+        "symptom": "Rescuer becomes a casualty",
+        "cause": "Scene not assessed — glass, live wire, unstable structure",
+        "remedy": "Check the scene first, every time."
+      }
+    ],
+    "doesNotDo": [
+      "This does not treat internal bleeding, which you cannot see and cannot press on. Suspect it after any significant impact and get emergency help.",
+      "A tourniquet is for limbs only. It does nothing for bleeding from the torso, neck, armpit or groin — there, press and pack.",
+      "Stopping bleeding does not treat shock, which can still kill afterwards. Keep them warm and flat and get help.",
+      "This page is not a substitute for a hands-on class, and This library covers what a trained layperson can do. It does not cover invasive procedures, and it gives no dosing guidance for any prescription or controlled medicine.",
+      "It does not cover what to do when help is not coming at all, which is a different and much harder situation."
+    ],
+    "citations": [
+      {
+        "source": "US Department of Homeland Security",
+        "title": "Stop the Bleed",
+        "published": "2024",
+        "url": "https://www.dhs.gov/stopthebleed",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Emergency Wound Care After a Natural Disaster",
+        "published": "2024",
+        "url": "https://www.cdc.gov/disasters/woundcare.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "earthquake",
+      "hurricane",
+      "civil-disruption",
+      "grid-down"
+    ]
+  },
+  {
+    "id": "medical-wound-care",
+    "title": "Cleaning a wound when the pharmacy is shut",
+    "category": "medical",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 25,
+    "summary": "After a storm or a flood the cuts are dirtier than usual, the water is worse than usual, and medical care is further away than usual. Infection, not the original injury, is what turns a minor wound into a serious problem.",
+    "stampLine": "No peroxide in wounds",
+    "materials": [
+      "firstaid-kit-household",
+      "soap-bar",
+      "water-stored-gal",
+      "hand-sanitiser"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Wash your own hands first, and wear gloves if you have them."
+      },
+      {
+        "n": 2,
+        "text": "Control any bleeding before you think about cleaning."
+      },
+      {
+        "n": 3,
+        "text": "Irrigate the wound with a large volume of clean drinking water — more than feels necessary, under some pressure from a syringe or squeezed bottle. Volume and pressure are what remove contamination; dabbing does not.",
+        "caution": "Use water you would drink. Irrigating a wound with untreated floodwater or river water introduces exactly the organisms you are trying to remove."
+      },
+      {
+        "n": 4,
+        "text": "Wash the surrounding skin with soap and water. Soap around the wound, clean water in it."
+      },
+      {
+        "n": 5,
+        "text": "Do not pour hydrogen peroxide, alcohol or iodine into an open wound. They damage the tissue that has to heal and do not improve outcomes compared with thorough irrigation.",
+        "caution": "This is widespread household practice and it is wrong. Clean water, in quantity, is the better tool."
+      },
+      {
+        "n": 6,
+        "text": "Remove visible debris you can reach easily with clean tweezers. Leave anything embedded deeply, and leave any object that has penetrated and stayed in — removing it can restart serious bleeding."
+      },
+      {
+        "n": 7,
+        "text": "Cover with a clean dry dressing and change it daily, or sooner if it becomes wet or dirty."
+      },
+      {
+        "n": 8,
+        "text": "Watch for infection: spreading redness, increasing pain after the first day, warmth, swelling, pus, red streaks running from the wound, or fever. Any of those means find a clinician.",
+        "caution": "Seek care promptly for any wound from floodwater, any animal or human bite, any puncture wound, any wound you cannot get clean, and if your tetanus vaccination is not up to date. Wounds contaminated with floodwater carry organisms that household care will not handle."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Wound looks worse on day two or three",
+        "cause": "Infection establishing, or incomplete initial cleaning",
+        "remedy": "Seek medical care. Do not wait to see whether it settles."
+      },
+      {
+        "symptom": "Wound keeps reopening",
+        "cause": "Over a joint, or dressing not supporting it",
+        "remedy": "Immobilise the area and keep it covered, and get it assessed if it will not close."
+      },
+      {
+        "symptom": "Healing slowly with no obvious infection",
+        "cause": "Diabetes, poor circulation, or the wound being kept too dry or too wet",
+        "remedy": "Anyone with diabetes or circulatory problems should treat any wound as needing professional review early."
+      }
+    ],
+    "doesNotDo": [
+      "Hydrogen peroxide, alcohol and iodine do NOT belong in an open wound. They damage healing tissue and do not outperform thorough irrigation with clean water.",
+      "Cleaning does not substitute for stitches, antibiotics or a tetanus booster where those are needed.",
+      "This does not cover deep, gaping, heavily contaminated or penetrating wounds, animal bites, or anything involving a joint, nerve, tendon or bone. Those need a clinician.",
+      "It does not cover burns, which have different handling, or chemical exposure to the skin.",
+      "This library covers what a trained layperson can do. It does not cover invasive procedures, and it gives no dosing guidance for any prescription or controlled medicine."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Emergency Wound Care After a Natural Disaster",
+        "published": "2024",
+        "url": "https://www.cdc.gov/disasters/woundcare.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Tetanus Vaccination and Wound Management",
+        "published": "2024",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "flood",
+      "hurricane",
+      "earthquake",
+      "grid-down"
+    ]
+  },
+  {
+    "id": "medical-prescription-continuity",
+    "title": "Not running out of the medicine you take every day",
+    "category": "medical",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 45,
+    "summary": "In most real emergencies, the serious medical problems are not injuries. They are the ordinary chronic conditions of people who could not reach a pharmacy — and that is the most preventable harm in this entire library.",
+    "stampLine": "Supply, not dosing",
+    "materials": [
+      "meds-prescription-30d",
+      "docs-waterproof-pouch",
+      "firstaid-kit-household"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Ask your prescriber for a surplus, explicitly for emergency preparedness. Many will arrange it, and some insurers permit an early refill for this purpose. Ask well before you need it."
+      },
+      {
+        "n": 2,
+        "text": "Write the list down and keep a copy in the document pouch and another with your out-of-area contact: every medicine by generic name, the dose as prescribed, what it is for, allergies, conditions, and your prescriber and pharmacy details."
+      },
+      {
+        "n": 3,
+        "text": "Know the generic names. In a disrupted supply chain, or at a shelter, or out of state, the brand you use may not be what is available and the generic name is what a pharmacist can act on."
+      },
+      {
+        "n": 4,
+        "text": "Keep medicines in the original labelled containers. The label is what lets another clinician or pharmacist confirm what you take."
+      },
+      {
+        "n": 5,
+        "text": "Plan for anything refrigerated. Insulin and some other medicines have specific temperature requirements and a defined tolerance outside them — get those figures from your pharmacist and plan cool storage for a power cut.",
+        "caution": "Do not guess at how long a refrigerated medicine remains usable, and do not assume it is ruined either. Ask your pharmacist for the actual figure for your specific product, and write it on the list."
+      },
+      {
+        "n": 6,
+        "text": "Know your pharmacy's emergency procedure. Many states allow emergency refills during a declared disaster, and most chains can access your record from another branch."
+      },
+      {
+        "n": 7,
+        "text": "Register with your utility's medical priority list if anyone depends on powered equipment, and tell your local emergency services if that is offered where you live."
+      },
+      {
+        "n": 8,
+        "text": "Rotate the surplus so it never expires, and keep a few days of it in the go bag as well as the home store."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Surplus expired unused",
+        "cause": "Set aside and forgotten",
+        "remedy": "Rotate it into normal use and replace. Put it in the rotation queue."
+      },
+      {
+        "symptom": "Evacuated without medication",
+        "cause": "It lives in a bathroom cabinet, not the grab bag",
+        "remedy": "A few days' supply in the go bag, and the written list in the document pouch."
+      },
+      {
+        "symptom": "Pharmacy cannot help out of state",
+        "cause": "No record of what you take",
+        "remedy": "The written list with generic names solves this almost entirely."
+      }
+    ],
+    "doesNotDo": [
+      "This page gives NO dosing guidance, no advice on changing, splitting, stopping or stretching any medicine, and no advice on substitutes. This library covers what a trained layperson can do. It does not cover invasive procedures, and it gives no dosing guidance for any prescription or controlled medicine.",
+      "It does not tell you how long a refrigerated medicine stays usable — that is specific to the product and comes from your pharmacist.",
+      "It does not cover controlled substances, which have additional legal restrictions on early refills and quantities that vary by state.",
+      "Having a surplus does not replace medical care. A condition that is deteriorating needs a clinician, not a larger stock.",
+      "It does not cover what to do if you do run out, which is a question for a pharmacist or clinician and not for a checklist."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Keeping Medicines Safe During an Emergency",
+        "published": "2024",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "US Food and Drug Administration",
+        "title": "Safe Drug Use After a Natural Disaster",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "hurricane",
+      "wildfire",
+      "flood",
+      "winter-storm"
+    ]
+  },
+  {
+    "id": "medical-when-help-is-delayed",
+    "title": "When the ambulance is hours away",
+    "category": "medical",
+    "difficulty": "novice",
+    "riskTier": "high",
+    "timeRequiredMin": 25,
+    "summary": "In a wide-area event the emergency system is saturated and response times stretch from minutes to hours or longer. Knowing that in advance changes what you do in the first ten minutes, which is the part you control.",
+    "stampLine": "Still call first",
+    "materials": [
+      "firstaid-kit-household",
+      "radio-noaa-crank",
+      "docs-waterproof-pouch"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Call anyway. Even when the system is overwhelmed, calling puts you in the queue, gets you dispatcher instruction, and is how they know you exist. Text to 911 where it is available can get through when voice cannot."
+      },
+      {
+        "n": 2,
+        "text": "Do the things that work in the first minutes and matter most: stop serious bleeding, open an airway, start CPR if there are no signs of life, get them warm and flat. These are the interventions a layperson can actually deliver."
+      },
+      {
+        "n": 3,
+        "text": "Write down what happened and when. Time of injury, what you did, times of any tourniquet, what the person took and when, how their condition has changed. Handing that over saves the clinician enormous time."
+      },
+      {
+        "n": 4,
+        "text": "Decide early whether to wait or to transport. If the route is passable and the hospital is receiving, self-transport is often faster in a saturated system — but ask the dispatcher, because hospitals may be diverting or closed."
+      },
+      {
+        "n": 5,
+        "text": "Do not move anyone with a suspected spinal injury unless they are in immediate danger where they lie.",
+        "caution": "Moving someone with a possible spinal injury can cause permanent harm. Immediate danger means fire, flood or collapse — not discomfort."
+      },
+      {
+        "n": 6,
+        "text": "Keep the radio on. Authorities broadcast which facilities are open, which routes are passable, and where aid stations have been set up."
+      },
+      {
+        "n": 7,
+        "text": "Accept the boundary. There is a point past which a household cannot help and the honest answer is to keep them comfortable, keep calling, and keep trying to reach care. Knowing where that line is prevents people doing harm trying to cross it."
+      },
+      {
+        "n": 8,
+        "text": "Plan it before the day: which hospitals, which routes, who drives, who stays with the children, and where the medication list is."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Nobody called because the line was assumed to be busy",
+        "cause": "Reasonable assumption, wrong decision",
+        "remedy": "Always call or text. Being in the queue is worth a great deal."
+      },
+      {
+        "symptom": "Arrived at a closed or diverting hospital",
+        "cause": "Facilities change status during a large event",
+        "remedy": "Confirm by radio or dispatcher before setting out."
+      },
+      {
+        "symptom": "Clinician has to start from nothing on arrival",
+        "cause": "No record of events, times or medications",
+        "remedy": "Write it down as you go, and keep the household medication list current."
+      }
+    ],
+    "doesNotDo": [
+      "This does not teach you to practise medicine. This library covers what a trained layperson can do. It does not cover invasive procedures, and it gives no dosing guidance for any prescription or controlled medicine.",
+      "It does not cover any invasive procedure, suturing, medication administration, or anything beyond what a trained layperson can do.",
+      "It does not replace a hands-on first aid and CPR class, which is the single best preparation for this situation.",
+      "It does not promise a good outcome. Some injuries and illnesses are not survivable without a hospital, and pretending otherwise would be a cruelty.",
+      "It does not cover mental health crisis, which has its own urgent pathways and should be treated as a medical emergency."
+    ],
+    "citations": [
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "US Department of Homeland Security",
+        "title": "Stop the Bleed",
+        "published": "2024",
+        "url": "https://www.dhs.gov/stopthebleed",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Emergency Wound Care After a Natural Disaster",
+        "published": "2024",
+        "url": "https://www.cdc.gov/disasters/woundcare.html",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "earthquake",
+      "hurricane",
+      "grid-down",
+      "civil-disruption",
+      "flood"
+    ]
+  },
+  {
+    "id": "comms-weather-radio",
+    "title": "The radio that works when nothing else does",
+    "category": "comms-navigation",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 30,
+    "summary": "NOAA Weather Radio broadcasts continuously from transmitters that are not your cell network and do not depend on it. It is the most reliable warning channel available to a household and almost nobody owns one.",
+    "materials": [
+      "radio-noaa-crank",
+      "battery-aa"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Get a receiver with battery backup and ideally a hand crank, and test it where you actually live — reception varies and a radio that works at the shop may not work in your basement."
+      },
+      {
+        "n": 2,
+        "text": "Find your local transmitter frequency from the NWS site and set it now. Doing this during a warning is doing it too late."
+      },
+      {
+        "n": 3,
+        "text": "Set the SAME codes for your county and the neighbouring ones you care about. Specific Area Message Encoding means the radio stays silent until something concerns your area, which is what makes it bearable to leave on."
+      },
+      {
+        "n": 4,
+        "text": "Enable the alert tone and leave the radio on standby overnight during any watch. A warning at 3am is the entire reason this device exists."
+      },
+      {
+        "n": 5,
+        "text": "Learn the difference between a watch and a warning. A watch means conditions are favourable — get ready. A warning means it is happening or imminent — act now."
+      },
+      {
+        "n": 6,
+        "text": "Keep spare batteries with it, and test the alert function monthly. NWS runs a weekly required test, usually Wednesday, which is a free check that your setup works."
+      },
+      {
+        "n": 7,
+        "text": "Treat it as one of several channels. Wireless Emergency Alerts on a phone, local broadcast radio and an outdoor siren all have different failure modes, and having more than one is the point."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Radio never alerts",
+        "cause": "SAME codes not programmed, alert disabled, or out of transmitter range",
+        "remedy": "Programme the codes, enable the tone, and confirm against the weekly test."
+      },
+      {
+        "symptom": "Alerts constantly for irrelevant areas",
+        "cause": "No SAME filtering",
+        "remedy": "Set your county codes; an unfiltered radio gets switched off, which defeats it."
+      },
+      {
+        "symptom": "Dead when needed",
+        "cause": "Batteries left in for years",
+        "remedy": "Rotate batteries and keep a crank model as backup."
+      }
+    ],
+    "doesNotDo": [
+      "A weather radio does not transmit. It cannot call for help and it is not two-way.",
+      "It does not cover every hazard everywhere — coverage has gaps, particularly in mountainous terrain.",
+      "It does not replace local official channels for non-weather emergencies, though it does carry all-hazards messages.",
+      "A phone app is not an equivalent. Cell networks fail in exactly the conditions where the warning matters most."
+    ],
+    "citations": [
+      {
+        "source": "NOAA National Weather Service",
+        "title": "NOAA Weather Radio All Hazards",
+        "published": "2024",
+        "url": "https://www.weather.gov/nwr/",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "winter-storm",
+      "hurricane",
+      "wildfire",
+      "flood",
+      "grid-down"
+    ]
+  },
+  {
+    "id": "comms-when-networks-fail",
+    "title": "Getting a message out on a failing network",
+    "category": "comms-navigation",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 20,
+    "summary": "Networks rarely fail completely. They congest, which looks like failure if you only try to make voice calls — and a text will often get through the same tower at the same moment that a call will not.",
+    "materials": [
+      "powerbank-20k",
+      "radio-noaa-crank",
+      "docs-waterproof-pouch"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Text, do not call. A text is a tiny packet that retries automatically until it finds a gap. A voice call needs a continuous channel held open and is the first thing congestion denies."
+      },
+      {
+        "n": 2,
+        "text": "Call your out-of-area contact rather than each other. Local circuits saturate first; a long-distance call often routes around the congested area, and one relay point beats six people calling six people."
+      },
+      {
+        "n": 3,
+        "text": "Keep calls short if you do get through. Every extra minute occupies a channel somebody else needs."
+      },
+      {
+        "n": 4,
+        "text": "Use wifi calling where any internet connection survives. A working router on a generator or battery can carry calls when the cell network cannot."
+      },
+      {
+        "n": 5,
+        "text": "Know that 911 still works in ways you may not expect: a phone with no service and no SIM can still usually dial 911, and text-to-911 is available in many areas.",
+        "caution": "Text-to-911 is not available everywhere. Where it is not, you get a bounce-back message. Call if you can; text only if you cannot."
+      },
+      {
+        "n": 6,
+        "text": "Send your status once, clearly, to the relay: where you are, whether you are hurt, what you need, and when you will next check in. Then stop transmitting and conserve battery."
+      },
+      {
+        "n": 7,
+        "text": "Agree the check-in schedule in advance. Fixed times mean phones can be off in between, which is the single biggest battery saving available."
+      },
+      {
+        "n": 8,
+        "text": "Have a non-electronic fallback: the rally points on the printed card, and a note on the door of where you have gone."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Calls fail repeatedly",
+        "cause": "Congestion, not outage",
+        "remedy": "Switch to text and to the out-of-area relay."
+      },
+      {
+        "symptom": "Battery gone by evening",
+        "cause": "Repeated call attempts and the radio searching at full power",
+        "remedy": "Airplane mode between agreed check-ins."
+      },
+      {
+        "symptom": "Nobody knows where anyone is",
+        "cause": "No agreed relay and no agreed times",
+        "remedy": "One out-of-area contact, fixed check-in times, and the printed card."
+      }
+    ],
+    "doesNotDo": [
+      "None of this creates a signal. If the towers are down or have no power, texting does not help.",
+      "Text-to-911 is not available in every jurisdiction, and a text to 911 carries less location information than a call.",
+      "Social media check-in features do not notify emergency services and are not a substitute for calling.",
+      "A phone is not a plan. The printed rally card works when every part of this does not."
+    ],
+    "citations": [
+      {
+        "source": "Federal Communications Commission",
+        "title": "Tips for Communicating in an Emergency",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "hurricane",
+      "earthquake",
+      "grid-down",
+      "wildfire",
+      "civil-disruption"
+    ]
+  },
+  {
+    "id": "comms-two-way-radio",
+    "title": "Two-way radio for a household",
+    "category": "comms-navigation",
+    "difficulty": "practiced",
+    "riskTier": "medium",
+    "timeRequiredMin": 60,
+    "summary": "Handheld radios are genuinely useful over short distances and genuinely oversold on the packaging. The thirty-mile claim on the box assumes two people on neighbouring mountaintops with nothing in between.",
+    "materials": [
+      "radio-noaa-crank",
+      "battery-aa"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Set expectations by terrain, not by the box. In a town or wooded terrain, a handheld FRS radio gives you roughly half a mile to two miles. Line of sight is what matters; radio does not bend around hills or buildings."
+      },
+      {
+        "n": 2,
+        "text": "Know the licensing. FRS requires no licence and uses fixed low-power handhelds. GMRS allows more power and better antennas but requires an FCC licence, which needs no exam and covers your immediate family. Amateur radio requires passing an exam.",
+        "caution": "Operating on GMRS or amateur frequencies without the required licence is a violation of FCC rules. Get the licence in advance — the GMRS one is straightforward and lasts years."
+      },
+      {
+        "n": 3,
+        "text": "Agree channels and a schedule in advance: a primary channel, a backup, and fixed times to listen. Radios left on all day flatten batteries for nothing."
+      },
+      {
+        "n": 4,
+        "text": "Teach everyone the basics: press, pause, then speak, because the first fraction of a second is lost. Say who you are calling and who you are. Keep it short."
+      },
+      {
+        "n": 5,
+        "text": "Assume anyone can hear you. These are open channels with no privacy, and the 'privacy codes' on consumer radios do not encrypt anything — they only filter what your own radio plays.",
+        "caution": "Never pass addresses, plans or anything about what you have stored over an open channel."
+      },
+      {
+        "n": 6,
+        "text": "Gain height for range. A few metres of elevation does more than any amount of extra power on a handheld."
+      },
+      {
+        "n": 7,
+        "text": "Practise before you need it, with the people who will use it, in the places you would actually use it."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Range far below the box claim",
+        "cause": "Buildings, trees and terrain. The claim is a mountaintop figure",
+        "remedy": "Plan around half a mile to two miles, and find height."
+      },
+      {
+        "symptom": "Cannot hear each other despite being close",
+        "cause": "Different channels, or mismatched privacy codes",
+        "remedy": "Write the channel and code on a card taped to each radio."
+      },
+      {
+        "symptom": "Batteries flat",
+        "cause": "Radios left in transmit-ready standby all day",
+        "remedy": "Scheduled listening windows, and spare batteries."
+      }
+    ],
+    "doesNotDo": [
+      "A handheld radio does NOT reach thirty miles in any realistic terrain. The packaging figure assumes an unobstructed line of sight.",
+      "Privacy codes do not make a transmission private. Anyone scanning the channel hears everything you say.",
+      "FRS radios do not reach emergency services. They are household-to-household, not a way to call for help.",
+      "A radio does not work without a licensed operator on the frequencies that require one, and the rules are enforced.",
+      "This does not cover antenna building, repeater operation or anything requiring an amateur licence — that is a hobby with its own training path."
+    ],
+    "citations": [
+      {
+        "source": "Federal Communications Commission",
+        "title": "Family Radio Service (FRS) and General Mobile Radio Service (GMRS)",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "Federal Communications Commission",
+        "title": "Tips for Communicating in an Emergency",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "earthquake",
+      "hurricane",
+      "wildfire"
+    ]
+  },
+  {
+    "id": "nav-paper-map",
+    "title": "Navigating on paper",
+    "category": "comms-navigation",
+    "difficulty": "practiced",
+    "riskTier": "medium",
+    "timeRequiredMin": 90,
+    "summary": "A paper map does not need a battery, a signal or a satellite, and it shows you the whole area at once rather than a moving arrow in a two-inch window. The skill it needs is small and perishable.",
+    "materials": [
+      "nav-paper-map",
+      "headlamp-led",
+      "multitool"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Buy the maps now: a street atlas for your county and the counties you would evacuate through, and a topographic sheet if you are rural. Keep them in the car and in the go bag."
+      },
+      {
+        "n": 2,
+        "text": "Mark them by hand before anything happens: home, work, schools, all three rally points, your out-of-area destination, hospitals, and the two evacuation routes with their alternates."
+      },
+      {
+        "n": 3,
+        "text": "Orient the map to the ground. Turn the map until its features line up with what you can see — not north-up, but matching-reality-up. Almost every navigation error starts here."
+      },
+      {
+        "n": 4,
+        "text": "Learn to read the scale and estimate distance, and learn roughly how long a mile takes you on foot with a loaded bag. Most people badly overestimate how far they can walk in a day carrying weight."
+      },
+      {
+        "n": 5,
+        "text": "If you have a compass, learn to set the declination for your area and take a simple bearing. If you do not, terrain and roads will carry you most of the way."
+      },
+      {
+        "n": 6,
+        "text": "Plan routes by handrails — a river, a ridge, a rail line, a major road. A feature you cannot miss is worth more than a precise bearing when you are tired."
+      },
+      {
+        "n": 7,
+        "text": "Protect the map. A laminated map or a zip bag survives rain; a paper one in a pocket does not last a day."
+      },
+      {
+        "n": 8,
+        "text": "Walk one of your routes. Every planned route contains at least one surprise — a fence, a culvert, a private road — and the time to find it is now."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Confidently walked the wrong way",
+        "cause": "Map not oriented to the ground",
+        "remedy": "Orient first, every single time you stop."
+      },
+      {
+        "symptom": "Route impassable",
+        "cause": "Map out of date, or a feature that only exists on the ground",
+        "remedy": "Always have an alternate, and walk the route once in advance."
+      },
+      {
+        "symptom": "Map destroyed by rain",
+        "cause": "Paper, in a pocket",
+        "remedy": "Laminate it or bag it."
+      }
+    ],
+    "doesNotDo": [
+      "A map does not tell you where you are. It tells you what is there; locating yourself on it is the skill.",
+      "It does not show current conditions — a road on the map may be flooded, closed, blocked or gone.",
+      "A road atlas does not show terrain, which matters a great deal on foot. A topographic sheet does.",
+      "It does not update. A map several years old will be wrong about new development and sometimes about roads.",
+      "This does not cover wilderness navigation, which is a deeper skill with its own training."
+    ],
+    "citations": [
+      {
+        "source": "US Geological Survey",
+        "title": "Topographic Map Symbols and Use",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "wildfire",
+      "hurricane",
+      "flood",
+      "earthquake",
+      "civil-disruption"
+    ]
+  },
+  {
+    "id": "psych-sleep",
+    "title": "Sleeping badly, on purpose, well",
+    "category": "psychological",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 15,
+    "summary": "Sleep is the first thing an emergency takes and the thing whose loss does most damage to everything else. Judgement, patience, coordination and immune function all degrade on short sleep, and the person affected is the last to notice.",
+    "materials": [
+      "blanket-wool",
+      "headlamp-led"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Treat sleep as a logistical requirement, not a luxury. Schedule it the way you schedule water. In any event lasting more than a day, someone who has not slept is a liability rather than an asset."
+      },
+      {
+        "n": 2,
+        "text": "Rotate watches if someone must stay awake. Short shifts, handed over properly, beat one person staying up all night and being useless the next day."
+      },
+      {
+        "n": 3,
+        "text": "Keep a wind-down even when everything is wrong. Same order of small actions, lights down, no bright screens. The ritual is what signals sleep when the environment does not."
+      },
+      {
+        "n": 4,
+        "text": "Deal with cold before you lie down. Shivering prevents sleep, and insulation underneath matters more than blankets on top."
+      },
+      {
+        "n": 5,
+        "text": "Take naps without guilt. Twenty minutes recovers a meaningful amount of alertness and costs almost nothing."
+      },
+      {
+        "n": 6,
+        "text": "Accept broken sleep. Several short periods are worse than one long one and far better than none. Lying down and resting with eyes closed has real value even without sleeping."
+      },
+      {
+        "n": 7,
+        "text": "Be cautious with caffeine late and with alcohol at any point. Alcohol brings sleep on and then fragments it badly, and in the cold it is actively dangerous."
+      },
+      {
+        "n": 8,
+        "text": "Make the big decisions in the morning. If a decision can wait until after sleep, let it."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Short tempers and poor decisions on day three",
+        "cause": "Accumulated sleep debt",
+        "remedy": "Enforce sleep as a rota. Name it as the cause when it happens; it defuses a great deal."
+      },
+      {
+        "symptom": "Cannot sleep despite exhaustion",
+        "cause": "Cold, adrenaline, or no routine",
+        "remedy": "Warm first, insulate underneath, keep the wind-down ritual."
+      },
+      {
+        "symptom": "One person doing every night watch",
+        "cause": "Well-meant, unsustainable",
+        "remedy": "Rotate. The watch-keeper is also a resource to be managed."
+      }
+    ],
+    "doesNotDo": [
+      "This does not treat insomnia, trauma-related sleep disruption or any sleep disorder, all of which need proper care.",
+      "It does not address medication for sleep, which is outside this library's scope entirely.",
+      "Good sleep hygiene does not compensate for genuine sleep deprivation — only sleep does.",
+      "Resting with your eyes closed is not equivalent to sleeping. It helps; it is not a replacement."
+    ],
+    "citations": [
+      {
+        "source": "CDC",
+        "title": "Sleep and Sleep Disorders",
+        "published": "2024",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "US Department of Veterans Affairs, National Center for PTSD",
+        "title": "Psychological First Aid: Field Operations Guide",
+        "published": "2006",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "SAMHSA",
+        "title": "Tips for Survivors of a Disaster: Coping with Stress",
+        "published": "2023",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "hurricane",
+      "earthquake",
+      "wildfire",
+      "civil-disruption"
+    ]
+  },
+  {
+    "id": "psych-group-conflict",
+    "title": "Keeping a household working together",
+    "category": "psychological",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 20,
+    "summary": "Most groups that come apart in a prolonged emergency do not come apart over the emergency. They come apart over chores, fairness and someone's tone, and all three are symptoms of exhaustion rather than causes.",
+    "materials": [
+      "docs-waterproof-pouch"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Name roles early and out loud. Who decides, who cooks, who manages water, who looks after the children, who takes the night watch. Ambiguity is where resentment grows."
+      },
+      {
+        "n": 2,
+        "text": "Rotate the unpleasant jobs on a visible schedule. The bucket toilet, the night watch and the washing up cause more trouble than any strategic question, and a written rota removes the argument entirely."
+      },
+      {
+        "n": 3,
+        "text": "Decide openly and explain the reason. People accept hard decisions they understand far more readily than easy ones announced without explanation."
+      },
+      {
+        "n": 4,
+        "text": "Give everyone a job, including children. Useful work is the most effective anxiety treatment available in these conditions and costs nothing."
+      },
+      {
+        "n": 5,
+        "text": "Check for the real cause before responding to the argument. Hunger, cold, thirst, needing the toilet and sleep debt account for the large majority of conflict. Feed everyone and reconvene."
+      },
+      {
+        "n": 6,
+        "text": "Make space for people to be alone. Enforced proximity with no privacy is genuinely hard, and twenty minutes apart prevents a great deal."
+      },
+      {
+        "n": 7,
+        "text": "Hold a short daily check-in at a fixed time: what happened, what we are doing today, what each person needs. Predictability is calming in itself."
+      },
+      {
+        "n": 8,
+        "text": "Apologise quickly and move on. Nobody is at their best, everyone knows it, and carried grievances are heavy."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Repeated arguments over small things",
+        "cause": "Exhaustion, hunger and unclear roles",
+        "remedy": "Address the physical cause first, then write the rota down."
+      },
+      {
+        "symptom": "One person doing everything and resenting it",
+        "cause": "Competence drift — the capable person absorbs every task",
+        "remedy": "Assign deliberately, including the jobs that person does best. Rotate anyway."
+      },
+      {
+        "symptom": "A child becoming disruptive",
+        "cause": "Fear expressed the only way available, and nothing to do",
+        "remedy": "Give them a real job and tell them the truth at their level."
+      }
+    ],
+    "doesNotDo": [
+      "This does not address abuse, coercive control or violence in a household, which are emergencies of their own and need outside help, not negotiation.",
+      "It does not treat anxiety, depression, trauma or any mental health condition. Those need professional care.",
+      "It does not make a group with real pre-existing fractures cohere. Stress reveals those; it does not create them.",
+      "It does not cover decision-making in groups of strangers, which has different dynamics."
+    ],
+    "citations": [
+      {
+        "source": "US Department of Veterans Affairs, National Center for PTSD",
+        "title": "Psychological First Aid: Field Operations Guide",
+        "published": "2006",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "SAMHSA",
+        "title": "Tips for Survivors of a Disaster: Coping with Stress",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "grid-down",
+      "civil-disruption",
+      "hurricane",
+      "earthquake"
+    ]
+  },
+  {
+    "id": "psych-children",
+    "title": "Children in an emergency",
+    "category": "psychological",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 20,
+    "summary": "Children take their reading of how dangerous things are almost entirely from the adults around them. That is a heavy responsibility and also the most useful lever you have.",
+    "materials": [
+      "headlamp-led",
+      "food-shelf-stable-day"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Tell them the truth, at their level, and say what is being done about it. Children handle honest bad news considerably better than they handle an obviously worried adult saying everything is fine."
+      },
+      {
+        "n": 2,
+        "text": "Keep whatever routine you can. Meals at the usual times, bedtime at the usual time, the usual story. Routine is how a child measures whether the world is still working."
+      },
+      {
+        "n": 3,
+        "text": "Give them a real job: filling bottles, counting tins, looking after a younger sibling, keeping the torch. Usefulness is the most effective thing you can offer an anxious child."
+      },
+      {
+        "n": 4,
+        "text": "Limit exposure to repeating coverage. Young children in particular can understand a looping clip as the event happening again each time."
+      },
+      {
+        "n": 5,
+        "text": "Expect regression — bedwetting, clinginess, thumb-sucking, tantrums, sleeping badly. It is a normal response to an abnormal situation and usually resolves as things stabilise."
+      },
+      {
+        "n": 6,
+        "text": "Keep them physically close in the chaotic parts, and make sure each child knows the rally points, the out-of-area contact's name and number, and what to do if separated. Put that on a card in their pocket.",
+        "caution": "Write the out-of-area contact's number on a card for each child. A child who knows one phone number can be reunited; a child who only knows 'Mum's mobile' often cannot."
+      },
+      {
+        "n": 7,
+        "text": "Answer the same question as many times as it is asked. Repetition is how children process, not inattention."
+      },
+      {
+        "n": 8,
+        "text": "Look after yourself in front of them. Your composure is the single biggest input to theirs, and taking a moment out of sight to fall apart is a legitimate tactic."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Child increasingly distressed despite reassurance",
+        "cause": "Reassurance that contradicts what they can see",
+        "remedy": "Honest, simple information plus a concrete plan does more than reassurance."
+      },
+      {
+        "symptom": "Behaviour deteriorating over days",
+        "cause": "Routine gone, no role, too much exposure to coverage",
+        "remedy": "Restore what routine you can, give them a job, turn the coverage off."
+      },
+      {
+        "symptom": "Child cannot be reunited quickly after separation",
+        "cause": "They know faces, not numbers",
+        "remedy": "A card in the pocket with the out-of-area contact's name and number."
+      }
+    ],
+    "doesNotDo": [
+      "This does not address trauma requiring professional care. Persistent distress, nightmares or behaviour change lasting weeks needs a clinician.",
+      "It does not cover children with additional needs, for whom disruption of routine may be far harder and needs individual planning.",
+      "It does not substitute for the school and childcare plan, which is a separate and practical piece of the household plan.",
+      "It does not cover separation or loss, which need support beyond anything a preparedness library can offer."
+    ],
+    "citations": [
+      {
+        "source": "US Department of Veterans Affairs, National Center for PTSD",
+        "title": "Psychological First Aid: Field Operations Guide",
+        "published": "2006",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "SAMHSA",
+        "title": "Tips for Survivors of a Disaster: Coping with Stress",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "CDC",
+        "title": "Helping Children Cope with Emergencies",
+        "published": "2024",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "hurricane",
+      "wildfire",
+      "earthquake",
+      "grid-down",
+      "flood"
+    ]
+  },
+  {
+    "id": "psych-not-being-interesting",
+    "title": "Not being the interesting one in the room",
+    "category": "psychological",
+    "difficulty": "novice",
+    "riskTier": "medium",
+    "timeRequiredMin": 25,
+    "summary": "The least useful thing you can do with preparation is advertise it. This is about avoidance and ordinary discretion — dress, routine, what you say and what you post — and it is explicitly not about confrontation or about evading anybody's lawful authority.",
+    "materials": [
+      "docs-waterproof-pouch"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Do not advertise what you have. The most common way a household becomes a target is telling people, cheerfully and in advance, exactly what is in the garage."
+      },
+      {
+        "n": 2,
+        "text": "Dress for the context you are in. Clothing that matches the people around you is unremarkable; tactical-looking kit in an ordinary neighbourhood is memorable, and memorable is the opposite of what you want."
+      },
+      {
+        "n": 3,
+        "text": "Keep your routine unremarkable rather than rigidly identical. Varying times and routes slightly is ordinary prudence; it is not evasion and should not look like it."
+      },
+      {
+        "n": 4,
+        "text": "Manage the digital footprint. Photographs of your stores, check-ins at your home, and public posts about being away all aggregate into something useful to someone else. Review what is public."
+      },
+      {
+        "n": 5,
+        "text": "Keep purchases and deliveries low-key. A pallet on the driveway is a public announcement."
+      },
+      {
+        "n": 6,
+        "text": "Teach children what not to volunteer — not secrecy, which is a burden, but the ordinary difference between family business and conversation."
+      },
+      {
+        "n": 7,
+        "text": "Be generous anyway. A neighbour who knows you and likes you is worth far more in a bad week than one who does not know you exist, and discretion is not the same as isolation. The best security a street has is the people on it.",
+        "caution": "Discretion is not hostility toward neighbours, authorities or responders. Cooperating with emergency services, following lawful instruction and helping the people around you are all straightforwardly in your interest."
+      },
+      {
+        "n": 8,
+        "text": "Decide in advance what you would share and with whom. Deciding generously, ahead of time, is far better than deciding under pressure at the door."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Neighbours arrive expecting supplies",
+        "cause": "Told them in detail during a calm period",
+        "remedy": "Discretion beforehand, and a decision made in advance about what you would share."
+      },
+      {
+        "symptom": "Home targeted while away",
+        "cause": "Public posts about being away, and visible deliveries",
+        "remedy": "Post after you return, and keep deliveries discreet."
+      },
+      {
+        "symptom": "Isolation and no help when it is genuinely needed",
+        "cause": "Discretion taken as far as secrecy from everyone",
+        "remedy": "Know your neighbours. Discretion about stores, openness about yourself."
+      }
+    ],
+    "doesNotDo": [
+      "This is NOT about evading, misleading or confronting law enforcement, emergency services or any lawful authority. Cooperate with responders — it is both right and in your interest.",
+      "It does not cover tactics, confrontation, weapons or defence of property, all of which are outside this library's scope entirely.",
+      "It does not mean isolating from your neighbours. A street where people know each other is safer than one where they do not, and that effect is far larger than any amount of discretion.",
+      "It does not make you invisible, and treating it as a security system rather than ordinary prudence is a mistake.",
+      "It does not cover personal security planning for stalking, domestic abuse or targeted threat, which need specialist advice and often legal support."
+    ],
+    "citations": [
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "US Department of Veterans Affairs, National Center for PTSD",
+        "title": "Psychological First Aid: Field Operations Guide",
+        "published": "2006",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "civil-disruption",
+      "grid-down"
+    ]
+  },
+  {
+    "id": "nav-without-gps",
+    "title": "Finding your way when GPS is wrong or gone",
+    "category": "comms-navigation",
+    "difficulty": "practiced",
+    "riskTier": "medium",
+    "timeRequiredMin": 60,
+    "summary": "GPS fails in more ways than people expect: no power, no signal indoors or in terrain, and — during a severe geomagnetic storm — degraded accuracy while still showing you a confident blue dot. The confident wrong answer is the dangerous one.",
+    "stampLine": "Confident and wrong",
+    "materials": [
+      "nav-paper-map",
+      "multitool",
+      "headlamp-led"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "text": "Know the failure modes. A dead phone, no satellite view under canopy or between buildings, and space weather, which can degrade positioning accuracy without any warning on the screen. The device rarely tells you it is unsure."
+      },
+      {
+        "n": 2,
+        "text": "Cross-check against the world. If the map says you are on a road and there is no road, believe the ground. Navigation errors persist because people trust the display over the window."
+      },
+      {
+        "n": 3,
+        "text": "Learn your pace count: how many double-steps you take over a hundred metres, on the flat and loaded. It turns a guess about distance into a measurement, and it works in the dark."
+      },
+      {
+        "n": 4,
+        "text": "Navigate by handrails and catching features. Follow something you cannot lose — a river, a ridge, a power line, a major road — and pick a feature beyond your target that tells you if you have gone too far."
+      },
+      {
+        "n": 5,
+        "text": "Use the sun for rough direction. It rises broadly east and sets broadly west; at local noon in the northern hemisphere shadows point roughly north. Rough is enough to stop you walking in a circle."
+      },
+      {
+        "n": 6,
+        "text": "Carry a simple baseplate compass and know two things: how to orient the map, and how to walk a bearing. That is most of practical navigation and takes an afternoon to learn."
+      },
+      {
+        "n": 7,
+        "text": "Keep a cached offline map on the phone as well. Offline maps still show the map when the data connection is gone, even if the position fix is poor.",
+        "caution": "An offline map is not an offline position. Without a usable satellite fix you have a map on a screen, which is a worse paper map with a battery."
+      },
+      {
+        "n": 8,
+        "text": "Stop when you are unsure, before you are lost. Going back to your last certain point is almost always faster than pressing on hopefully."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "Position jumps around or sits in the wrong place",
+        "cause": "Poor satellite geometry, urban canyon, canopy, or ionospheric disturbance during a geomagnetic storm",
+        "remedy": "Cross-check against visible features and navigate by terrain until it settles."
+      },
+      {
+        "symptom": "Walked a long way in the wrong direction confidently",
+        "cause": "Trusting the display over the ground",
+        "remedy": "Orient to reality at every stop, and use catching features so an error has a hard limit."
+      },
+      {
+        "symptom": "Phone dead halfway",
+        "cause": "Screen on and GPS running continuously",
+        "remedy": "Paper map primary, phone for confirmation, screen off in between."
+      }
+    ],
+    "doesNotDo": [
+      "This does not replace proper land navigation training, which is a real skill with a real syllabus.",
+      "A compass does not work reliably near metal, vehicles, power lines or electronics, and it does not point at true north without a declination correction.",
+      "Sun direction is rough, varies by season and latitude, and is useless under heavy overcast.",
+      "An offline map does not give you a position fix — it only means the map itself still draws.",
+      "None of this helps if you do not know roughly where you started. Note your starting point before you need it."
+    ],
+    "citations": [
+      {
+        "source": "US Geological Survey",
+        "title": "Topographic Map Symbols and Use",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "NOAA Space Weather Prediction Center",
+        "title": "Space Weather Impacts on GPS",
+        "published": "2024",
+        "url": "https://www.swpc.noaa.gov/impacts/space-weather-impacts-gps",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29",
+    "hazards": [
+      "wildfire",
+      "grid-down",
+      "earthquake",
+      "civil-disruption"
+    ]
   }
 ]
