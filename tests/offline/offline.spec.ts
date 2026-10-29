@@ -416,12 +416,30 @@ test.describe('offline release gate', () => {
     // Any request that escapes the service worker while offline would be a
     // render-path network dependency. This is the assertion that keeps the
     // premise true through future refactors.
+    //
+    // ERR_ABORTED is excluded, and the distinction matters: it means the
+    // browser cancelled a request nobody is waiting for any more, which
+    // happens two ways here. A navigation tears down a document with the pack
+    // manifest fetch still in flight, and refreshSnapshot's own 3s
+    // AbortController fires. Neither is a request that could not be served
+    // offline — the second is the timeout working exactly as designed, and
+    // counting it would fail the gate for correct behaviour.
+    //
+    // Everything else still fails, and the error text travels with the URL so
+    // the next failure says what went wrong instead of only where.
     const failed: string[] = [];
-    page.on('requestfailed', (request) => failed.push(request.url()));
+    page.on('requestfailed', (request) => {
+      const error = request.failure()?.errorText ?? 'unknown error';
+      if (error.includes('ERR_ABORTED')) return;
+      failed.push(`${error} ${request.url()}`);
+    });
 
     for (const route of ['/', '/supplies', '/plan', '/skills', '/settings']) {
       await page.goto(route);
       await expect(page.locator('#root')).not.toBeEmpty();
+      // Let the page settle before navigating away, so the next goto is not
+      // what cancels the fetch this test is watching.
+      await page.waitForLoadState('networkidle');
     }
 
     expect(failed, `offline requests escaped the cache:\n${failed.join('\n')}`).toEqual([]);
