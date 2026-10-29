@@ -72,9 +72,13 @@ and conflating them kills people. A sand-and-charcoal column improves clarity an
 taste; it does not make water microbiologically safe. Every skill in the library
 carries a required `doesNotDo` field — enforced by schema, not by discipline.
 
-**Paper is the last backup.** The most likely failure mode is a dead phone.
-One-tap PDF export for the plan, the checklist, the wallet-sized rally card, the
-contact card and any skill page. Black and white, legible at arm's length.
+**Paper is the last backup.** The most likely failure mode is a dead phone, and
+this app lives on a phone. Five printable documents — household plan,
+wallet-sized rally card, contact card, supply checklist, and any skill page.
+Black and white, legible at arm's length, no colour dependency. An unfilled
+field prints as a ruled blank so you can finish the plan with a pen, and an
+incomplete plan says so on the sheet, because a printed plan with blanks in it
+is worse than none: it looks finished.
 
 ---
 
@@ -110,7 +114,7 @@ disabled.**
 |---|---|---|
 | 1 | Content schema, pack format, offline shell — **prove airplane mode** | ✅ Done |
 | 2 | Supply system, gap analysis, kit ladder, achievements | 🔨 Coverage + ladder + weight budgeting in; achievements and rotation next |
-| 3 | Plan builder + PDF export | ⬜ Next |
+| 3 | Plan builder + printable documents | ✅ Done |
 | 4 | Skills library rendering and local full-text search | ✅ Rendering + search done; content volume at 6 of 40–60 |
 | 5 | Readiness-state machine and Grey Sky interface | ✅ State machine + Grey Sky in; Watch action queue pending |
 | — | Interface design: *field notebook, read by headlamp* | ✅ See [`docs/DESIGN_CONTRACT.md`](docs/DESIGN_CONTRACT.md) |
@@ -121,8 +125,8 @@ disabled.**
 ### The gate, currently passing
 
 ```
-Shell 71.2 / 150 KB gzipped · fonts 68.2 / 100 KB · content 62.8 / 2048 KB
-46 unit tests · 11 offline tests
+Shell 79.5 / 150 KB gzipped · fonts 68.2 / 100 KB · content 62.8 / 2048 KB
+56 unit tests · 16 offline tests
 ```
 
 The offline suite runs against the production build in a Pixel 5 profile with

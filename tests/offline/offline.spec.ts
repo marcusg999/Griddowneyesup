@@ -231,15 +231,96 @@ test.describe('content pack integrity', () => {
   });
 });
 
-/*
- * Pending — these land with their build-order steps and are deliberately not
- * stubbed, because a passing stub is worse than a visible gap.
- *
- *   build a plan      → step 3 (plan builder)
- *   export a PDF      → step 3 (PDF export)
- *   run a drill       → v1.1 (drills)
- */
-test.describe('pending build steps', () => {
-  test.fixme('builds a plan offline', async () => {});
-  test.fixme('exports a PDF offline', async () => {});
+test.describe('plan builder and paper', () => {
+  async function fill(page: Page, label: string, value: string) {
+    const field = page.getByLabel(label, { exact: false }).first();
+    await field.fill(value);
+    await field.blur();
+  }
+
+  test('builds a plan offline and it survives a reload', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/plan');
+
+    await fill(page, 'Primary — near home', 'The oak at the end of the driveway');
+    await fill(page, 'Secondary — outside the neighbourhood', 'Library car park');
+
+    await fill(page, 'Name', 'Ruth Alvarez');
+    await fill(page, 'Phone', '+1 555 0137');
+    await page.getByLabel('Lives outside this region').check();
+    await page.getByRole('button', { name: 'Add contact' }).click();
+    await expect(page.getByTestId('contact-row')).toHaveCount(1);
+
+    // Still offline: the write went to IndexedDB, not to a server that is not
+    // there, and a half-finished plan must survive the tab closing.
+    await page.reload();
+    await expect(page.getByTestId('contact-row')).toContainText('Ruth Alvarez');
+    await expect(
+      page.getByLabel('Primary — near home', { exact: false }),
+    ).toHaveValue('The oak at the end of the driveway');
+  });
+
+  test('warns on the printed sheet when the plan is incomplete', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/print/plan');
+
+    // A printed plan with blanks is worse than none, because it looks
+    // finished. The sheet has to say so.
+    await expect(page.getByText(/Incomplete/)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Household Emergency Plan/ })).toBeVisible();
+  });
+
+  test('exports a PDF offline, from every printable document', async ({ page }) => {
+    await installThenGoOffline(page);
+
+    for (const path of [
+      '/print/plan',
+      '/print/rally-card',
+      '/print/contacts',
+      '/print/checklist',
+      '/print/skill/water-improvised-column',
+    ]) {
+      await page.goto(path);
+      await expect(page.getByRole('button', { name: /Print \/ Save as PDF/ })).toBeVisible();
+
+      // Render through the real print pipeline and produce an actual document.
+      await page.emulateMedia({ media: 'print' });
+      const pdf = await page.pdf({ format: 'Letter', printBackground: false });
+      await page.emulateMedia({ media: 'screen' });
+
+      expect(pdf.subarray(0, 5).toString('latin1'), `${path} is not a PDF`).toBe('%PDF-');
+      expect(pdf.byteLength, `${path} produced an empty PDF`).toBeGreaterThan(8_000);
+    }
+  });
+
+  test('print sheets carry no app chrome and no colour dependency', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/print/plan');
+
+    // §7: black and white, legible at arm's length. The app's tab bar, status
+    // bar and readiness theming must not reach paper.
+    await expect(page.locator('.tabbar')).toHaveCount(0);
+    await expect(page.locator('.statusbar')).toHaveCount(0);
+
+    await page.emulateMedia({ media: 'print' });
+    const ink = await page.evaluate(() => {
+      const paper = document.querySelector('.sheet-paper');
+      if (!paper) return null;
+      const cs = getComputedStyle(paper);
+      return { color: cs.color, background: cs.backgroundColor };
+    });
+    expect(ink?.color).toBe('rgb(0, 0, 0)');
+    await page.emulateMedia({ media: 'screen' });
+  });
+
+  test('the skill sheet prints its limits above its steps', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/print/skill/water-improvised-column');
+
+    const limits = await page
+      .getByText(/What this does NOT do/i)
+      .boundingBox();
+    const steps = await page.getByRole('heading', { name: 'Steps' }).boundingBox();
+    expect(limits?.y ?? Infinity).toBeLessThan(steps?.y ?? -Infinity);
+  });
 });

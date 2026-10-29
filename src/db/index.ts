@@ -10,6 +10,7 @@ import type {
   SkillProgress,
 } from './types';
 import type { Sensitivity } from '@/content/types';
+import type { Contact, Plan } from '@/features/plan/types';
 
 /**
  * IndexedDB is the PRIMARY data source, not a cache.
@@ -19,10 +20,14 @@ import type { Sensitivity } from '@/content/types';
  */
 
 const DB_NAME = 'ballast';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 interface Schema extends DBSchema {
   profile: { key: string; value: unknown };
+  /** Sensitive. Rally points, shutoffs, duress codes. Never transmitted. */
+  plan: { key: string; value: unknown };
+  /** Sensitive. Names and numbers of real people. Never transmitted. */
+  contacts: { key: string; value: unknown };
   inventory: { key: string; value: unknown; indexes: { 'by-item': string } };
   achievements: { key: string; value: unknown };
   skillProgress: { key: string; value: unknown };
@@ -40,6 +45,8 @@ interface Schema extends DBSchema {
  */
 type StoreName =
   | 'profile'
+  | 'plan'
+  | 'contacts'
   | 'inventory'
   | 'achievements'
   | 'skillProgress'
@@ -52,16 +59,25 @@ let dbPromise: Promise<IDBPDatabase<Schema>> | undefined;
 
 export function db(): Promise<IDBPDatabase<Schema>> {
   dbPromise ??= openDB<Schema>(DB_NAME, DB_VERSION, {
-    upgrade(database) {
-      database.createObjectStore('profile');
-      const inventory = database.createObjectStore('inventory');
-      inventory.createIndex('by-item', 'itemId');
-      database.createObjectStore('achievements');
-      database.createObjectStore('skillProgress');
-      database.createObjectStore('readinessSnapshots');
-      database.createObjectStore('drills');
-      database.createObjectStore('content');
-      database.createObjectStore('meta');
+    // Versioned rather than recreated: an existing install holds the user's
+    // inventory, and a migration that drops it to add a store would be a data
+    // loss bug in a product people rely on.
+    upgrade(database, oldVersion) {
+      if (oldVersion < 1) {
+        database.createObjectStore('profile');
+        const inventory = database.createObjectStore('inventory');
+        inventory.createIndex('by-item', 'itemId');
+        database.createObjectStore('achievements');
+        database.createObjectStore('skillProgress');
+        database.createObjectStore('readinessSnapshots');
+        database.createObjectStore('drills');
+        database.createObjectStore('content');
+        database.createObjectStore('meta');
+      }
+      if (oldVersion < 2) {
+        database.createObjectStore('plan');
+        database.createObjectStore('contacts');
+      }
     },
   });
   return dbPromise;
@@ -101,6 +117,19 @@ export const store = {
   profile: {
     get: () => get<Profile>('profile', 'self'),
     put: (p: Profile) => put('profile', 'self', p),
+  },
+
+  plan: {
+    get: () => get<Plan>('plan', 'household'),
+    put: (p: Plan) => put('plan', 'household', { ...p, updatedAt: new Date().toISOString() }),
+  },
+
+  contacts: {
+    all: () => all<Contact>('contacts'),
+    put: (c: Contact) => put('contacts', c.id, c),
+    async remove(id: string): Promise<void> {
+      await (await db()).delete('contacts', id);
+    },
   },
 
   inventory: {

@@ -314,6 +314,63 @@ English-only at launch, i18n from commit one. Not retrofitted.
 
 ---
 
+## 12. Paper: the print pipeline (§7)
+
+**No PDF library is bundled.** Printable documents are real HTML rendered
+through the browser's own print pipeline, with print stylesheets doing the
+layout.
+
+This looks like a shortcut and is not. The alternatives were weighed:
+
+| | Browser print | Bundled renderer (jsPDF / pdf-lib) |
+|---|---|---|
+| Bundle cost | **0 KB** | 100–160 KB gzipped, against a 150 KB budget |
+| Text | **Selectable, searchable, screen-readable** | Drawn, often unsearchable |
+| Paper size | **The user's own, whatever it is** | Hardcoded at build time |
+| Reflow | **Automatic** | Manual layout maths per document |
+| Offline | **Inherent** | Needs the library precached too |
+| Output | Print dialog → paper, or Save as PDF | A file |
+
+The brief's goal in §7 is **ink on paper**, not a file: the failure mode being
+designed around is a dead phone. Every platform this ships to offers "Save as
+PDF" from the same dialog, so the file is available anyway — it is just not the
+primary path.
+
+A bundled renderer would cost a third of the performance budget to produce a
+worse document. If a true file download is wanted later (emailing a plan to a
+relative, say), it can be added as a lazily loaded chunk without touching this.
+
+### 12.1 Design rules on paper
+
+- **Black and white.** Nothing conveyed by colour alone.
+- **Legible at arm's length.** 11pt body minimum.
+- **No background fills.** A printer low on toner must still produce a
+  readable sheet.
+- **An empty field prints as a ruled blank**, so a half-finished plan can be
+  finished at the kitchen table with a pen.
+- **An incomplete plan says so on the sheet.** A printed plan with blanks in it
+  is worse than no printed plan, because it looks finished.
+
+### 12.2 The preview must measure what the printer gets
+
+Print routes render without the app's chrome — their own branch of the router,
+not the app wearing a stylesheet — so nothing in the shell can leak onto paper.
+
+The on-screen preview is sized to the printed content width. This caught a real
+bug: with `box-sizing: border-box`, a 190mm max-width minus 14mm of padding
+left 162mm of content on screen while `@page` margins gave the printer 190mm,
+so wallet cards that fit on paper stacked one-up in the preview. A preview that
+does not match the printer is worse than no preview.
+
+### 12.3 Tested as PDFs, not as pages
+
+The offline suite renders each document through `emulateMedia({media:'print'})`
+and generates an actual PDF, asserting the `%PDF-` header and a non-trivial
+byte length. Asserting the page looks right would not catch a print stylesheet
+that collapses at paper width.
+
+---
+
 ## 11. Deliberate v1 non-dependencies
 
 Listed explicitly because each is a thing that would otherwise creep in:

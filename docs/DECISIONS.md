@@ -439,6 +439,26 @@ If you want geopolitics in the state machine anyway, the defensible form is a
 
 ---
 
+## Paper
+
+### D18 — Printable documents use the browser print pipeline, not a bundled PDF library **[CONFIRMED]**
+
+Reasoning in `ARCHITECTURE.md` §12. In short: §7's goal is ink on paper, not a
+file; the browser pipeline costs 0 KB against a 150 KB budget, produces
+selectable and screen-readable text at the user's own paper size, works offline
+inherently, and still offers "Save as PDF" on every platform. A bundled
+renderer would spend a third of the performance budget to produce a worse
+document.
+
+Five documents ship: household plan, wallet-sized rally card (four to a sheet,
+because a household is rarely one person), contact card with blanks for local
+numbers, supply checklist, and any individual skill page.
+
+If a true file download is wanted later — emailing a plan to a relative — it
+can be added as a lazily loaded chunk without disturbing any of this.
+
+---
+
 ## Build order
 
 Per §11, unchanged. The threat feed is the most fun and the least load-bearing,
@@ -447,8 +467,8 @@ and is not built first.
 | # | Step | Status |
 |---|---|---|
 | 1 | Content schema, content pack format, offline shell. **Prove airplane mode.** | In progress |
-| 2 | Supply system with gap analysis + ladder/coverage/achievements (D16) | Pending |
-| 3 | Plan builder + PDF export | Pending |
+| 2 | Supply system with gap analysis + ladder/coverage/achievements (D16) | Ladder, coverage, weight budgeting done; achievements and rotation pending |
+| 3 | Plan builder + PDF export | **Done** |
 | 4 | Skills library rendering and local full-text search | Pending |
 | 5 | Readiness-state machine and Grey Sky interface | Pending |
 | 6 | ~~Auth~~, encrypted sync, circles — *auth deferred entirely per D06a* | v2 |
