@@ -30,6 +30,11 @@ export interface CipherBoundary {
  * device-local, and encrypting at rest against a key the same device holds
  * buys very little. What it does enforce is the transmission rule.
  */
+/* eslint-disable @typescript-eslint/require-await --
+   These are async with nothing to await on purpose. The interface returns
+   promises because v2 puts real crypto behind this exact seam, and a v1 that
+   returned plain values would force every call site to change on the day that
+   lands. The signature is the contract. */
 export const identityCipher: CipherBoundary = {
   id: 'identity-v1',
 
