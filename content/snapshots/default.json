@@ -1,0 +1,52 @@
+{
+  "region": "default",
+  "regionLabel": "your area",
+  "note": "SAMPLE digest, all quiet. CONTENT_POLICY \u00a75: most days should show \"Nothing notable near you\", and the index going green is a feature, so the default region is the normal day. Signal ages are relative and stamped at build time. Nothing here is a claim about the world.",
+  "signals": [
+    {
+      "source": "nws",
+      "sourceName": "National Weather Service",
+      "level": "quiet",
+      "ageHours": 1,
+      "headline": "No watches, warnings or advisories in effect",
+      "meansForYou": "Nothing to act on.",
+      "url": "https://www.weather.gov/"
+    },
+    {
+      "source": "usgs",
+      "sourceName": "USGS Earthquake Hazards Program",
+      "level": "quiet",
+      "ageHours": 1,
+      "headline": "No events above M2.5 within 100 km in the last 24 hours",
+      "meansForYou": "Nothing to act on.",
+      "url": "https://earthquake.usgs.gov/earthquakes/map/"
+    },
+    {
+      "source": "wildfire-air",
+      "sourceName": "AirNow",
+      "level": "quiet",
+      "ageHours": 1,
+      "headline": "Air quality index 34 \u2014 good",
+      "meansForYou": "Nothing to act on. Windows can stay open.",
+      "url": "https://www.airnow.gov/"
+    },
+    {
+      "source": "openfema",
+      "sourceName": "OpenFEMA",
+      "level": "quiet",
+      "ageHours": 20,
+      "headline": "No active federal disaster declaration for this county",
+      "meansForYou": "Nothing to act on.",
+      "url": "https://www.fema.gov/disaster/declarations"
+    },
+    {
+      "source": "swpc",
+      "sourceName": "NOAA Space Weather Prediction Center",
+      "level": "quiet",
+      "ageHours": 3,
+      "headline": "Geomagnetic field quiet to unsettled, G0",
+      "meansForYou": "Nothing to act on. GPS and HF radio are behaving normally.",
+      "url": "https://www.swpc.noaa.gov/"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { Profile } from '@/db/types';
 import { t } from '@/i18n';
 import { useContent } from '@/state/content';
 import { useReadiness, type ReadinessState } from '@/state/readiness';
@@ -45,6 +46,16 @@ function SpendField({
   );
 }
 
+/**
+ * Clearing the field means "no county", which is the absence of the key rather
+ * than a key holding an empty string — the digest region falls back to the
+ * sample, and a stored empty string would select a file that does not exist.
+ */
+function omitCounty(profile: Profile): Profile {
+  const { countyFips: _dropped, ...rest } = profile;
+  return rest;
+}
+
 export function Settings() {
   const { state, setState } = useReadiness();
   const { pack } = useContent();
@@ -54,6 +65,11 @@ export function Settings() {
   useEffect(() => {
     setBodyweight(profile.bodyweightKg ? String(profile.bodyweightKg) : '');
   }, [profile.bodyweightKg]);
+
+  const [county, setCounty] = useState('');
+  useEffect(() => {
+    setCounty(profile.countyFips ?? '');
+  }, [profile.countyFips]);
 
   const states: Array<{ id: ReadinessState; label: string; hint: string }> = [
     { id: 'blue-sky', label: t('state.blueSky'), hint: t('state.blueSky.summary') },
@@ -90,6 +106,39 @@ export function Settings() {
           </p>
         </button>
       ))}
+
+      {/* The digest is published per region, so without this there is no way
+          to ask for your own. Stored in the profile, which is sensitive and
+          never transmitted — the region is used to pick a filename, nothing
+          more. */}
+      <h2>Your county</h2>
+      <label className="meta" htmlFor="county">
+        County FIPS code, which selects the digest for your area. Leave it empty for the
+        sample region. 06075 is San Francisco County, and is the second sample.
+      </label>
+      <input
+        id="county"
+        className="search"
+        type="text"
+        inputMode="numeric"
+        maxLength={5}
+        placeholder="default"
+        value={county}
+        onChange={(event) => setCounty(event.target.value.replace(/\D/g, ''))}
+      />
+      <button
+        className="btn"
+        type="button"
+        style={{ marginTop: 12 }}
+        onClick={() => {
+          const next = county.trim();
+          void store.profile
+            .put(next ? { ...profile, countyFips: next } : omitCounty(profile))
+            .then(reload);
+        }}
+      >
+        Save
+      </button>
 
       <h2>Carry weight</h2>
       <label className="meta" htmlFor="bodyweight">

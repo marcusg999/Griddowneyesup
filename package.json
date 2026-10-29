@@ -13,7 +13,7 @@
     "test": "vitest run",
     "test:unit": "vitest run",
     "content:keygen": "tsx scripts/keygen.ts",
-    "content:build": "tsx scripts/build-content-pack.ts",
+    "content:build": "tsx scripts/build-content-pack.ts && tsx scripts/build-snapshots.ts",
     "content:validate": "tsx scripts/validate-content.ts",
     "test:offline": "playwright test",
     "check:budget": "tsx scripts/check-budget.ts",

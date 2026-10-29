@@ -1,5 +1,5 @@
 import { store } from '@/db';
-import { CONTENT_SIGNING_PUBLIC_KEY_SPKI_B64 } from './signing-key.generated';
+import { verifyDetachedSignature } from './signature';
 import type {
   CatalogItem,
   ContentPackManifest,
@@ -44,61 +44,11 @@ export interface LoadedPack {
   readonly searchIndex: unknown;
 }
 
-function b64ToBytes(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const out = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i += 1) out[i] = bin.charCodeAt(i);
-  return out;
-}
-
 async function sha256Hex(bytes: ArrayBuffer): Promise<string> {
   const digest = await crypto.subtle.digest('SHA-256', bytes);
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
-}
-
-async function verifyManifestSignature(
-  manifestBytes: ArrayBuffer,
-  signatureB64: string,
-): Promise<boolean> {
-  const key = await crypto.subtle.importKey(
-    'spki',
-    b64ToBytes(CONTENT_SIGNING_PUBLIC_KEY_SPKI_B64),
-    { name: 'ECDSA', namedCurve: 'P-256' },
-    false,
-    ['verify'],
-  );
-  // Node signs DER-encoded ECDSA; WebCrypto expects the raw r||s pair.
-  const der = b64ToBytes(signatureB64);
-  const raw = derToRawEcdsa(der);
-  return crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, key, raw, manifestBytes);
-}
-
-/** Convert a DER SEQUENCE{INTEGER r, INTEGER s} into the fixed 64-byte r||s. */
-function derToRawEcdsa(der: Uint8Array): Uint8Array {
-  let offset = 2; // SEQUENCE tag + length
-  if (der[1] !== undefined && der[1] > 0x80) offset = 3;
-
-  const readInt = (): Uint8Array => {
-    offset += 1; // INTEGER tag
-    const len = der[offset] ?? 0;
-    offset += 1;
-    let bytes = der.subarray(offset, offset + len);
-    offset += len;
-    // Strip the leading zero DER adds to keep the value positive.
-    while (bytes.length > 32 && bytes[0] === 0) bytes = bytes.subarray(1);
-    const padded = new Uint8Array(32);
-    padded.set(bytes, 32 - bytes.length);
-    return padded;
-  };
-
-  const r = readInt();
-  const s = readInt();
-  const raw = new Uint8Array(64);
-  raw.set(r, 0);
-  raw.set(s, 32);
-  return raw;
 }
 
 async function fetchArtifact(path: string): Promise<ArrayBuffer> {
@@ -121,7 +71,7 @@ export async function installContentPack(): Promise<boolean> {
     const manifestBytes = await fetchArtifact('index.json');
     const signature = new TextDecoder().decode(await fetchArtifact('index.json.sig'));
 
-    if (!(await verifyManifestSignature(manifestBytes, signature))) {
+    if (!(await verifyDetachedSignature(manifestBytes, signature))) {
       console.error('Content pack signature did not verify. Keeping the installed pack.');
       return false;
     }

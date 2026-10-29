@@ -1,0 +1,44 @@
+{
+  "region": "06075",
+  "regionLabel": "San Francisco County, CA",
+  "note": "SAMPLE digest, second region. Carries an active signal so the ACTIVE band and the severity ordering of the cards are exercised. Nothing here is a claim about the world.",
+  "signals": [
+    {
+      "source": "nws",
+      "sourceName": "National Weather Service",
+      "level": "active",
+      "ageHours": 1,
+      "headline": "Flood advisory in effect until 18:00",
+      "meansForYou": "Water over roadways on the usual low-lying routes. If your evacuation route runs through one, the alternate is the one to use today.",
+      "url": "https://www.weather.gov/"
+    },
+    {
+      "source": "wildfire-air",
+      "sourceName": "AirNow",
+      "level": "elevated",
+      "ageHours": 4,
+      "headline": "Air quality index 112 — unhealthy for sensitive groups",
+      "meansForYou": "Anyone in the household with asthma or a heart condition should stay indoors with the windows shut. An N95 helps outdoors; a surgical mask does not.",
+      "url": "https://www.airnow.gov/"
+    },
+    {
+      "source": "usgs",
+      "sourceName": "USGS Earthquake Hazards Program",
+      "level": "quiet",
+      "ageHours": 2,
+      "headline": "No events above M2.5 within 100 km in the last 24 hours",
+      "meansForYou": "Nothing to act on.",
+      "url": "https://earthquake.usgs.gov/earthquakes/map/"
+    },
+    {
+      "source": "swpc",
+      "sourceName": "NOAA Space Weather Prediction Center",
+      "level": "quiet",
+      "ageHours": 30,
+      "headline": "Geomagnetic field quiet, G0",
+      "meansForYou": "Nothing to act on.",
+      "url": "https://www.swpc.noaa.gov/"
+    }
+  ],
+  "unreachable": ["openfema"]
+}
