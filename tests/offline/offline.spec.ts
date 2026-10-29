@@ -216,6 +216,67 @@ test.describe('standing posture', () => {
   });
 });
 
+test.describe('achievements and rotation', () => {
+  async function add(page: Page, kit: string, item: string, times = 1) {
+    await page.getByLabel('Which kit').selectOption(kit);
+    await page.getByLabel('What').selectOption(item);
+    for (let i = 0; i < times; i += 1) {
+      await page.getByRole('button', { name: /^Add to/ }).click();
+    }
+  }
+
+  test('earns an achievement from real stock, not from using the app', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/supplies');
+
+    // Water, calories and sanitation all have to clear three days — the
+    // binding set. Buying only water earns nothing.
+    await add(page, 'home', 'water-stored-gal', 4);
+    await expect(page.getByTestId('achievement')).toHaveCount(0);
+
+    await add(page, 'home', 'food-shelf-stable-day', 4);
+    await add(page, 'home', 'toilet-bucket-kit', 1);
+
+    await expect(page.getByTestId('achievement').filter({ hasText: '72 Hours' })).toBeVisible();
+
+    // Earned once, and it survives a reload because it is stored, not derived
+    // from a session.
+    await page.reload();
+    await expect(page.getByTestId('achievement').filter({ hasText: '72 Hours' })).toBeVisible();
+  });
+
+  test('queues an expiring item as something to use, not as a warning', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/supplies');
+
+    await page.getByLabel('Which kit').selectOption('home');
+    await page.getByLabel('What').selectOption('food-shelf-stable-day');
+    await page.getByLabel('Expires (optional)').fill('2026-11-15');
+    await page.getByRole('button', { name: /^Add to/ }).click();
+
+    await expect(page.getByRole('heading', { name: 'Rotation' })).toBeVisible();
+    await expect(page.getByText('Still good today')).toBeVisible();
+    await expect(page.getByText(/Use it, then replace it/)).toBeVisible();
+  });
+
+  test('Grey Sky hides achievements and the rotation queue', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/supplies');
+    await add(page, 'home', 'water-stored-gal', 4);
+    await add(page, 'home', 'food-shelf-stable-day', 4);
+    await add(page, 'home', 'toilet-bucket-kit', 1);
+    await expect(page.getByTestId('achievement').first()).toBeVisible();
+
+    await page.goto('/settings');
+    await page.getByTestId('state-grey-sky').click();
+    await page.goto('/supplies');
+
+    // Policy G08: no badges, no scores, no celebration in Grey Sky.
+    await expect(page.getByTestId('achievement')).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: 'Rotation' })).toHaveCount(0);
+  });
+});
+
 test.describe('economic exposure and commerce', () => {
   test('exposure shows a measured reading, its chain and its exit condition', async ({
     page,

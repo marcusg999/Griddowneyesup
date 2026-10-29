@@ -53,9 +53,14 @@ export function useSupply() {
   const ladder = pack ? ladderWithLocks(pack.kits, statuses) : [];
 
   const addItem = useCallback(
-    async (itemId: string, quantity: number, kits: KitId[]) => {
+    async (itemId: string, quantity: number, kits: KitId[], expiresOn?: string) => {
+      // Stock with different dates stays as separate records: merging them
+      // would lose the earlier date, which is the one that matters.
       const existing = inventory.find(
-        (r) => r.itemId === itemId && r.kits.join() === kits.join(),
+        (r) =>
+          r.itemId === itemId &&
+          r.kits.join() === kits.join() &&
+          (r.expiresOn ?? '') === (expiresOn ?? ''),
       );
       const record: InventoryRecord = existing
         ? { ...existing, quantity: existing.quantity + quantity }
@@ -65,6 +70,7 @@ export function useSupply() {
             quantity,
             kits,
             addedAt: new Date().toISOString(),
+            ...(expiresOn ? { expiresOn } : {}),
           };
       await store.inventory.put(record);
       await reload();

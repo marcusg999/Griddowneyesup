@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from 'react';
 import { installContentPack, readInstalledPack, type LoadedPack } from '@/content/pack';
+import { store } from '@/db';
 
 /**
  * Content availability.
@@ -41,6 +42,13 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       if (installed) {
         setPack(installed);
         setStatus('ready');
+
+        // Booting the whole library with the radio off is the user verifying
+        // the one claim this product makes. It is a real-world act — they
+        // turned the network off — not a reward for opening an app.
+        if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+          void store.achievements.award('cold-start');
+        }
       }
 
       // 2. Then try to refresh. Offline is the expected path, not an error.

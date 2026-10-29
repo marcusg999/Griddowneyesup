@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  bindingResourcesFor,
   computeCoverage,
   dailyNeeds,
   limitingDays,
@@ -131,5 +132,38 @@ describe('readiness tiers', () => {
   it('rounds days down, because 3.9 days of water is 3 days of water', () => {
     expect(wholeDays(3.9)).toBe(3);
     expect(wholeDays(undefined)).toBe(0);
+  });
+});
+
+describe('what actually binds the tier', () => {
+  it('does not let power zero out a well-stocked household', () => {
+    // Found by a failing achievement test: a household with thirty days of
+    // water, food and sanitation but no power bank was reading as zero days
+    // prepared. Misleading in the pessimistic direction is still misleading,
+    // and it makes the number feel unreachable rather than useful.
+    const powerless = computeCoverage(
+      oneAdult,
+      [record('water-stored-gal', 30), record('food-day', 30)],
+      catalog,
+    );
+    expect(powerless.find((c) => c.resource === 'power-wh')?.days).toBe(0);
+    expect(limitingDays(powerless, new Set(['water-litres', 'calories-kcal']))).toBeGreaterThan(
+      3,
+    );
+  });
+
+  it('lets heat bind only where the household faces cold', () => {
+    expect(bindingResourcesFor([]).has('heat-hours')).toBe(false);
+    expect(bindingResourcesFor(['wildfire']).has('heat-hours')).toBe(false);
+    expect(bindingResourcesFor(['winter-storm']).has('heat-hours')).toBe(true);
+    expect(bindingResourcesFor(['grid-down']).has('heat-hours')).toBe(true);
+  });
+
+  it('always binds on water, calories and sanitation', () => {
+    const binding = bindingResourcesFor([]);
+    expect(binding.has('water-litres')).toBe(true);
+    expect(binding.has('calories-kcal')).toBe(true);
+    expect(binding.has('sanitation-uses')).toBe(true);
+    expect(binding.has('power-wh')).toBe(false);
   });
 });

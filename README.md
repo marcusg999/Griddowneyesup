@@ -103,7 +103,8 @@ is worse than none: it looks finished.
   policy news has no threshold that would ever bring it back down.
 - **No gamification of app usage.** Every mechanic rewards real-world state.
   No streaks for opening the app, no leaderboards, no score that decays to
-  create urgency.
+  create urgency. A badge that describes the present disappears when it stops
+  being true, because a badge that lies costs more than it buys.
 - **No weapons, munitions, or tactics content.** Personal defence is handled as
   planning — awareness, de-escalation, avoidance, securing a dwelling. See
   [`docs/CONTENT_POLICY.md`](docs/CONTENT_POLICY.md).
@@ -126,7 +127,7 @@ disabled.**
 | # | Build step | Status |
 |---|---|---|
 | 1 | Content schema, pack format, offline shell — **prove airplane mode** | ✅ Done |
-| 2 | Supply system, gap analysis, kit ladder, achievements | 🔨 Coverage + ladder + weight budgeting in; achievements and rotation next |
+| 2 | Supply system, gap analysis, kit ladder, achievements | ✅ Done |
 | 3 | Plan builder + printable documents | ✅ Done |
 | 4 | Skills library rendering and local full-text search | ✅ Rendering + search done; content volume at 6 of 40–60 |
 | 5 | Readiness-state machine and Grey Sky interface | ✅ State machine + Grey Sky in; Watch action queue pending |
@@ -138,8 +139,8 @@ disabled.**
 ### The gate, currently passing
 
 ```
-Shell 82.7 / 150 KB gzipped · fonts 68.2 / 100 KB · content 67.3 / 2048 KB
-90 unit tests · 20 offline tests
+Shell 85.1 / 150 KB gzipped · fonts 68.2 / 100 KB · content 67.3 / 2048 KB
+115 unit tests · 23 offline tests
 ```
 
 The offline suite runs against the production build in a Pixel 5 profile with

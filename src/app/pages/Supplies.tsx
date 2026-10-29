@@ -7,6 +7,9 @@ import { weightTradeoff } from '@/features/supply/kits';
 import { acquisitionPath } from '@/features/supply/recommend';
 import { attachOffers } from '@/features/commerce/offers';
 import { Offers } from '@/ui/Offers';
+import { rotationQueue, suggestedExpiry } from '@/features/supply/rotation';
+import { useAchievements } from '@/features/supply/useAchievements';
+import { achievementBySlug } from '@/features/supply/achievements';
 import type { KitId } from '@/content/types';
 
 export function Supplies() {
@@ -15,11 +18,14 @@ export function Supplies() {
   const { state, suppressGamification } = useReadiness();
   const [selectedKit, setSelectedKit] = useState<KitId>('edc');
   const [itemId, setItemId] = useState('');
+  const [expiresOn, setExpiresOn] = useState('');
+  const { earned, standing } = useAchievements(profile, inventory);
 
   if (loading || !pack) return <p className="lede">Reading your inventory…</p>;
 
   const byId = new Map(pack.items.map((i) => [i.id, i]));
   const kit = pack.kits.find((k) => k.id === selectedKit);
+  const rotation = rotationQueue(inventory, pack.items);
 
   return (
     <>
@@ -123,7 +129,7 @@ export function Supplies() {
           if (!itemId) return;
           // Deliberately keeps the selection: adding four gallons of water is
           // a normal thing to do and should not need re-choosing each time.
-          void addItem(itemId, 1, [selectedKit]);
+          void addItem(itemId, 1, [selectedKit], expiresOn || undefined);
         }}
       >
         <label className="meta" htmlFor="kit-select">
@@ -161,10 +167,110 @@ export function Supplies() {
           )}
         </select>
 
-        <button className="btn" type="submit" style={{ marginTop: 12 }} disabled={!itemId}>
+        <label className="meta" htmlFor="expiry" style={{ marginTop: 12, display: 'block' }}>
+          Expires (optional)
+        </label>
+        <input
+          id="expiry"
+          className="search"
+          type="date"
+          value={expiresOn}
+          onChange={(event) => setExpiresOn(event.target.value)}
+        />
+        {itemId && suggestedExpiry(byId.get(itemId)) && !expiresOn && (
+          <button
+            type="button"
+            className="btn btn--ghost"
+            style={{ minHeight: 36, padding: '4px 12px', marginTop: 8 }}
+            onClick={() => setExpiresOn(suggestedExpiry(byId.get(itemId)) ?? '')}
+          >
+            Use typical shelf life ({suggestedExpiry(byId.get(itemId))})
+          </button>
+        )}
+
+        <button className="btn" type="submit" style={{ marginTop: 12, display: 'block' }} disabled={!itemId}>
           Add to {kit?.name ?? 'kit'}
         </button>
       </form>
+
+      {rotation.length > 0 && !suppressGamification && (
+        <>
+          <h2>
+            <span className="margin-note" aria-hidden="true">
+              use these
+            </span>
+            Rotation
+          </h2>
+          <p className="meta" style={{ marginTop: -6 }}>
+            Still good today. That is the point of catching them now.
+          </p>
+          <ul className="rotation">
+            {rotation.map((entry) => (
+              <li key={entry.record.id} data-bucket={entry.bucket}>
+                <span className="rotation__when tnum">
+                  {entry.daysRemaining < 0
+                    ? `${Math.abs(entry.daysRemaining)}d past`
+                    : `${entry.daysRemaining}d`}
+                </span>
+                <span>
+                  <strong>{entry.item?.name ?? entry.record.itemId}</strong>
+                  <small>
+                    {entry.bucket === 'expired'
+                      ? 'Past its date — it no longer counts toward your coverage.'
+                      : 'Use it, then replace it.'}
+                  </small>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {standing.length > 0 && !suppressGamification && (
+        <>
+          <h2>
+            <span className="margin-note" aria-hidden="true">
+              right now
+            </span>
+            True today
+          </h2>
+          <ul className="badges">
+            {standing.map((slug) => {
+              const def = achievementBySlug.get(slug);
+              if (!def) return null;
+              return (
+                <li key={slug} data-testid="achievement" data-standing="true">
+                  <strong>{def.name}</strong>
+                  <small>{def.note}</small>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
+
+      {earned.length > 0 && !suppressGamification && (
+        <>
+          <h2>
+            <span className="margin-note" aria-hidden="true">
+              earned
+            </span>
+            Done
+          </h2>
+          <ul className="badges">
+            {earned.map((a) => {
+              const def = achievementBySlug.get(a.slug as never);
+              if (!def) return null;
+              return (
+                <li key={a.slug} data-testid="achievement">
+                  <strong>{def.name}</strong>
+                  <small>{def.note}</small>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
 
       <h2>
         <span className="margin-note" aria-hidden="true">

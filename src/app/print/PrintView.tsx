@@ -1,5 +1,6 @@
 import { Link, useRoute } from 'wouter';
 import { brand } from '@/config/brand';
+import { store } from '@/db';
 import { useContent } from '@/state/content';
 import { usePlan } from '@/features/plan/usePlan';
 import { useSupply } from '@/features/supply/useSupply';
@@ -517,7 +518,12 @@ export function PrintView() {
           type="button"
           className="btn"
           style={{ marginLeft: 'auto' }}
-          onClick={() => window.print()}
+          onClick={() => {
+            // Awarded on the print itself, not on viewing the page: looking
+            // at a plan is not the same as having one on paper.
+            void store.achievements.award('paper-trail', doc);
+            window.print();
+          }}
         >
           Print / Save as PDF
         </button>

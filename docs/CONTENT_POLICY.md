@@ -242,7 +242,29 @@ closet. Days of coverage is a physical quantity. Points are not.
 - **G07** Streaks based on app opens, sessions, or time-in-app
 - **G08** Any gamification element rendered in GREY SKY state. Enforced by test.
 
-### 6.3 Required
+### 6.3 Standing claims versus milestones
+
+An achievement that describes **the present** stops being shown when it stops
+being true. An achievement that records **something that happened** is kept
+forever.
+
+| Kind | Examples | Behaviour |
+|---|---|---|
+| Milestone | 72 Hours, Paper Trail, Cold Start, Out of Area | Permanent. Records a fact about the past. |
+| Standing | Nothing Expired, Under Budget | Live. Shown only while true. |
+
+G06 forbids a score that **decays from inaction** in order to manufacture
+urgency. It explicitly does not protect a false claim about the present, and
+it already says food actually expiring is real and is shown.
+
+This was found by looking at a screenshot: "Nothing Expired" was rendering
+directly above a rotation queue listing bleach twenty days past its date. A
+badge that lies costs more trust than it ever bought.
+
+Standing achievements are never persisted, so there is no stored state that
+can drift out of line with reality.
+
+### 6.4 Required
 
 - Progression measured in days of coverage and ladder rungs, both derived from
   real inventory

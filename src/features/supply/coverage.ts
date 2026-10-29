@@ -1,4 +1,4 @@
-import type { CatalogItem, ResourceKind } from '@/content/types';
+import type { CatalogItem, HazardId, ResourceKind } from '@/content/types';
 import type { InventoryRecord, Profile } from '@/db/types';
 
 /**
@@ -122,13 +122,47 @@ export function computeCoverage(
 }
 
 /**
+ * Resources that genuinely bind the readiness tier.
+ *
+ * Water and calories are obvious. Sanitation is here because the brief is
+ * right that it is the leading cause of illness in a prolonged outage and is
+ * the thing households plan for least.
+ *
+ * Power is deliberately NOT here. A household with thirty days of water, food
+ * and sanitation and no power bank is not "zero days prepared", and saying so
+ * would be misleading in the pessimistic direction — which is its own kind of
+ * dishonesty, and makes the number feel unreachable rather than useful.
+ */
+const ALWAYS_BINDING: readonly ResourceKind[] = [
+  'water-litres',
+  'calories-kcal',
+  'sanitation-uses',
+];
+
+/** Heat binds only where the household's own hazards make cold a real risk. */
+const COLD_HAZARDS = new Set<HazardId>(['winter-storm', 'grid-down']);
+
+export function bindingResourcesFor(
+  hazards: readonly HazardId[] | undefined,
+): ReadonlySet<ResourceKind> {
+  const binding = new Set<ResourceKind>(ALWAYS_BINDING);
+  if ((hazards ?? []).some((h) => COLD_HAZARDS.has(h))) binding.add('heat-hours');
+  return binding;
+}
+
+/**
  * The binding constraint is the resource you run out of first. A household
  * with ninety days of rice and two days of water has two days of coverage,
  * and saying otherwise would be flattering and useless.
+ *
+ * Only life-critical resources bind — see ALWAYS_BINDING above.
  */
-export function limitingDays(coverage: readonly Coverage[]): number {
+export function limitingDays(
+  coverage: readonly Coverage[],
+  binding: ReadonlySet<ResourceKind> = new Set(ALWAYS_BINDING),
+): number {
   const measured = coverage
-    .filter((c) => c.dailyNeed > 0 && c.days !== undefined)
+    .filter((c) => binding.has(c.resource) && c.dailyNeed > 0 && c.days !== undefined)
     .map((c) => c.days as number);
   return measured.length === 0 ? 0 : Math.min(...measured);
 }
