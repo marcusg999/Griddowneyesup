@@ -2,6 +2,13 @@ import { Link } from 'wouter';
 import { t } from '@/i18n';
 import { useReadiness } from '@/state/readiness';
 import { useSupply } from '@/features/supply/useSupply';
+import { usePlan } from '@/features/plan/usePlan';
+import { rotationQueue } from '@/features/supply/rotation';
+import { watchQueue } from '@/features/watch/queue';
+import type { CatalogItem } from '@/content/types';
+import type { InventoryRecord, Profile } from '@/db/types';
+import type { Contact, Plan } from '@/features/plan/types';
+import type { Coverage } from '@/features/supply/coverage';
 import { CoverageStave } from '@/ui/CoverageStave';
 import { Posture } from '@/ui/Posture';
 import { Exposure } from '@/ui/Exposure';
@@ -39,7 +46,8 @@ const TIER_LABEL: Record<string, string> = {
 
 export function Today() {
   const { state, suppressGamification } = useReadiness();
-  const { coverage, loading, profile } = useSupply();
+  const { coverage, inventory, loading, profile } = useSupply();
+  const { plan, contacts } = usePlan();
   const { pack } = useContent();
 
   // GREY SKY: four things only. No feed, no coverage, no tiers, no badges.
@@ -171,27 +179,38 @@ export function Today() {
         </>
       )}
 
-      <h2>
-        <span className="margin-note" aria-hidden="true">
-          next
-        </span>
-        Worth doing
-      </h2>
+      {state === 'watch' ? <WatchQueue
+        profile={profile}
+        coverage={coverage}
+        inventory={inventory}
+        catalog={pack?.items ?? []}
+        plan={plan}
+        contacts={contacts}
+      /> : (
+        <>
+          <h2>
+            <span className="margin-note" aria-hidden="true">
+              next
+            </span>
+            Worth doing
+          </h2>
 
-      <Link href="/skills/water-hollow-fibre-filter" className="card card--link reveal">
-        <strong>Know what your filter does not do</strong>
-        <p className="meta" style={{ margin: '5px 0 0' }}>
-          Most filters do not remove viruses, and a filter that has frozen while wet
-          looks exactly like a working one.
-        </p>
-      </Link>
+          <Link href="/skills/water-hollow-fibre-filter" className="card card--link reveal">
+            <strong>Know what your filter does not do</strong>
+            <p className="meta" style={{ margin: '5px 0 0' }}>
+              Most filters do not remove viruses, and a filter that has frozen while wet
+              looks exactly like a working one.
+            </p>
+          </Link>
 
-      <Link href="/supplies" className="card card--link reveal">
-        <strong>Start the ladder at Everyday Carry</strong>
-        <p className="meta" style={{ margin: '5px 0 0' }}>
-          It costs almost nothing and you probably already have most of it.
-        </p>
-      </Link>
+          <Link href="/supplies" className="card card--link reveal">
+            <strong>Start the ladder at Everyday Carry</strong>
+            <p className="meta" style={{ margin: '5px 0 0' }}>
+              It costs almost nothing and you probably already have most of it.
+            </p>
+          </Link>
+        </>
+      )}
 
       {/* The rail: instruments and raw figures, beside the prose rather than
           interrupting it. */}
@@ -213,6 +232,75 @@ export function Today() {
           <dd>never — all local</dd>
         </dl>
       </aside>
+    </>
+  );
+}
+
+/**
+ * The WATCH surface's substance.
+ *
+ * The state's summary line promises "here is what to do in the next 48 hours";
+ * this is what makes that true. The derivation, and the three rules deciding
+ * what is allowed in, live in features/watch/queue.ts.
+ *
+ * It replaces the Blue Sky reading suggestions rather than sitting alongside
+ * them. In this state the question is not what is worth learning, it is what
+ * to do first, and a list of articles underneath an action queue is an
+ * invitation to do neither.
+ */
+function WatchQueue({
+  profile,
+  coverage,
+  inventory,
+  catalog,
+  plan,
+  contacts,
+}: {
+  profile: Profile;
+  coverage: readonly Coverage[];
+  inventory: readonly InventoryRecord[];
+  catalog: readonly CatalogItem[];
+  plan: Plan;
+  contacts: readonly Contact[];
+}) {
+  const rotation = rotationQueue(inventory, catalog);
+  const queue = watchQueue({ profile, coverage, inventory, catalog, plan, contacts, rotation });
+
+  return (
+    <>
+      <h2>
+        <span className="margin-note" aria-hidden="true">
+          48 hours
+        </span>
+        Do these first
+      </h2>
+      <p className="meta" style={{ marginTop: -6, marginBottom: 14 }}>
+        Worked out from your own gaps, most urgent first. Nothing here needs a shop to be
+        open.
+      </p>
+
+      <ol className="queue">
+        {queue.map((action) => {
+          const body = (
+            <>
+              <strong>{action.title}</strong>
+              <p className="meta queue__why">{action.because}</p>
+            </>
+          );
+
+          return (
+            <li key={action.id}>
+              {action.href === undefined ? (
+                <div className="card reveal">{body}</div>
+              ) : (
+                <Link href={action.href} className="card card--link reveal">
+                  {body}
+                </Link>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </>
   );
 }
