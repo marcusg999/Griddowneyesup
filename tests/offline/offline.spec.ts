@@ -39,7 +39,11 @@ test.describe('offline release gate', () => {
     await page.goto('/');
     await page.reload();
 
-    await expect(page.getByRole('heading', { name: 'Today', level: 1 })).toBeVisible();
+    // The Today route's h1 is the readiness state, not the tab name — the page
+    // reports what is happening rather than which tab you are on.
+    await expect(
+      page.getByRole('heading', { name: /Blue Sky|Watch|Grey Sky/, level: 1 }),
+    ).toBeVisible();
     // Never a spinner, never an error page, never a blank screen (§2).
     await expect(page.getByText(/something went wrong/i)).toHaveCount(0);
     await expect(page.locator('#root')).not.toBeEmpty();
@@ -48,12 +52,12 @@ test.describe('offline release gate', () => {
   test('navigates every route with the network disabled', async ({ page }) => {
     await installThenGoOffline(page);
 
-    const routes = [
-      { href: '/', heading: 'Today' },
-      { href: '/supplies', heading: 'Supplies' },
-      { href: '/plan', heading: 'Plan' },
-      { href: '/skills', heading: 'Skills' },
-      { href: '/settings', heading: 'Settings' },
+    const routes: Array<{ href: string; heading: RegExp }> = [
+      { href: '/', heading: /Blue Sky|Watch|Grey Sky/ },
+      { href: '/supplies', heading: /^Supplies$/ },
+      { href: '/plan', heading: /^Plan$/ },
+      { href: '/skills', heading: /^Skills$/ },
+      { href: '/settings', heading: /^Settings$/ },
     ];
 
     for (const route of routes) {
@@ -90,6 +94,12 @@ test.describe('offline release gate', () => {
     const limits = page.getByRole('region', { name: /what this does not do/i });
     await expect(limits).toBeVisible();
     await expect(limits).toContainText(/does NOT make water microbiologically safe/i);
+
+    // The stamp is the thing that makes the limits unmissable, so it is part
+    // of the gate rather than decoration that may silently disappear.
+    await expect(
+      limits.getByRole('img', { name: /stamped: does not purify/i }),
+    ).toBeVisible();
 
     // CONTENT_POLICY §3.2: the limits must come BEFORE the steps, because
     // after the steps is after the point someone has started doing it.

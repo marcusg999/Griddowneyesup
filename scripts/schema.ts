@@ -66,6 +66,9 @@ export const skillSchema = z
      */
     doesNotDo: z.array(z.string().min(1)).min(1, 'every skill must state what it does NOT do'),
 
+    // Short enough to stamp and still be read at a glance.
+    stampLine: z.string().min(1).max(28).optional(),
+
     citations: z.array(citationSchema),
     lastReviewed: isoDate,
     hazards: z

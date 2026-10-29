@@ -107,6 +107,13 @@ export interface Skill {
    */
   readonly doesNotDo: readonly string[];
 
+  /**
+   * The single most important limitation, compressed to a few words — what
+   * gets stamped across the page. Content, not presentation: this is the line
+   * someone reads at 3am instead of the full list.
+   */
+  readonly stampLine?: string;
+
   readonly citations: readonly Citation[];
   /** ISO date. Staleness surfaces in the admin view; >18mo fails the build. */
   readonly lastReviewed: string;
