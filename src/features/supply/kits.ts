@@ -110,6 +110,21 @@ export function ladderWithLocks(
 }
 
 /**
+ * Ladder order for drawing: top rung first.
+ *
+ * The progression is computed bottom-up, because a rung unlocks when the one
+ * below it is complete. Drawing it in that same order puts rung 1 at the top of
+ * the screen and the hardest kit out of sight at the bottom, which reads as an
+ * upside-down ladder — the foot of a ladder belongs at the foot.
+ *
+ * Climbing order is untouched: Everyday Carry is still what unlocks first, and
+ * the locks here are the same locks. Only the drawing is reversed.
+ */
+export function topRungFirst(ladder: readonly LadderRung[]): LadderRung[] {
+  return [...ladder].reverse();
+}
+
+/**
  * The trade, stated plainly. Almost everyone builds a bug-out bag they cannot
  * carry for a mile, and "you are 2.1 kg over" is less useful than knowing what
  * dropping the hatchet actually buys you.
