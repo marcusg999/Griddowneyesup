@@ -71,6 +71,13 @@ export function kitStatus(
   };
 }
 
+/** One rung as the UI consumes it: its state, whether it is reachable yet, and what gates it. */
+export interface LadderRung {
+  readonly status: KitStatus;
+  readonly locked: boolean;
+  readonly prerequisite: KitDefinition | undefined;
+}
+
 /**
  * The ladder is the onboarding sequence. A rung unlocks when the one below it
  * is complete — nobody starts with an INCH bag, and showing someone a
@@ -79,7 +86,7 @@ export function kitStatus(
 export function ladderWithLocks(
   kits: readonly KitDefinition[],
   statuses: ReadonlyMap<KitId, KitStatus>,
-): Array<{ status: KitStatus; locked: boolean; prerequisite: KitDefinition | undefined }> {
+): LadderRung[] {
   const ordered = [...kits].sort((a, b) => a.rung - b.rung);
 
   return ordered.flatMap((kit, index) => {
@@ -95,6 +102,21 @@ export function ladderWithLocks(
       },
     ];
   });
+}
+
+/**
+ * Ladder order for drawing: top rung first.
+ *
+ * The progression is computed bottom-up, because a rung unlocks when the one
+ * below it is complete. Drawing it in that same order puts rung 1 at the top of
+ * the screen and the hardest kit out of sight at the bottom, which reads as an
+ * upside-down ladder — the foot of a ladder belongs at the foot.
+ *
+ * Climbing order is untouched: Everyday Carry is still what unlocks first, and
+ * the locks here are the same locks. Only the drawing is reversed.
+ */
+export function topRungFirst(ladder: readonly LadderRung[]): LadderRung[] {
+  return [...ladder].reverse();
 }
 
 /**

@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { COMPLETION_THRESHOLD, kitStatus, ladderWithLocks } from '@/features/supply/kits';
+import {
+  COMPLETION_THRESHOLD,
+  kitStatus,
+  ladderWithLocks,
+  topRungFirst,
+} from '@/features/supply/kits';
 import type { CatalogItem, KitDefinition, KitId } from '@/content/types';
 import type { InventoryRecord, Profile } from '@/db/types';
 
@@ -140,6 +145,29 @@ describe('the ladder', () => {
   it('presents rungs in ladder order regardless of input order', () => {
     const shuffled = [kits[2]!, kits[0]!, kits[1]!];
     const ladder = ladderWithLocks(shuffled, statusesFor([]));
+    expect(ladder.map((l) => l.status.kit.id)).toEqual(['edc', 'ghb', 'bob']);
+  });
+
+  it('draws the ladder top rung first, so the foot is at the foot', () => {
+    const ladder = topRungFirst(ladderWithLocks(kits, statusesFor([])));
+    expect(ladder.map((l) => l.status.kit.id)).toEqual(['bob', 'ghb', 'edc']);
+  });
+
+  it('reverses the drawing without reversing the climb', () => {
+    const drawn = topRungFirst(ladderWithLocks(kits, statusesFor([])));
+
+    // The reachable rung is still Everyday Carry; it has just moved to the
+    // bottom of the list. Nothing became unlockable by being drawn first.
+    const unlocked = drawn.filter((l) => !l.locked).map((l) => l.status.kit.id);
+    expect(unlocked).toEqual(['edc']);
+    expect(drawn[0]?.status.kit.id).toBe('bob');
+    expect(drawn[0]?.locked).toBe(true);
+    expect(drawn[0]?.prerequisite?.id).toBe('ghb');
+  });
+
+  it('does not mutate the ladder it is given', () => {
+    const ladder = ladderWithLocks(kits, statusesFor([]));
+    topRungFirst(ladder);
     expect(ladder.map((l) => l.status.kit.id)).toEqual(['edc', 'ghb', 'bob']);
   });
 });
