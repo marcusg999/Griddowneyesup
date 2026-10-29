@@ -43,9 +43,17 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npx vite preview --port 4173 --strictPort',
+    // --host 127.0.0.1 is load-bearing. `vite preview` otherwise binds to
+    // `localhost`, which on a GitHub Actions runner resolves to ::1 first
+    // while Playwright probes 127.0.0.1 — the server comes up and the wait
+    // times out anyway. Pin the interface to the one baseURL names.
+    command: 'npx vite preview --port 4173 --strictPort --host 127.0.0.1',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: !process.env['CI'],
     timeout: 60_000,
+    // Without this a server that fails to start reports only the timeout,
+    // with nothing about why.
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
 });
