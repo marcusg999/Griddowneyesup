@@ -36,6 +36,13 @@ jobs:
 
       - run: npm ci
 
+      # Generates the content pack AND src/content/signing-key.generated.ts,
+      # which is gitignored because it is a build product. pack.ts imports that
+      # module, so typecheck cannot run before this step exists — which is why
+      # every CI run until now failed at Typecheck on a clean checkout.
+      - name: Build content pack
+        run: npm run content:build
+
       - name: Validate content
         run: npm run content:validate
 
