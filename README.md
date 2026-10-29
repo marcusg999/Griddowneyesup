@@ -148,8 +148,8 @@ disabled.**
 ### The gate, currently passing
 
 ```
-Shell 89.3 / 150 KB gzipped · fonts 68.2 / 100 KB · content 367.6 / 2048 KB
-160 unit tests · 34 offline tests
+Shell 89.5 / 150 KB gzipped · fonts 68.2 / 100 KB · content 367.6 / 2048 KB
+160 unit tests · 36 offline tests
 ```
 
 The offline suite runs against the production build in a Pixel 5 profile with
