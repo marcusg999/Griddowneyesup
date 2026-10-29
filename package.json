@@ -1,0 +1,43 @@
+{
+  "name": "ballast",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Offline-first disaster preparedness. The network is an enhancement, not a dependency.",
+  "scripts": {
+    "dev": "npm run content:build && vite",
+    "build": "npm run content:build && tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "content:keygen": "tsx scripts/keygen.ts",
+    "content:build": "tsx scripts/build-content-pack.ts",
+    "content:validate": "tsx scripts/validate-content.ts",
+    "test:offline": "playwright test",
+    "check:budget": "tsx scripts/check-budget.ts",
+    "verify": "npm run typecheck && npm run content:validate && npm run test:unit && npm run build && npm run check:budget && npm run test:offline"
+  },
+  "dependencies": {
+    "idb": "8.0.0",
+    "minisearch": "7.1.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "wouter": "3.3.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.48.2",
+    "@types/node": "22.9.0",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.3",
+    "fake-indexeddb": "6.0.0",
+    "tsx": "4.19.2",
+    "typescript": "5.6.3",
+    "vite": "5.4.11",
+    "vite-plugin-pwa": "0.20.5",
+    "vitest": "2.1.5",
+    "zod": "3.23.8"
+  }
+}
