@@ -106,6 +106,8 @@ function build(): void {
   const kits = read('kits.json');
   const overlays = read('overlays.json');
   const posture = read('posture.json');
+  const indicators = read('indicators.json');
+  const offers = read('offers.json');
 
   const entries: Entry[] = [];
   emit('skills', skills, entries);
@@ -113,6 +115,10 @@ function build(): void {
   emit('kits', kits, entries);
   emit('overlays', overlays, entries);
   emit('posture', posture, entries);
+  emit('indicators', indicators, entries);
+  // Separate artifact on purpose: commerce data never travels with the
+  // content it might otherwise be thought to influence.
+  emit('offers', offers, entries);
 
   // Full-text index is built here, not on device. Building an index on a
   // five-year-old Android at first launch is the wrong place to spend the

@@ -4,6 +4,7 @@ import { useReadiness } from '@/state/readiness';
 import { useSupply } from '@/features/supply/useSupply';
 import { CoverageStave } from '@/ui/CoverageStave';
 import { Posture } from '@/ui/Posture';
+import { Exposure } from '@/ui/Exposure';
 import { useContent } from '@/state/content';
 import { tierFor, wholeDays, limitingDays } from '@/features/supply/coverage';
 
@@ -140,6 +141,27 @@ export function Today() {
           </p>
           {pack?.posture.map((note) => (
             <Posture key={note.id} note={note} targetDays={profile.targetHorizonDays} />
+          ))}
+        </>
+      )}
+
+      {/* Second-order economic effects. Measured values, an inspectable
+          transmission chain, and arithmetic on this household's own numbers.
+          No purchase links here — see CONTENT_POLICY §7.5. */}
+      {(pack?.indicators.length ?? 0) > 0 && (
+        <>
+          <h2>
+            <span className="margin-note" aria-hidden="true">
+              what it costs
+            </span>
+            Exposure
+          </h2>
+          <p className="meta" style={{ marginTop: -6, marginBottom: 14 }}>
+            What moved, how it reaches a household, and what it costs yours. Observed
+            readings, not forecasts.
+          </p>
+          {pack?.indicators.map((indicator) => (
+            <Exposure key={indicator.id} indicator={indicator} profile={profile} />
           ))}
         </>
       )}

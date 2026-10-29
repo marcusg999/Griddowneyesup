@@ -271,7 +271,48 @@ backup and instructs us to prompt printing during onboarding — charging for it
 would contradict the product's own safety argument. Only bulk and batch export
 is paid.
 
-### D14 — No affiliate commerce in v1 **[CONFIRMED]**
+### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**
+
+Decided after the first release. §14 said to decide it up front precisely
+because "retrofitting integrity is impossible"; the constraints below were
+written before any revenue depended on them, which is the only time they can
+honestly be written, and they are now enforced as tests rather than promises.
+
+- Ordering is computed before commerce is joined — the ordering module cannot
+  import an offer type, so this is a property of the module graph.
+- Removing every offer leaves recommendation order byte-identical. Asserted.
+- `offerSchema` has no rank, priority or placement field and strips unknown
+  keys: there is no position for a merchant to buy.
+- Disclosure adjacent to every link, badge on the link, and non-affiliate links
+  disclose that they earn nothing.
+- Offers unchecked for 45 days stop linking.
+- **No purchase link may appear on a threat, posture, exposure or Grey Sky
+  surface.** Pairing a price shock with a buy button is fear as a conversion
+  mechanic. Suppression is absence, not CSS invisibility.
+
+Full detail in `CONTENT_POLICY.md` §7.
+
+### D19 — Economic exposure module **[CONFIRMED]**
+
+The §4.1 supply-chain signal, built. It ships the honest version of
+second-order threat analysis: observed readings with dates and sources, a
+transmission chain of discrete inspectable links rather than a narrative, and
+arithmetic on the household's own figures expressed as a range.
+
+It does **not** change the readiness state, and D17's reasoning survives
+intact — but it refines it. The reason a policy announcement may not be a live
+signal is that it has no current value and no threshold, so it could only
+ratchet upward. A price has both. An indicator can fall, and when it does the
+exposure falls with it. That is what makes it a signal rather than a scare.
+
+The first indicator set covers retail diesel and Brent crude against the
+Hormuz disruption. Note what the analysis actually concludes: freight is 3–8%
+of a grocery item's shelf price, so a 25% diesel rise is roughly 1–2% on most
+groceries. The honest finding is that the household's fuel bill moved and its
+grocery bill barely did — which is more useful, and considerably calmer, than
+the headline.
+
+### ~~D14 — No affiliate commerce in v1~~ **[SUPERSEDED by D14a]**
 
 v1 recommends items by **category and specification**, never by brand or SKU:
 *"a 0.1-micron hollow-fiber filter"*, not a product link. There is nothing to

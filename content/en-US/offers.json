@@ -1,0 +1,20 @@
+[
+  {
+    "id": "example-filter",
+    "itemId": "filter-hollow-fibre",
+    "merchant": "Example Merchant",
+    "url": "https://example.com/offers/hollow-fibre-filter",
+    "affiliate": true,
+    "priceCents": 2499,
+    "asOf": "2026-10-29"
+  },
+  {
+    "id": "example-bleach",
+    "itemId": "bleach-unscented",
+    "merchant": "Example Merchant",
+    "url": "https://example.com/offers/unscented-bleach",
+    "affiliate": false,
+    "priceCents": 899,
+    "asOf": "2026-10-29"
+  }
+]

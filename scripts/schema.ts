@@ -222,3 +222,81 @@ export const overlaysSchema = z.object({
 export type ValidatedSkill = z.infer<typeof skillSchema>;
 export type ValidatedItem = z.infer<typeof catalogItemSchema>;
 export type ValidatedKit = z.infer<typeof kitSchema>;
+
+/**
+ * Economic indicators. CONTENT_POLICY §10.
+ *
+ * Same discipline as posture notes — epistemic status, no prediction — plus
+ * two extra requirements that make this a signal rather than a scare: a
+ * transmission chain the reader can inspect link by link, and an explicit
+ * statement of what would end it.
+ */
+export const indicatorSchema = z
+  .object({
+    id: z.string().regex(/^[a-z0-9-]+$/),
+    name: z.string().min(1),
+    unit: z.string().min(1),
+    current: z.number(),
+    asOf: isoDate,
+    baseline: z.object({ label: z.string().min(1), value: z.number() }),
+    epistemicStatus: z.enum(['official', 'press-reported', 'mixed']),
+    whatItIs: z.string().min(1),
+    reported: z.string().min(1).optional(),
+    transmission: z
+      .array(
+        z.object({
+          from: z.string().min(1),
+          to: z.string().min(1),
+          lag: z.string().min(1),
+          note: z.string().min(1),
+        }),
+      )
+      .min(1, 'an indicator without a transmission chain is a number with no argument'),
+    whatItMeansForYou: z.string().min(1),
+    wouldChangeThis: z
+      .string()
+      .min(1, 'an indicator with no stated exit condition is a scare, not a signal'),
+    citations: z.array(citationSchema),
+    pressCitations: z
+      .array(
+        z.object({
+          source: z.string().min(1),
+          title: z.string().min(1),
+          published: z.string().min(1),
+          url: z.string().url().optional(),
+        }),
+      )
+      .optional(),
+    lastReviewed: isoDate,
+  })
+  .refine((n) => n.epistemicStatus === 'official' || (n.reported?.length ?? 0) > 0, {
+    message: 'an indicator that is not fully official must state which part is only reported',
+    path: ['reported'],
+  })
+  .refine(
+    (n) =>
+      !/\b(will|imminent|inevitable|coming war|any day now|brace|stock up now|prepare now|skyrocket|collapse)\b/i.test(
+        `${n.whatItIs} ${n.whatItMeansForYou}`,
+      ),
+    {
+      message: 'indicators state what is measured and how it propagates; they do not forecast',
+      path: ['whatItMeansForYou'],
+    },
+  );
+
+/**
+ * Offers. §14 / CONTENT_POLICY §7.
+ *
+ * Note what is NOT here: any ordering, ranking, score or priority field. The
+ * schema cannot express "put this first", so commerce data has no vocabulary
+ * for influencing recommendation order.
+ */
+export const offerSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  itemId: z.string().regex(/^[a-z0-9-]+$/),
+  merchant: z.string().min(1),
+  url: z.string().url(),
+  affiliate: z.boolean(),
+  priceCents: z.number().int().nonnegative().optional(),
+  asOf: isoDate,
+});

@@ -216,6 +216,74 @@ test.describe('standing posture', () => {
   });
 });
 
+test.describe('economic exposure and commerce', () => {
+  test('exposure shows a measured reading, its chain and its exit condition', async ({
+    page,
+  }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+
+    await expect(page.getByRole('heading', { name: 'Exposure' })).toBeVisible();
+    await expect(page.getByText('Retail diesel').first()).toBeVisible();
+    await expect(page.getByText(/Observed readings, not forecasts/i)).toBeVisible();
+
+    // The transmission chain renders as links, not as a narrative paragraph.
+    await expect(page.getByText('Freight cost').first()).toBeVisible();
+    // Both indicators carry one; the app is right and the selector was loose.
+    await expect(page.getByText(/What would end this:/).first()).toBeVisible();
+
+    // Epistemic honesty: a relayed reading says so.
+    // Both indicators carry a relayed-reading caveat, which is the point.
+    await expect(page.getByText(/Reading relayed, not read from source/i)).toHaveCount(2);
+  });
+
+  test('NO purchase links appear on the threat or exposure surfaces', async ({ page }) => {
+    await installThenGoOffline(page);
+
+    // CONTENT_POLICY §7.5. Pairing a price shock with a buy button is fear as
+    // a conversion mechanic, which §6 forbids outright. This is the test that
+    // keeps that true as the app grows.
+    for (const route of ['/', '/plan', '/skills']) {
+      await page.goto(route);
+      await expect(page.locator('[data-affiliate]')).toHaveCount(0);
+      await expect(page.locator('a[rel~="sponsored"]')).toHaveCount(0);
+    }
+  });
+
+  test('offers appear on the acquisition surface, each with adjacent disclosure', async ({
+    page,
+  }) => {
+    await installThenGoOffline(page);
+    await page.goto('/supplies');
+
+    await expect(page.getByRole('heading', { name: 'What to buy next' })).toBeVisible();
+
+    const paid = page.locator('[data-affiliate="true"]').first();
+    await expect(paid).toBeVisible();
+    // Badge on the link itself, not fine print at the bottom of the page.
+    await expect(paid.getByText('paid link')).toBeVisible();
+    await expect(paid.getByText(/We earn a commission if you buy through this link/i)).toBeVisible();
+    await expect(paid.getByText(/did not affect what is recommended/i)).toBeVisible();
+
+    // A non-affiliate link says so too, rather than staying silent.
+    await expect(
+      page.locator('[data-affiliate="false"]').first().getByText(/We earn nothing/i),
+    ).toBeVisible();
+  });
+
+  test('Grey Sky suppresses exposure and every purchase link', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByTestId('state-grey-sky').click();
+
+    await page.goto('/');
+    await expect(page.getByRole('heading', { name: 'Exposure' })).toHaveCount(0);
+
+    await page.goto('/supplies');
+    await expect(page.locator('[data-affiliate]')).toHaveCount(0);
+  });
+});
+
 test.describe('content pack integrity', () => {
   test('the pack is signed and verifies against the bundled key', async ({ page }) => {
     await page.goto('/');

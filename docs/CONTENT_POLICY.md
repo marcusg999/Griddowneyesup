@@ -254,20 +254,110 @@ closet. Days of coverage is a physical quantity. Points are not.
 
 ---
 
-## 7. Commerce integrity (D14)
+## 7. Commerce integrity (D14a)
 
-No affiliate commerce in v1. Items are recommended by **category and
-specification**, never brand or SKU.
+**Affiliate commerce is permitted.** It was not in the first release, and the
+constraints below were written before any revenue depended on them — which is
+the only time such constraints can honestly be written.
 
-If affiliate is ever introduced, these are enforced as tests, not promises:
+Items are still described by **specification, never brand**: *"a 0.1-micron
+hollow-fibre filter"*. An offer is a separate record attached to an item; it is
+never the recommendation itself.
 
-1. Recommendation ordering is computed **before** any commerce data is joined
-2. Stripping all affiliate data leaves recommendation order **byte-identical**
-3. Disclosure renders **adjacent to** every affiliate link, never in a footer
-4. Affiliate status renders as a **visible badge** on the item
+### 7.1 The four constraints, enforced as tests
 
-§14 is right: retrofitting integrity is impossible. These constraints are
-written now, while they cost nothing.
+1. **Ordering is computed before any commerce data is joined.** The ordering
+   module imports no offer type and has no parameter through which a commission
+   could reach it. This is a property of the module graph.
+2. **Stripping all affiliate data leaves recommendation order byte-identical.**
+   Asserted directly in `tests/unit/commerce.test.ts`.
+3. **Disclosure renders adjacent to every link**, never in a page footer.
+4. **Affiliate status renders as a visible badge** on the link itself.
+
+### 7.2 The schema cannot express placement
+
+`offerSchema` has no rank, priority, score or placement field, and strips
+unknown keys. Commerce data therefore has no vocabulary in which to ask to be
+moved up. A merchant cannot buy a position because there is no position to buy.
+
+### 7.3 Non-affiliate links disclose too
+
+A link that earns nothing says so. Silence on a non-affiliate link would train
+users to read the absence of a badge as meaningless.
+
+### 7.4 Stale offers stop linking
+
+An offer unchecked for more than 45 days is dropped rather than shown. A dead
+link or a wrong price on a preparedness list is worse than no link, and it is
+the kind of rot nobody notices because the page still renders.
+
+### 7.5 Commerce may never appear on a threat surface — hard
+
+> **No purchase link may render on a threat, posture, exposure or Grey Sky
+> surface.**
+
+Pairing *"fuel is up 25 percent"* with a buy button is fear as a conversion
+mechanic, which §4.3 forbids outright. The rule is one exported list
+(`COMMERCE_FORBIDDEN_SURFACES`), the offer component refuses to render on those
+surfaces even if a future call site asks it to, and the offline suite asserts
+that no `[data-affiliate]` element and no `rel="sponsored"` link exists
+anywhere on Today, Plan or Skills.
+
+Suppression means **absence, not invisibility**. Hiding commerce with CSS
+leaves every link in the document; this was a real bug, caught by that test.
+
+---
+
+## 10. Economic indicators (§4.1 supply-chain module)
+
+Second-order analysis — how a distant event reaches a household's bills — is
+explicitly in scope per §4.1's list of supply-chain and infrastructure signals.
+It is also the easiest place in the product to start editorialising, so it has
+the strictest schema.
+
+### 10.1 Measured values only
+
+An indicator carries a **current reading, a date and a baseline**. This is what
+distinguishes it from a posture note (§9) and is why it may be a live signal
+while a policy announcement may not: a price has a value that can fall. A news
+story has no value and would only ever ratchet upward.
+
+The age of every reading is displayed. An economic reading goes stale in weeks,
+and the content gate warns past 30 days.
+
+### 10.2 The mechanism is a chain, not a paragraph
+
+`transmission` is a required, non-empty list of discrete links, each with a
+`from`, a `to`, a stated lag and a note. A narrative paragraph is exactly the
+"aggregation into an implied narrative" §4.4 forbids; a chain of labelled links
+is a model the reader can inspect and disagree with one link at a time.
+
+**Each link states where it is weaker than assumed.** Freight is 3–8% of a
+grocery item's shelf price, so a 25% diesel rise is roughly 1–2% on most
+groceries — not a doubling. Saying so is the difference between analysis and
+alarm.
+
+### 10.3 An exit condition is required
+
+`wouldChangeThis` is mandatory and non-empty. An indicator with no stated way to
+end is a scare, not a signal, and the schema rejects it.
+
+### 10.4 No forecasting, no urging
+
+The schema rejects *will, imminent, inevitable, coming war, any day now, brace,
+stock up now, prepare now, skyrocket, collapse*. State what is measured, state
+how it propagates, state what it costs this household. Stop there.
+
+### 10.5 Household exposure is arithmetic, not projection
+
+Exposure is computed from figures the user entered, against an observed
+reading, as a **range** rather than a point estimate. Without those figures the
+section does not render — guessing at someone's spending to produce an alarming
+number would be the opposite of the point.
+
+The headline names **which bill actually moved** rather than quoting a total,
+because "almost all of this is fuel, groceries barely moved" is both calmer and
+more true than a single scary number.
 
 ---
 

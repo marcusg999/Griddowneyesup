@@ -989,3 +989,168 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
 }
 
 .shutoff { border-left: 1px solid var(--rule-major); padding-left: 14px; margin-bottom: 18px; }
+
+/* =========================================================================
+   ECONOMIC EXPOSURE
+   An instrument readout, not an alarm. No red, no urgency, no buy buttons.
+   ========================================================================= */
+
+.exposure {
+  border: 1px solid var(--rule-major);
+  border-left: 3px solid var(--acid-deep);
+  padding: 18px 20px;
+  margin: 0 0 16px;
+  max-width: var(--measure);
+}
+
+.exposure__status {
+  font-family: var(--hand);
+  font-size: 11.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 12px;
+}
+
+.exposure__reading { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+
+.exposure__value {
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: 44px;
+  line-height: 0.85;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+
+.exposure__meta { font-size: 14px; color: var(--ink-dim); }
+.exposure__meta small { display: block; color: var(--ink-faint); font-size: 12.5px; margin-top: 3px; }
+
+.exposure__name {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 20px;
+  margin: 10px 0 8px;
+}
+
+.exposure__sub {
+  font-family: var(--hand);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--acid-deep);
+  margin: 22px 0 10px;
+}
+
+.exposure__reported {
+  border-left: 2px solid var(--ink-faint);
+  padding-left: 12px;
+  color: var(--ink-dim);
+  font-size: 14.5px;
+}
+.exposure__reported strong { color: var(--ink); }
+
+/* The transmission chain. Discrete links, never a paragraph. */
+.chain { list-style: none; margin: 0; padding: 0; }
+.chain > li { padding: 10px 0; border-bottom: 1px solid var(--rule-major); }
+.chain__head { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.chain__node {
+  font-size: 13.5px;
+  color: var(--ink);
+  border: 1px solid var(--edge);
+  padding: 2px 9px;
+}
+.chain__arrow { color: var(--acid); font-size: 15px; }
+.chain__lag {
+  margin-left: auto;
+  font-family: var(--hand);
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+.chain__note { font-size: 14px; color: var(--ink-dim); margin: 7px 0 0; max-width: none; }
+
+.exposure__lines { list-style: none; margin: 0; padding: 0; }
+.exposure__lines > li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--rule-major);
+}
+.exposure__line-amount {
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: 19px;
+  color: var(--acid);
+  white-space: nowrap;
+}
+.exposure__line-body strong { display: block; font-size: 15px; font-weight: 600; }
+.exposure__line-body small { display: block; color: var(--ink-faint); font-size: 12.5px; margin-top: 3px; line-height: 1.45; }
+.exposure__caveat { color: var(--ink-dim) !important; }
+
+.exposure__total { margin: 14px 0 0; font-size: 15.5px; }
+.exposure__total strong { color: var(--acid); }
+
+.exposure__exit {
+  border-top: 1px solid var(--rule-major);
+  padding-top: 12px;
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--ink-dim);
+}
+.exposure__exit strong { color: var(--ink); }
+
+:root[data-state='grey-sky'] .exposure { display: none; }
+
+/* =========================================================================
+   OFFERS
+   Disclosure adjacent to the link, badge on the link, never in a footer.
+   ========================================================================= */
+
+.offers { list-style: none; margin: 10px 0 0; padding: 0; }
+.offers > li {
+  padding: 9px 0 10px;
+  border-top: 1px solid var(--rule-major);
+}
+.offers a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 15px;
+}
+.offers__price { color: var(--ink); font-weight: 600; }
+.offers__badge {
+  display: inline-block;
+  margin-left: 9px;
+  font-family: var(--hand);
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--warn);
+  border: 1px solid var(--warn);
+  padding: 1px 7px;
+  vertical-align: 1px;
+}
+.offers__disclosure {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-top: 5px;
+  line-height: 1.45;
+  max-width: 54ch;
+}
+
+:root[data-state='grey-sky'] .offers { display: none; }
+
+/* --- Acquisition tiers --------------------------------------------------- */
+
+.tier { border-top: 1px solid var(--rule-major); padding: 16px 0 6px; }
+.tier__head { display: flex; align-items: baseline; gap: 12px; }
+.tier__label { font-family: var(--display); font-size: 21px; font-weight: 400; }
+.tier__spend { margin-left: auto; color: var(--ink-faint); font-size: 13px; font-variant-numeric: tabular-nums; }
+.tier__item { padding: 11px 0; border-bottom: 1px solid var(--rule-minor); }
+.tier__item:last-child { border-bottom: 0; }
+.tier__item strong { font-size: 15px; }
+.tier__item p { margin: 3px 0 0; font-size: 13.5px; color: var(--ink-faint); max-width: 56ch; }

@@ -4,12 +4,15 @@ import { useContent } from '@/state/content';
 import { useSupply } from '@/features/supply/useSupply';
 import { useReadiness } from '@/state/readiness';
 import { weightTradeoff } from '@/features/supply/kits';
+import { acquisitionPath } from '@/features/supply/recommend';
+import { attachOffers } from '@/features/commerce/offers';
+import { Offers } from '@/ui/Offers';
 import type { KitId } from '@/content/types';
 
 export function Supplies() {
   const { pack } = useContent();
   const { inventory, ladder, loading, addItem, removeItem, profile } = useSupply();
-  const { suppressGamification } = useReadiness();
+  const { state, suppressGamification } = useReadiness();
   const [selectedKit, setSelectedKit] = useState<KitId>('edc');
   const [itemId, setItemId] = useState('');
 
@@ -81,6 +84,30 @@ export function Supplies() {
               )}
             </div>
           ))}
+        </>
+      )}
+
+      {/* Not rendered at all in Grey Sky, rather than hidden with CSS.
+          Shopping is not a Grey Sky activity, and a purchase link that is
+          merely invisible is still a purchase link in the document. */}
+      {state !== 'grey-sky' && (
+        <>
+          <h2>
+            <span className="margin-note" aria-hidden="true">
+              cheapest first
+            </span>
+            What to buy next
+          </h2>
+          <p className="meta" style={{ marginTop: -6 }}>
+            Ordered by what a dollar buys you in survival terms, cheapest tier first. The
+            order is computed before any commerce data is attached and does not depend on
+            it.
+          </p>
+          <AcquisitionTiers
+            items={pack.items}
+            held={new Set(inventory.map((r) => r.itemId))}
+            offers={pack.offers}
+          />
         </>
       )}
 
@@ -187,6 +214,57 @@ export function Supplies() {
           A bag you cannot walk a mile with is a bag you will put down.
         </p>
       )}
+    </>
+  );
+}
+
+/**
+ * The cost-staged acquisition path. §4.2.
+ *
+ * Note the order of operations, which is the whole integrity story: the
+ * ordering runs first, on items alone, and offers are attached to the result
+ * afterwards. `attachOffers` takes an ordered list and maps over it, so there
+ * is no step at which a commission could move anything.
+ */
+function AcquisitionTiers({
+  items,
+  held,
+  offers,
+}: {
+  items: readonly import('@/content/types').CatalogItem[];
+  held: ReadonlySet<string>;
+  offers: readonly import('@/content/types').Offer[];
+}) {
+  const tiers = acquisitionPath(items, held);
+
+  return (
+    <>
+      {tiers.map((tier) => {
+        const decorated = attachOffers(tier.items, offers);
+        if (decorated.length === 0) return null;
+        return (
+          <section className="tier reveal" key={tier.tier}>
+            <div className="tier__head">
+              <span className="tier__label">{tier.label}</span>
+              <span className="tier__spend tnum">
+                {tier.items.length} items ·{' '}
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                  maximumFractionDigits: 0,
+                }).format(tier.spendCents / 100)}
+              </span>
+            </div>
+            {decorated.map(({ subject, offers: itemOffers }) => (
+              <div className="tier__item" key={subject.id}>
+                <strong>{subject.name}</strong>
+                <p>{subject.spec}</p>
+                <Offers offers={itemOffers} surface="acquisition" />
+              </div>
+            ))}
+          </section>
+        );
+      })}
     </>
   );
 }

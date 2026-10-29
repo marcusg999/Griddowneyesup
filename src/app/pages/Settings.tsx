@@ -6,6 +6,45 @@ import { useSupply } from '@/features/supply/useSupply';
 import { store } from '@/db';
 import { brand } from '@/config/brand';
 
+function SpendField({
+  id,
+  label,
+  cents,
+  onSave,
+}: {
+  id: string;
+  label: string;
+  cents: number | undefined;
+  onSave: (cents: number) => void;
+}) {
+  const [value, setValue] = useState('');
+
+  useEffect(() => {
+    setValue(cents !== undefined ? String(Math.round(cents / 100)) : '');
+  }, [cents]);
+
+  return (
+    <p className="field">
+      <label className="meta" htmlFor={id}>
+        {label} (USD)
+      </label>
+      <input
+        id={id}
+        className="search"
+        type="number"
+        inputMode="numeric"
+        min="0"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={() => {
+          const dollars = Number(value);
+          if (Number.isFinite(dollars) && dollars >= 0) onSave(Math.round(dollars * 100));
+        }}
+      />
+    </p>
+  );
+}
+
 export function Settings() {
   const { state, setState } = useReadiness();
   const { pack } = useContent();
@@ -78,6 +117,29 @@ export function Settings() {
       >
         Save
       </button>
+
+      <h2>Monthly spend</h2>
+      <p className="meta" style={{ marginTop: -4 }}>
+        Used only to work out what an economic indicator costs your household. Stays on
+        this device, like everything else, and the exposure section simply does not
+        render without it rather than guessing at your numbers.
+      </p>
+      <SpendField
+        id="fuel-spend"
+        label="Fuel, per month"
+        cents={profile.monthlyFuelSpendCents}
+        onSave={(monthlyFuelSpendCents) =>
+          void store.profile.put({ ...profile, monthlyFuelSpendCents }).then(reload)
+        }
+      />
+      <SpendField
+        id="grocery-spend"
+        label="Groceries, per month"
+        cents={profile.monthlyGrocerySpendCents}
+        onSave={(monthlyGrocerySpendCents) =>
+          void store.profile.put({ ...profile, monthlyGrocerySpendCents }).then(reload)
+        }
+      />
 
       <h2>Content</h2>
       <p className="meta">
