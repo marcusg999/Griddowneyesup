@@ -1,2 +1,183 @@
-# Griddowneyesup
-Grid down eyes up is an app that helps users prepare for disaster in many ways. Education, guidance, toolkits, videos and offline resources and references. 
+# Grid Down Eyes Up
+
+> *Working name under review — see [`docs/BRAND.md`](docs/BRAND.md). **Ballast** is
+> the current recommendation; the name lives in one config file and is one commit
+> to change.*
+
+**Offline-first disaster preparedness and threat intelligence.**
+
+The app a person opens in the ninety seconds after they hear bad news. It tells
+them what is actually happening near them, what to do in the next hour, and what
+to buy before the shelves empty — and it keeps working after the towers go down.
+
+---
+
+## The premise
+
+> **The network is an enhancement, not a dependency.**
+
+Most preparedness apps are web apps with a survival theme. Open one without a
+signal and you get a spinner. That is a product that fails at the exact moment it
+exists for.
+
+So this one inverts it:
+
+- Every life-safety instruction, checklist, plan and contact is **on the device
+  before the user needs it**, in a signed, versioned content pack.
+- The app boots, navigates, searches and renders its entire reference library
+  with the radio off.
+- Live data layers on top and degrades to a clearly labelled *"last synced 4h
+  ago"*. Never a spinner, never an error page, never a blank screen.
+- **Airplane mode is a release gate, not a feature.** A build that fails the
+  offline suite does not ship.
+
+---
+
+## Three states
+
+The whole interface reorganises around the current one. This is the spine, not a
+skin.
+
+| State | When | What it is |
+|---|---|---|
+| **BLUE SKY** | Nothing is happening | Calm, educational, slightly wry. Learning, inventory, plan building, gap analysis. Where users spend 99% of their time, and where the app earns retention. |
+| **WATCH** | Something is forming | A *"next 48 hours"* action queue derived from the user's own gaps: fuel up, fill water containers, pull cash, charge banks, confirm rally point, refill prescriptions. |
+| **GREY SKY** | It is happening | Strips to four things: **MY PLAN · WATER · SHELTER/HEAT · CONTACT.** Maximum contrast, large tap targets, no feed, no notifications except life safety. Assume 12% battery and one bar. |
+
+---
+
+## What makes it different
+
+**The kit ladder.** Preparedness is a ladder of kits differentiated by distance
+from home, duration and carry weight — EDC → Get Home Bag → Bedside → Home kit →
+Bug Out Bag → BOV → INCH. One inventory record belongs to many kits at once, so
+per-kit completeness is computed rather than re-entered. The ladder doubles as
+the onboarding sequence: nobody starts with an INCH bag.
+
+**Weight budgeting.** Almost everyone builds a bug-out bag they physically cannot
+carry for a mile. Weight is stored per item, summed per kit, and expressed
+against a percentage of bodyweight — with the trade shown plainly: *dropping the
+4lb hatchet buys you 2 more litres of water.*
+
+**Days, not checkboxes.** The headline number is not "items owned." It is
+**"your household is covered for 4 days of water and 11 days of calories."**
+
+**Baseline risk from day one.** FEMA's National Risk Index, ingested and joined
+to the user's county, produces a standing risk profile before a single alert
+fires: *your county ranks high for wildfire and drought, moderate for earthquake,
+very low for hurricane.* Sourced, citable, free.
+
+**Say what it does not do.** Filtration and purification are different operations
+and conflating them kills people. A sand-and-charcoal column improves clarity and
+taste; it does not make water microbiologically safe. Every skill in the library
+carries a required `doesNotDo` field — enforced by schema, not by discipline.
+
+**Paper is the last backup.** The most likely failure mode is a dead phone.
+One-tap PDF export for the plan, the checklist, the wallet-sized rally card, the
+contact card and any skill page. Black and white, legible at arm's length.
+
+---
+
+## What it refuses to do
+
+- **No infinite feed.** The threat view is finite and ends.
+- **No manufactured alarm.** There is a designed *"Nothing notable near you"*
+  state, and most days should show it. The index going green is a feature.
+- **No fear as a conversion mechanic.** Preparedness is mundane, cheap, boring
+  and overwhelmingly about ordinary disruption — a four-day outage, a boil-water
+  notice, a job loss. Not the apocalypse.
+- **No gamification of app usage.** Every mechanic rewards real-world state.
+  No streaks for opening the app, no leaderboards, no score that decays to
+  create urgency.
+- **No weapons, munitions, or tactics content.** Personal defence is handled as
+  planning — awareness, de-escalation, avoidance, securing a dwelling. See
+  [`docs/CONTENT_POLICY.md`](docs/CONTENT_POLICY.md).
+- **No affiliate commerce.** Items are recommended by specification, never brand
+  or SKU.
+
+---
+
+## Status
+
+Scoping interview complete (2026-10-29). Implementation underway.
+
+| # | Build step | Status |
+|---|---|---|
+| 1 | Content schema, pack format, offline shell — **prove airplane mode** | 🔨 In progress |
+| 2 | Supply system, gap analysis, kit ladder, achievements | ⬜ Next |
+| 3 | Plan builder + PDF export | ⬜ |
+| 4 | Skills library rendering and local full-text search | ⬜ |
+| 5 | Readiness-state machine and Grey Sky interface | ⬜ |
+| 6 | Encrypted sync, circles | v2 |
+| 7 | Threat feed, CDN snapshot pipeline, Threat Index | ⬜ |
+| 8 | Notifications | v1.1+ |
+
+Steps 1–4 ship as a complete, genuinely useful offline product **before any
+network feature exists**. If the app is not valuable with the radio off, no
+amount of live data fixes it.
+
+> The threat feed is deliberately not built first. It is the most fun and the
+> least load-bearing.
+
+---
+
+## Key decisions
+
+Full record in [`docs/DECISIONS.md`](docs/DECISIONS.md). The load-bearing ones:
+
+- **US-only v1**, with i18n and a pluggable risk-profile provider from commit one
+- **Beachhead is the urban/suburban 72-hour person**, not the homesteader
+- **PWA only** — no native shells in v1
+- **Zero auth in v1.** Once sensitive data is local-only and circles are
+  print-only, nothing left in scope needs an account
+- **Sensitive data never leaves the device.** Classified at declaration, routed
+  through a cipher boundary that takes a real cipher in v2
+- **Content is rewritten from public-domain federal and pre-1929 sources**, in
+  our own voice, with citations and a last-reviewed date
+- **40–60 deep skills**, not 300 thin ones
+- **Signal cards with a qualitative band**, not a composite 0–100 number — the
+  inputs do not support that precision
+- **Every life-safety feature is free, permanently**
+
+---
+
+## Documentation
+
+| Document | What it is |
+|---|---|
+| [`docs/DECISIONS.md`](docs/DECISIONS.md) | Every scoping decision, marked confirmed or defaulted. Binding. |
+| [`docs/CONTENT_POLICY.md`](docs/CONTENT_POLICY.md) | Content boundaries, ingestion filter, safety standard, review gate. Read as config by the pipeline and as assertions by CI. |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | CDN-snapshot pipeline, proxy requirement, Supabase GRANT discipline, encryption boundary, offline test gate, performance budget. |
+| [`docs/BRAND.md`](docs/BRAND.md) | Name pressure-test and trademark triage. |
+
+---
+
+## Stack
+
+PWA (Vite + TypeScript + React) · IndexedDB as the **primary** data source ·
+Workbox service worker · Netlify for static hosting and edge functions ·
+Supabase for read-only public data only.
+
+No auth provider, no analytics SDK, no third-party fonts, no runtime CDN
+dependency for app code, no AI inference. The app must boot and be fully useful
+with every one of those absent — because in the scenario it is built for, they
+will be.
+
+## Development
+
+```bash
+npm install
+```
+
+```bash
+npm run dev
+```
+
+```bash
+npm run verify
+```
+
+`verify` runs typecheck, content validation, unit tests, the production build,
+the bundle-size budget check, and the offline Playwright suite. The offline
+suite is a release gate: cold boot with the network disabled, navigate every
+route, search the library, mutate inventory, build a plan, export a PDF.
