@@ -21,6 +21,9 @@ export function Skills() {
       fields: ['title', 'summary', 'category', 'stepText', 'doesNotDoText'],
       storeFields: ['title', 'category', 'riskTier', 'summary', 'timeRequiredMin'],
       idField: 'id',
+      // A title match is a much stronger signal than a mention buried in step
+      // seven, and the library is small enough that weighting matters.
+      searchOptions: { boost: { title: 4, summary: 2 } },
     });
   }, [pack]);
 
@@ -29,10 +32,29 @@ export function Skills() {
     const trimmed = query.trim();
     if (!trimmed || !index) return pack.skills;
 
-    const ids = new Set(
-      index.search(trimmed, { prefix: true, fuzzy: 0.2 }).map((r) => String(r.id)),
-    );
-    return pack.skills.filter((s) => ids.has(s.id));
+    /*
+     * Require every term first, then fall back to any-term.
+     *
+     * Fuzzy OR matching alone put "improvised sand and charcoal column" at the
+     * top of a search for "carbon monoxide", because "charcoal" is a near
+     * match for "carbon" and nothing had to match "monoxide" at all. Requiring
+     * all terms fixes that, and the fallback keeps a loose query useful.
+     */
+    const strict = index.search(trimmed, {
+      prefix: true,
+      fuzzy: 0.15,
+      combineWith: 'AND',
+      boost: { title: 4, summary: 2 },
+    });
+    const hits = strict.length > 0
+      ? strict
+      : index.search(trimmed, { prefix: true, fuzzy: 0.2, boost: { title: 4, summary: 2 } });
+
+    // Preserve relevance order rather than falling back to library order.
+    const rank = new Map(hits.map((r, i) => [String(r.id), i]));
+    return pack.skills
+      .filter((s) => rank.has(s.id))
+      .sort((a, b) => (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0));
   }, [pack, index, query]);
 
   if (status === 'loading') return <p className="lede">Opening the library…</p>;
