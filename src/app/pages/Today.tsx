@@ -6,7 +6,12 @@ import { CoverageStave } from '@/ui/CoverageStave';
 import { Posture } from '@/ui/Posture';
 import { Exposure } from '@/ui/Exposure';
 import { useContent } from '@/state/content';
-import { tierFor, wholeDays, limitingDays } from '@/features/supply/coverage';
+import {
+  bindingResourcesFor,
+  limitingDays,
+  tierFor,
+  wholeDays,
+} from '@/features/supply/coverage';
 
 const RESOURCE_LABEL: Record<string, string> = {
   'water-litres': 'water',
@@ -40,7 +45,7 @@ export function Today() {
   // GREY SKY: four things only. No feed, no coverage, no tiers, no badges.
   if (state === 'grey-sky') return <GreySky />;
 
-  const days = limitingDays(coverage);
+  const days = limitingDays(coverage, bindingResourcesFor(profile.hazards));
   const measured = coverage.filter((c) => c.dailyNeed > 0);
   const empty = measured.every((c) => c.stock === 0);
 

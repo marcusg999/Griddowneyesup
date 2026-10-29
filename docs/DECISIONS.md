@@ -414,6 +414,41 @@ log, and the gaps it discovered, which flow directly into the shopping list.
 A failed drill is the single most valuable artifact the app can produce:
 *"Good. You found that in a drill instead of at 3am."*
 
+### D16a — Standing achievements are live, milestones are permanent
+
+Added while building D16's achievement set.
+
+A badge claiming "Nothing Expired" rendered above a rotation queue listing
+expired bleach, because the award rule made everything sticky. G06 protects a
+score from decaying to manufacture urgency; it does not protect a false claim
+about the present, and it already carves out food expiring as real.
+
+So achievements split. **Milestones** (72 Hours, Two Weeks, Fifty Dollars In,
+Paper Trail, Cold Start, Out of Area, Shutoff Certified, Boring Competence)
+record that something happened and are kept forever. **Standing** achievements
+(Nothing Expired, Under Budget) describe current state, are computed live,
+are never persisted, and disappear when they stop being true.
+
+They render under separate headings — "True today" and "Done" — so a claim
+about now is never mistaken for a record of the past.
+
+### D16b — What actually binds the readiness tier
+
+Found by a failing achievement test. `limitingDays` took the minimum across
+every resource with a daily need, which let **power** zero out the tier: a
+household with thirty days of water, food and sanitation but no power bank
+read as zero days prepared.
+
+That is misleading in the pessimistic direction, which is its own kind of
+dishonesty, and it makes the headline number feel unreachable rather than
+useful — the opposite of what §4.2 wants it to do.
+
+Water, calories and **sanitation** always bind; sanitation because the brief
+is right that it is the leading cause of illness in a prolonged outage and the
+thing households plan for least. **Heat** binds only where the household's own
+hazards include winter storm or extended grid-down. **Power never binds** —
+it is shown, it matters, and it does not decide whether you are prepared.
+
 ### Grey Sky suppression — hard rule
 
 In GREY SKY state every badge, score, streak, tier and celebration is hidden.

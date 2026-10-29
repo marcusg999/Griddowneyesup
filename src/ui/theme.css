@@ -1154,3 +1154,55 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
 .tier__item:last-child { border-bottom: 0; }
 .tier__item strong { font-size: 15px; }
 .tier__item p { margin: 3px 0 0; font-size: 13.5px; color: var(--ink-faint); max-width: 56ch; }
+
+/* --- Rotation queue ------------------------------------------------------
+   Framed as "use these", not as a warning. The item is still perfectly good
+   today, which is the whole reason to catch it now. */
+
+.rotation { list-style: none; margin: 0 0 8px; padding: 0; max-width: var(--measure); }
+.rotation > li {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 14px;
+  align-items: baseline;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--rule-major);
+}
+.rotation__when {
+  font-family: var(--body);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--acid);
+  text-align: right;
+}
+.rotation > li[data-bucket='expired'] .rotation__when { color: var(--stamp); }
+.rotation > li[data-bucket='this-month'] .rotation__when { color: var(--warn); }
+.rotation strong { font-size: 15px; font-weight: 600; display: block; }
+.rotation small { color: var(--ink-faint); font-size: 12.5px; display: block; margin-top: 2px; }
+
+/* --- Achievements --------------------------------------------------------
+   Earned once, never lost, never compared against anyone else. */
+
+.badges { list-style: none; margin: 0; padding: 0; max-width: var(--measure); }
+.badges > li {
+  border-left: 2px solid var(--acid);
+  padding: 2px 0 2px 14px;
+  margin: 0 0 16px;
+}
+.badges strong {
+  display: block;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 19px;
+  color: var(--acid);
+}
+.badges small {
+  display: block;
+  color: var(--ink-dim);
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin-top: 3px;
+}
+
+:root[data-state='grey-sky'] .rotation,
+:root[data-state='grey-sky'] .badges { display: none; }
