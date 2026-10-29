@@ -105,12 +105,14 @@ function build(): void {
   const items = read('items.json');
   const kits = read('kits.json');
   const overlays = read('overlays.json');
+  const posture = read('posture.json');
 
   const entries: Entry[] = [];
   emit('skills', skills, entries);
   emit('items', items, entries);
   emit('kits', kits, entries);
   emit('overlays', overlays, entries);
+  emit('posture', posture, entries);
 
   // Full-text index is built here, not on device. Building an index on a
   // five-year-old Android at first launch is the wrong place to spend the

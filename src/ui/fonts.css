@@ -1,0 +1,43 @@
+/*
+ * Self-hosted, subset, precached.
+ *
+ * A Google Fonts link would be a network request on the render path, which the
+ * offline suite forbids and the premise rules out. Subset to 62.4 KB total by
+ * scripts/subset-fonts.py — re-run that if a face changes.
+ */
+
+/* Headings. A serif degraded through halftone: a document photocopied one
+   generation too many. The 35 cut keeps its letterforms at heading sizes. */
+@font-face {
+  font-family: 'Redaction';
+  src: url('/fonts/redaction35-400.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* The stamp only. The 70 cut breaks up badly at small sizes, which is wrong
+   for headings and exactly right for an over-inked rubber die. */
+@font-face {
+  font-family: 'RedactionStamp';
+  src: url('/fonts/redaction70-700.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* Marginalia only. Never body text. */
+@font-face {
+  font-family: 'Hand';
+  src: url('/fonts/hand-400.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* Body. Neutral on purpose — the display face carries the character so that
+   safety instructions stay flat and plain. */
+@font-face {
+  font-family: 'InterVar';
+  src: url('/fonts/inter-var.woff2') format('woff2-variations'),
+       url('/fonts/inter-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}

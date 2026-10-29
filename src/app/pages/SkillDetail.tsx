@@ -1,15 +1,17 @@
 import { Link, useRoute } from 'wouter';
 import { useContent } from '@/state/content';
 import { useMarkRead } from './Skills';
+import { Stamp } from '@/ui/Stamp';
+import { HERO_NAME } from '@/ui/viewTransition';
 import { t } from '@/i18n';
 
 /**
  * A single skill.
  *
- * Note the ordering: what this does NOT do is rendered immediately after the
- * summary and BEFORE the steps. CONTENT_POLICY §3.2 requires the limits to be
- * impossible to miss, and putting them at the bottom means putting them after
- * the point at which someone has started doing it.
+ * The limits come BEFORE the steps, and they come as a pinned stamp sequence
+ * you have to scroll through. CONTENT_POLICY §3.2 requires the limits to be
+ * impossible to miss, and putting them after the steps means putting them
+ * after the point at which someone has started doing it.
  */
 export function SkillDetail() {
   const [, params] = useRoute('/skills/:id');
@@ -31,8 +33,7 @@ export function SkillDetail() {
     );
   }
 
-  const itemName = (id: string) =>
-    pack?.items.find((i) => i.id === id)?.name ?? id;
+  const itemName = (id: string) => pack?.items.find((i) => i.id === id)?.name ?? id;
 
   return (
     <article>
@@ -40,38 +41,43 @@ export function SkillDetail() {
         <Link href="/skills">← {t('nav.skills')}</Link>
       </p>
 
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center', margin: '8px 0' }}>
-        <span className="pill">{skill.category}</span>
-        {skill.riskTier !== 'low' && (
-          <span className="pill" data-risk={skill.riskTier}>
-            {skill.riskTier} risk
-          </span>
-        )}
-        <span className="meta">{t('skill.timeRequired', { minutes: skill.timeRequiredMin })}</span>
-      </div>
+      <p className="kicker">
+        {skill.category} · {t('skill.timeRequired', { minutes: skill.timeRequiredMin })} ·{' '}
+        {skill.difficulty}
+      </p>
 
-      <h1>{skill.title}</h1>
+      <h1 style={{ viewTransitionName: HERO_NAME }}>{skill.title}</h1>
+
       <p className="lede">{skill.summary}</p>
 
-      {skill.riskTier === 'high' && (
-        <p className="caution" role="note">
-          {t('skill.risk.high')}
-        </p>
-      )}
+      {skill.riskTier === 'high' && <p className="caution">{t('skill.risk.high')}</p>}
 
-      <section className="does-not-do" aria-labelledby="does-not-do-heading">
-        <h3 id="does-not-do-heading">{t('skill.doesNotDo')}</h3>
-        <ul>
-          {skill.doesNotDo.map((limit) => (
-            <li key={limit}>{limit}</li>
-          ))}
-        </ul>
+      {/* THE STAMP. See docs/DESIGN_CONTRACT.md. */}
+      <section className="limits" aria-labelledby="does-not-do-heading">
+        <div className="limits__pin">
+          {skill.stampLine && (
+            <div className="limits__stamp">
+              <Stamp line={skill.stampLine} />
+            </div>
+          )}
+          <h2 id="does-not-do-heading" className="limits__head">
+            {t('skill.doesNotDo')}
+          </h2>
+          <ul className="limits__list">
+            {skill.doesNotDo.map((limit) => (
+              <li key={limit}>{limit}</li>
+            ))}
+          </ul>
+          <p className="limits__onward" aria-hidden="true">
+            ↓ the method follows
+          </p>
+        </div>
       </section>
 
       {skill.materials.length > 0 && (
         <>
-          <h2>{t('skill.materials')}</h2>
-          <ul>
+          <h2 className="reveal">{t('skill.materials')}</h2>
+          <ul className="reveal">
             {skill.materials.map((id) => (
               <li key={id}>{itemName(id)}</li>
             ))}
@@ -79,25 +85,21 @@ export function SkillDetail() {
         </>
       )}
 
-      <h2>Steps</h2>
+      <h2 className="reveal">Steps</h2>
       <ol className="steps">
         {skill.steps.map((step) => (
-          <li key={step.n}>
+          <li key={step.n} className="reveal">
             <div>{step.text}</div>
-            {step.caution && (
-              <p className="caution" role="note">
-                {step.caution}
-              </p>
-            )}
+            {step.caution && <p className="caution">{step.caution}</p>}
           </li>
         ))}
       </ol>
 
       {skill.failureModes.length > 0 && (
         <>
-          <h2>{t('skill.failureModes')}</h2>
+          <h2 className="reveal">{t('skill.failureModes')}</h2>
           {skill.failureModes.map((mode) => (
-            <div className="card" key={mode.symptom}>
+            <div className="card reveal" key={mode.symptom}>
               <strong>{mode.symptom}</strong>
               <p className="meta" style={{ margin: '4px 0' }}>
                 Why: {mode.cause}
@@ -108,8 +110,8 @@ export function SkillDetail() {
         </>
       )}
 
-      <h2>{t('skill.sources')}</h2>
-      <ul className="meta">
+      <h2 className="reveal">{t('skill.sources')}</h2>
+      <ul className="meta reveal">
         {skill.citations.map((citation) => (
           <li key={`${citation.source}-${citation.title}`}>
             {citation.source}, <em>{citation.title}</em> ({citation.published})
@@ -125,6 +127,28 @@ export function SkillDetail() {
         ))}
       </ul>
       <p className="meta">{t('skill.lastReviewed', { date: skill.lastReviewed })}</p>
+
+      <aside className="rail">
+        <h3>Entry</h3>
+        <dl>
+          <dt>Category</dt>
+          <dd>{skill.category}</dd>
+          <dt>Risk tier</dt>
+          <dd>{skill.riskTier}</dd>
+          <dt>Difficulty</dt>
+          <dd>{skill.difficulty}</dd>
+          <dt>Time</dt>
+          <dd>{skill.timeRequiredMin} min</dd>
+          <dt>Steps</dt>
+          <dd>{skill.steps.length}</dd>
+          <dt>Stated limits</dt>
+          <dd>{skill.doesNotDo.length}</dd>
+          <dt>Sources</dt>
+          <dd>{skill.citations.length}</dd>
+          <dt>Reviewed</dt>
+          <dd>{skill.lastReviewed}</dd>
+        </dl>
+      </aside>
     </article>
   );
 }

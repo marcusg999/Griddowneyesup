@@ -107,12 +107,70 @@ export interface Skill {
    */
   readonly doesNotDo: readonly string[];
 
+  /**
+   * The single most important limitation, compressed to a few words — what
+   * gets stamped across the page. Content, not presentation: this is the line
+   * someone reads at 3am instead of the full list.
+   */
+  readonly stampLine?: string;
+
   readonly citations: readonly Citation[];
   /** ISO date. Staleness surfaces in the admin view; >18mo fails the build. */
   readonly lastReviewed: string;
 
   /** Hazards this skill is especially relevant to. Drives surfacing order. */
   readonly hazards?: readonly HazardId[];
+}
+
+// ---------------------------------------------------------------------------
+// Standing posture (§4.1 baseline risk)
+// ---------------------------------------------------------------------------
+
+/**
+ * How well established a claim is.
+ *
+ * Carried explicitly because §4.1 requires showing confidence rather than
+ * projecting it. "Press reporting on internal documents" and "published
+ * directive" are different things and the UI must not flatten them.
+ */
+export type EpistemicStatus =
+  | 'official' // traceable to a published government source
+  | 'press-reported' // reported by media, no primary source released
+  | 'mixed'; // an official announcement plus unverified reported detail
+
+/**
+ * A standing fact about the world that informs what horizon is worth planning
+ * for. NOT a live signal, and explicitly NOT an input to the readiness state
+ * (see CONTENT_POLICY §9) — posture is baseline context, measured in months,
+ * and a readiness state driven by policy news would never come back down.
+ */
+export interface PostureNote {
+  readonly id: string;
+  readonly title: string;
+  /** ISO date of the underlying event. */
+  readonly published: string;
+  readonly epistemicStatus: EpistemicStatus;
+  /** What was actually announced. Flat, sourced, no interpretation. */
+  readonly whatItIs: string;
+  /** Detail that is reported but not confirmed. Rendered as such. */
+  readonly reported?: string;
+  /** Plain-language consequence for a household. Never a call to alarm. */
+  readonly whatItMeansForYou: string;
+  /**
+   * A horizon, in days, that this posture suggests is worth considering.
+   * It is shown next to the user's own target. It never changes it, and never
+   * changes the readiness state.
+   */
+  readonly horizonSignalDays?: number;
+  readonly citations: readonly Citation[];
+  /** Press sources, kept separate so they are never mistaken for primary. */
+  readonly pressCitations?: readonly {
+    readonly source: string;
+    readonly title: string;
+    readonly published: string;
+    readonly url?: string;
+  }[];
+  readonly lastReviewed: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -301,4 +359,5 @@ export interface ContentPack {
   readonly kits: readonly KitDefinition[];
   readonly hazardOverlays: readonly HazardOverlay[];
   readonly dependentOverlays: readonly DependentOverlay[];
+  readonly posture: readonly PostureNote[];
 }

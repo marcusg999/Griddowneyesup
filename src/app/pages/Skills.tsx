@@ -39,6 +39,7 @@ export function Skills() {
 
   return (
     <>
+      <p className="kicker">Field library · {pack?.skills.length ?? 0} entries</p>
       <h1>{t('nav.skills')}</h1>
       <p className="lede">
         Everything here is on your device already. It works with the radio off.
@@ -62,20 +63,25 @@ export function Skills() {
 
       {results.length === 0 ? (
         <div className="empty">
-          Nothing matched that. The library is deliberately small and deep rather
-          than large and thin, so try a broader word.
+          <strong>Nothing matched</strong>
+          The library is deliberately small and deep rather than large and thin, so
+          try a broader word.
         </div>
       ) : (
-        results.map((skill) => <SkillCard key={skill.id} skill={skill} />)
+        results.map((skill, i) => <SkillCard key={skill.id} skill={skill} n={i + 1} />)
       )}
     </>
   );
 }
 
-function SkillCard({ skill }: { skill: Skill }) {
+function SkillCard({ skill, n }: { skill: Skill; n: number }) {
   return (
-    <Link href={`/skills/${skill.id}`} className="card card--link">
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
+    <Link href={`/skills/${skill.id}`} className="card card--link skill-card reveal">
+      <span className="margin-note" aria-hidden="true">
+        {String(n).padStart(2, '0')}
+      </span>
+
+      <div className="skill-card__row">
         <span className="pill">{skill.category}</span>
         {skill.riskTier !== 'low' && (
           <span className="pill" data-risk={skill.riskTier}>
@@ -86,10 +92,18 @@ function SkillCard({ skill }: { skill: Skill }) {
           {t('skill.timeRequired', { minutes: skill.timeRequiredMin })}
         </span>
       </div>
-      <h3 style={{ margin: '0 0 4px' }}>{skill.title}</h3>
+
+      {/* The element the view transition morphs into the detail heading. */}
+      <h3 className="skill-card__title" data-vt-hero>
+        {skill.title}
+      </h3>
+
       <p className="meta" style={{ margin: 0 }}>
         {skill.summary}
       </p>
+
+      {/* The limit is visible before you even open the page. */}
+      {skill.stampLine && <p className="skill-card__limit">{skill.stampLine}</p>}
     </Link>
   );
 }

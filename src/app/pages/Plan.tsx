@@ -10,6 +10,7 @@ import { t } from '@/i18n';
 export function Plan() {
   return (
     <>
+      <p className="kicker">Household · not yet drafted</p>
       <h1>{t('nav.plan')}</h1>
       <p className="lede">{t('empty.plan')}</p>
 
@@ -22,7 +23,12 @@ export function Plan() {
         </p>
       </div>
 
-      <h2>Why this one gets printed</h2>
+      <h2>
+        <span className="margin-note" aria-hidden="true">
+          on paper
+        </span>
+        Why this one gets printed
+      </h2>
       <p>
         The most likely failure in an emergency is a dead phone, and this app lives on a
         phone. Paper does not need charging, does not need a signal, and does not need

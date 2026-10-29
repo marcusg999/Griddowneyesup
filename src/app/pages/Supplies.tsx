@@ -20,6 +20,7 @@ export function Supplies() {
 
   return (
     <>
+      <p className="kicker">Inventory · {inventory.length} records</p>
       <h1>{t('nav.supplies')}</h1>
       <p className="lede">
         One record, many kits. Add something once and every kit it belongs to counts it.
@@ -27,13 +28,25 @@ export function Supplies() {
 
       {!suppressGamification && (
         <>
-          <h2>The ladder</h2>
+          <h2>
+            <span className="margin-note" aria-hidden="true">
+              climb it
+            </span>
+            The ladder
+          </h2>
           <p className="meta" style={{ marginTop: -4 }}>
             Start at the bottom. Each rung is meant to be an easy win, which is the
             whole point of doing it in this order.
           </p>
           {ladder.map(({ status, locked, prerequisite }) => (
-            <div className="card" key={status.kit.id}>
+            <div
+              className="card rung reveal"
+              key={status.kit.id}
+              data-locked={locked}
+            >
+              <span className="margin-note" aria-hidden="true">
+                rung {status.kit.rung}
+              </span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <strong>{status.kit.name}</strong>
                 {status.complete && <span className="pill">{t('kit.complete')}</span>}
@@ -56,6 +69,9 @@ export function Supplies() {
                   {status.missingCritical.map((id) => byId.get(id)?.name ?? id).join(', ')}
                 </p>
               )}
+              <div className="rung__bar" aria-hidden="true">
+                <i style={{ width: `${Math.round(status.fraction * 100)}%` }} />
+              </div>
               {status.weightG !== undefined && status.weightG > 0 && (
                 <WeightLine
                   weightG={status.weightG}
@@ -68,7 +84,12 @@ export function Supplies() {
         </>
       )}
 
-      <h2>Add something</h2>
+      <h2>
+        <span className="margin-note" aria-hidden="true">
+          log it
+        </span>
+        Add something
+      </h2>
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -118,14 +139,22 @@ export function Supplies() {
         </button>
       </form>
 
-      <h2>What you have</h2>
+      <h2>
+        <span className="margin-note" aria-hidden="true">
+          on hand
+        </span>
+        What you have
+      </h2>
       {inventory.length === 0 ? (
-        <div className="empty">{t('empty.supplies')}</div>
+        <div className="empty">
+          <strong>Empty</strong>
+          {t('empty.supplies')}
+        </div>
       ) : (
         inventory.map((record) => {
           const item = byId.get(record.itemId);
           return (
-            <div className="card" key={record.id} data-testid="inventory-row">
+            <div className="card reveal" key={record.id} data-testid="inventory-row">
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <strong>{item?.name ?? record.itemId}</strong>
                 <span className="meta">

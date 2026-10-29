@@ -39,7 +39,11 @@ test.describe('offline release gate', () => {
     await page.goto('/');
     await page.reload();
 
-    await expect(page.getByRole('heading', { name: 'Today', level: 1 })).toBeVisible();
+    // The Today route's h1 is the readiness state, not the tab name — the page
+    // reports what is happening rather than which tab you are on.
+    await expect(
+      page.getByRole('heading', { name: /Blue Sky|Watch|Grey Sky/, level: 1 }),
+    ).toBeVisible();
     // Never a spinner, never an error page, never a blank screen (§2).
     await expect(page.getByText(/something went wrong/i)).toHaveCount(0);
     await expect(page.locator('#root')).not.toBeEmpty();
@@ -48,12 +52,12 @@ test.describe('offline release gate', () => {
   test('navigates every route with the network disabled', async ({ page }) => {
     await installThenGoOffline(page);
 
-    const routes = [
-      { href: '/', heading: 'Today' },
-      { href: '/supplies', heading: 'Supplies' },
-      { href: '/plan', heading: 'Plan' },
-      { href: '/skills', heading: 'Skills' },
-      { href: '/settings', heading: 'Settings' },
+    const routes: Array<{ href: string; heading: RegExp }> = [
+      { href: '/', heading: /Blue Sky|Watch|Grey Sky/ },
+      { href: '/supplies', heading: /^Supplies$/ },
+      { href: '/plan', heading: /^Plan$/ },
+      { href: '/skills', heading: /^Skills$/ },
+      { href: '/settings', heading: /^Settings$/ },
     ];
 
     for (const route of routes) {
@@ -90,6 +94,12 @@ test.describe('offline release gate', () => {
     const limits = page.getByRole('region', { name: /what this does not do/i });
     await expect(limits).toBeVisible();
     await expect(limits).toContainText(/does NOT make water microbiologically safe/i);
+
+    // The stamp is the thing that makes the limits unmissable, so it is part
+    // of the gate rather than decoration that may silently disappear.
+    await expect(
+      limits.getByRole('img', { name: /stamped: does not purify/i }),
+    ).toBeVisible();
 
     // CONTENT_POLICY §3.2: the limits must come BEFORE the steps, because
     // after the steps is after the point someone has started doing it.
@@ -174,6 +184,35 @@ test.describe('offline release gate', () => {
     }
 
     expect(failed, `offline requests escaped the cache:\n${failed.join('\n')}`).toEqual([]);
+  });
+});
+
+test.describe('standing posture', () => {
+  test('renders as background and does NOT move the readiness state', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+
+    await expect(page.getByRole('heading', { name: 'Worth knowing' })).toBeVisible();
+    await expect(page.getByText(/Background, not an alert/i)).toBeVisible();
+
+    // CONTENT_POLICY §9.1: no geopolitical or defense item may change the
+    // readiness state. A policy announcement has no threshold that would ever
+    // bring the state back down, so it must never be able to raise it.
+    await expect(page.getByRole('status')).toContainText('Blue Sky');
+    await expect(page.getByText(/does not change your readiness state/i)).toBeVisible();
+
+    // Epistemic status is shown rather than flattened into the prose.
+    await expect(page.getByText(/Reported, not confirmed/i)).toBeVisible();
+  });
+
+  test('is suppressed entirely in Grey Sky', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByTestId('state-grey-sky').click();
+    await page.goto('/');
+
+    await expect(page.getByRole('heading', { name: 'Worth knowing' })).toHaveCount(0);
+    await expect(page.getByText(/FORTRESS/i)).toHaveCount(0);
   });
 });
 

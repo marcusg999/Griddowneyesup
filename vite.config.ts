@@ -43,7 +43,9 @@ export default defineConfig({
         // The content pack is precached with the shell. This is the mechanism
         // that makes the library available before the user has ever needed it
         // (§2), rather than caching it opportunistically after first view.
-        globPatterns: ['**/*.{js,css,html,svg,png,json,sig}'],
+        // woff2 included deliberately: the faces are self-hosted and must be
+        // precached, or the first offline render falls back to system type.
+        globPatterns: ['**/*.{js,css,html,svg,png,json,sig,woff2}'],
         globDirectory: 'dist',
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         navigateFallback: '/index.html',

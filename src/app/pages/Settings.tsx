@@ -24,6 +24,7 @@ export function Settings() {
 
   return (
     <>
+      <p className="kicker">Device · no account, nothing sent anywhere</p>
       <h1>{t('nav.settings')}</h1>
 
       <h2>Readiness state</h2>

@@ -6,6 +6,7 @@ import type {
   DependentOverlay,
   HazardOverlay,
   KitDefinition,
+  PostureNote,
   Skill,
 } from './types';
 
@@ -31,6 +32,7 @@ export interface LoadedPack {
   readonly kits: readonly KitDefinition[];
   readonly hazardOverlays: readonly HazardOverlay[];
   readonly dependentOverlays: readonly DependentOverlay[];
+  readonly posture: readonly PostureNote[];
   readonly searchIndex: unknown;
 }
 
@@ -151,11 +153,12 @@ export async function readInstalledPack(): Promise<LoadedPack | undefined> {
   const manifest = await store.content.get<ContentPackManifest>('manifest');
   if (!manifest) return undefined;
 
-  const [skills, items, kits, overlays, searchIndex] = await Promise.all([
+  const [skills, items, kits, overlays, posture, searchIndex] = await Promise.all([
     store.content.get<Skill[]>('skills'),
     store.content.get<CatalogItem[]>('items'),
     store.content.get<KitDefinition[]>('kits'),
     store.content.get<{ hazard: HazardOverlay[]; dependent: DependentOverlay[] }>('overlays'),
+    store.content.get<PostureNote[]>('posture'),
     store.content.get<unknown>('search'),
   ]);
 
@@ -168,6 +171,7 @@ export async function readInstalledPack(): Promise<LoadedPack | undefined> {
     kits,
     hazardOverlays: overlays.hazard,
     dependentOverlays: overlays.dependent,
+    posture: posture ?? [],
     searchIndex,
   };
 }

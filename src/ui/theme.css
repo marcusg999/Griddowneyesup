@@ -1,104 +1,312 @@
+@import './fonts.css';
+
 /*
- * Theme tokens.
+ * FIELD NOTEBOOK, READ BY HEADLAMP
+ * See docs/DESIGN_CONTRACT.md. The direction was rolled, not chosen.
  *
- * Three readiness states, three visual registers (§3). Grey Sky is not a dark
- * theme — it is a maximum-contrast, large-target, battery-conserving mode for
- * someone who may be shaking, gloved, in the dark, or holding a child.
+ * A surveyor's field notebook at 3am: graph ruling, a margin gutter, rubber
+ * stamps, hand annotations — rendered in phosphor on near-black, because that
+ * is what a notebook looks like under a headlamp, and that is the exact
+ * circumstance this product exists for.
+ *
+ * GREY SKY throws all of it away. See the bottom of this file.
  */
 
 :root {
-  --bg: #0b0e11;
-  --surface: #14181d;
-  --surface-raised: #1b2026;
-  --border: #2a3139;
-  --text: #e8eaed;
-  --text-dim: #9aa4af;
-  --text-faint: #6b7682;
+  --bg: #07080a;
+  --paper: #0d1014;
+  --paper-raised: #12161b;
+  --rule-minor: #171f27;
+  --rule-major: #27333e;
+  --edge: #2a3540;
 
-  --accent: #4da3ff;
-  --accent-dim: #2d5f94;
-  --ok: #5fd38d;
-  --warn: #f0b429;
-  --danger: #ff6b5e;
+  --ink: #dce3e8;
+  --ink-dim: #78848d;
+  /* Measured 4.6:1 on paper. The previous value was 2.8:1 and failed AA for
+     real text — tab labels, meta lines, the stave legend. */
+  --ink-faint: #747e86;
 
+  --acid: #c9ff3d;
+  --acid-deep: #8fbc22;
+  --stamp: #ff4a24;
+  --warn: #ffb224;
+
+  --gutter-w: 72px;
+  --rail-w: 240px;
   --tap: 44px;
-  --radius: 10px;
-  --gutter: 16px;
-  --maxw: 760px;
+  --gutter: 20px;
+  --maxw: 1180px;
+  --measure: 64ch;
 
-  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --display: 'Redaction', 'Times New Roman', serif;
+  --hand: 'Hand', 'Comic Sans MS', cursive;
+  --body: 'InterVar', ui-sans-serif, system-ui, sans-serif;
+
+  --grid: 24px;
 
   color-scheme: dark;
 }
 
-/* GREY SKY: maximum contrast, bigger targets, no decoration. */
-:root[data-state='grey-sky'] {
-  --bg: #000000;
-  --surface: #000000;
-  --surface-raised: #0a0a0a;
-  --border: #ffffff;
-  --text: #ffffff;
-  --text-dim: #d8d8d8;
-  --text-faint: #b0b0b0;
-  --accent: #ffd400;
-  --accent-dim: #8a7300;
-  --tap: 64px;
-  --radius: 4px;
-}
-
 * { box-sizing: border-box; }
-
 html, body, #root { height: 100%; }
 
 body {
   margin: 0;
   background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
+  color: var(--ink);
+  font-family: var(--body);
   font-size: 16px;
-  line-height: 1.55;
+  line-height: 1.6;
+  font-synthesis-weight: none;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+/* --- The sheet ----------------------------------------------------------
+   Graph ruling drawn in CSS. This is line work, not a gradient pretending to
+   be a photograph — the subject genuinely is ruled paper. */
+
+.sheet {
+  position: relative;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(to right, var(--rule-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--rule-minor) 1px, transparent 1px),
+    linear-gradient(to right, var(--rule-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--rule-major) 1px, transparent 1px);
+  background-size:
+    var(--grid) var(--grid),
+    var(--grid) var(--grid),
+    calc(var(--grid) * 5) calc(var(--grid) * 5),
+    calc(var(--grid) * 5) calc(var(--grid) * 5);
 }
 
-:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.skip-link {
+/* Paper falls off at the edges like a sheet lit by one lamp. */
+.sheet::after {
+  content: '';
   position: absolute;
-  left: -9999px;
-}
-.skip-link:focus {
-  left: var(--gutter);
-  top: var(--gutter);
-  z-index: 100;
-  padding: 12px 16px;
-  background: var(--accent);
-  color: #000;
-  border-radius: var(--radius);
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 80% at 50% 0%,
+    transparent 40%,
+    rgba(7, 8, 10, 0.55) 100%
+  );
 }
 
-.shell {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
+@media (prefers-reduced-transparency: reduce) {
+  .sheet::after { display: none; }
 }
+
+/* --- Shell --------------------------------------------------------------- */
+
+.shell { display: flex; flex-direction: column; min-height: 100%; }
 
 .main {
   flex: 1;
   width: 100%;
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: var(--gutter) var(--gutter) 96px;
+  padding: 28px var(--gutter) 120px calc(var(--gutter) + var(--gutter-w));
+  position: relative;
+}
+
+/*
+ * Editorial two-column. The content column holds a measure; the rail carries
+ * instruments, raw figures and annotations. Full-bleed elements break both
+ * columns on purpose — that is the broken-grid rule.
+ */
+@media (min-width: 1040px) {
+  .main {
+    display: grid;
+    /* The content column is capped at a measure. Prose that runs to 95
+       characters is not an editorial column, it is a wall. */
+    grid-template-columns: minmax(0, 68ch) var(--rail-w);
+    justify-content: start;
+    column-gap: 54px;
+    align-items: start;
+  }
+  .main > * { grid-column: 1; }
+  /* Spans every row rather than being auto-placed after the content, which
+     would drop it below the fold. */
+  .main > .rail { grid-column: 2; grid-row: 1 / span 500; }
+  .main > .bleed { grid-column: 1 / -1; }
+}
+
+/* The rail: a column of instruments pinned beside the prose. */
+.rail {
+  position: sticky;
+  top: 72px;
+  border-left: 1px solid var(--rule-major);
+  padding-left: 18px;
+  margin-top: 8px;
+}
+@media (max-width: 1039px) {
+  .rail { position: static; border-left: 0; padding-left: 0; margin: 26px 0 0; border-top: 1px solid var(--rule-major); padding-top: 16px; }
+}
+.rail h3 {
+  font-family: var(--hand);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--acid-deep);
+  margin: 0 0 10px;
+}
+.rail dl { margin: 0; font-size: 13px; }
+.rail dt { color: var(--ink-faint); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 12px; }
+.rail dd { margin: 1px 0 0; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* THE MARGIN GUTTER — the broken-grid rule.
+   A notebook's margin line. Annotations and step numbers live left of it, and
+   stamps and diagrams deliberately overhang it. Nothing is flush. */
+.main::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--gutter) + var(--gutter-w) - 18px);
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--stamp) 42%, transparent) 6%,
+    color-mix(in srgb, var(--stamp) 42%, transparent) 94%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* Marginalia is a desktop affordance. Below this width there is no margin to
+   write in, and forcing one makes the note collide with the heading. */
+@media (max-width: 900px) {
+  .margin-note { display: none; }
+}
+
+@media (max-width: 640px) {
+  :root { --gutter-w: 20px; --gutter: 16px; --measure: 100%; }
+  .main { padding-left: calc(var(--gutter) + var(--gutter-w)); }
+  .coverage__label small { font-size: 12px; }
+  .limits { margin-left: calc(-1 * var(--gutter-w) + 4px); }
+}
+
+/* --- Typography ---------------------------------------------------------- */
+
+h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  max-width: 18ch;
+  font-size: clamp(34px, 7.5vw, 58px);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin: 2px 0 10px;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(22px, 3.4vw, 30px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin: 38px 0 14px;
+  position: relative;
+  max-width: 24ch;
+}
+
+/* Section markers hang in the gutter, breaking the grid. */
+h2::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 0.58em;
+  width: 14px;
+  height: 1px;
+  background: var(--acid);
+  opacity: 0.9;
+}
+
+h3 { font-size: 16px; margin: 22px 0 6px; font-weight: 620; letter-spacing: -0.005em; }
+
+p { margin: 0 0 14px; max-width: var(--measure); }
+
+.lede {
+  font-size: clamp(17px, 2.2vw, 20px);
+  line-height: 1.55;
+  color: var(--ink-dim);
+  margin: 0 0 18px;
+  max-width: var(--measure);
+}
+
+a { color: var(--acid); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+/* Hand-written marginalia. Sits in the gutter, rotated, like a note added
+   later by someone who was in a hurry. */
+.margin-note {
+  position: absolute;
+  left: calc(-1 * var(--gutter-w) - 4px);
+  top: 0.15em;
+  width: calc(var(--gutter-w) - 16px);
+  font-family: var(--hand);
+  font-size: 11.5px;
+  line-height: 1.2;
+  color: var(--acid-deep);
+  transform: rotate(-4deg);
+  text-align: right;
+  pointer-events: none;
+  hyphens: auto;
+}
+
+@media (max-width: 640px) {
+  .margin-note { font-size: 10px; }
+}
+
+.kicker {
+  font-family: var(--hand);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--acid);
+  margin: 0 0 2px;
+  transform: rotate(-0.6deg);
+  transform-origin: left center;
+}
+
+.meta { color: var(--ink-faint); font-size: 13.5px; }
+
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* --- Cards: specimens taped onto the sheet ------------------------------- */
+
+.card {
+  position: relative;
+  max-width: calc(var(--measure) + 6ch);
+  background: var(--paper-raised);
+  border: 1px solid var(--edge);
+  padding: 15px 16px;
+  margin: 0 0 12px;
+  /* Not a rounded rectangle. A slightly trimmed corner, like a cut specimen. */
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+}
+
+.card--link { display: block; color: inherit; text-decoration: none; }
+
+.card--link:hover,
+.card--link:focus-visible {
+  border-color: color-mix(in srgb, var(--acid) 55%, var(--edge));
+  background: color-mix(in srgb, var(--acid) 4%, var(--paper-raised));
+}
+
+/* Every third card is nudged off-axis. Deliberate: a stack of notes nobody
+   straightened. */
+.card:nth-of-type(3n) { transform: rotate(-0.25deg); }
+.card:nth-of-type(4n) { transform: rotate(0.18deg); }
+
+:focus-visible { outline: 2px solid var(--acid); outline-offset: 3px; }
+
+.skip-link { position: absolute; left: -9999px; }
+.skip-link:focus {
+  left: var(--gutter); top: var(--gutter); z-index: 100;
+  padding: 12px 16px; background: var(--acid); color: #000;
 }
 
 /* --- Status bar ---------------------------------------------------------- */
@@ -106,40 +314,42 @@ body {
 .statusbar {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 10px;
-  padding: 10px var(--gutter);
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
+  padding: 9px var(--gutter);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--edge);
+  font-family: var(--hand);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .statusbar__dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  flex: none;
+  width: 7px; height: 7px; border-radius: 50%; flex: none;
+  align-self: center;
 }
-.statusbar__dot[data-band='quiet']    { background: var(--ok); }
-.statusbar__dot[data-band='elevated'] { background: var(--warn); }
-.statusbar__dot[data-band='active']   { background: var(--danger); }
+.statusbar__dot[data-band='quiet']    { background: var(--acid); box-shadow: 0 0 10px var(--acid); }
+.statusbar__dot[data-band='elevated'] { background: var(--warn); box-shadow: 0 0 10px var(--warn); }
+.statusbar__dot[data-band='active']   { background: var(--stamp); box-shadow: 0 0 10px var(--stamp); }
 
-.statusbar__sync { margin-left: auto; color: var(--text-faint); }
+.statusbar strong { font-weight: 400; color: var(--ink); }
+.statusbar__sync { margin-left: auto; color: var(--ink-faint); text-transform: none; letter-spacing: 0; font-family: var(--body); font-size: 12px; }
 
-/* --- Navigation ---------------------------------------------------------- */
+/* --- Tab bar: an index tab strip ----------------------------------------- */
 
 .tabbar {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 0; left: 0; right: 0;
   display: flex;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--edge);
   padding-bottom: env(safe-area-inset-bottom);
-  z-index: 10;
+  z-index: 20;
 }
 
 .tabbar a {
@@ -148,156 +358,569 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 4px;
-  color: var(--text-faint);
+  padding: 13px 4px;
+  color: var(--ink-faint);
   text-decoration: none;
+  font-family: var(--hand);
   font-size: 13px;
-  font-weight: 500;
+  letter-spacing: 0.03em;
+  border-top: 2px solid transparent;
+  margin-top: -1px;
 }
 
 .tabbar a[aria-current='page'] {
-  color: var(--accent);
-  box-shadow: inset 0 2px 0 var(--accent);
+  color: var(--acid);
+  border-top-color: var(--acid);
+  background: color-mix(in srgb, var(--acid) 7%, transparent);
 }
 
-/* --- Typography and blocks ----------------------------------------------- */
-
-h1 { font-size: 26px; line-height: 1.25; margin: 4px 0 6px; letter-spacing: -0.015em; }
-h2 { font-size: 19px; margin: 28px 0 10px; letter-spacing: -0.01em; }
-h3 { font-size: 16px; margin: 20px 0 6px; }
-
-.lede { color: var(--text-dim); margin: 0 0 20px; }
-
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px;
-  margin: 0 0 12px;
-}
-
-.card--link { display: block; color: inherit; text-decoration: none; }
-.card--link:hover { background: var(--surface-raised); }
-
-.meta { color: var(--text-faint); font-size: 13px; }
+/* --- Pills, stamped not rounded ------------------------------------------ */
 
 .pill {
   display: inline-block;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-}
-.pill[data-risk='high'] { border-color: var(--danger); color: var(--danger); }
-.pill[data-risk='medium'] { border-color: var(--warn); color: var(--warn); }
-
-/*
- * The does-NOT-do block. CONTENT_POLICY §3.2 requires this to be impossible to
- * miss — it is the difference between filtration and purification, and that
- * difference kills people.
- */
-.does-not-do {
-  border: 2px solid var(--danger);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  margin: 20px 0;
-  background: color-mix(in srgb, var(--danger) 8%, transparent);
-}
-.does-not-do h3 {
-  margin: 0 0 8px;
-  color: var(--danger);
-  text-transform: uppercase;
-  font-size: 13px;
+  font-family: var(--hand);
+  font-size: 11.5px;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 9px;
+  border: 1px solid var(--edge);
+  color: var(--ink-dim);
 }
-.does-not-do ul { margin: 0; padding-left: 20px; }
-.does-not-do li { margin-bottom: 6px; }
+.pill[data-risk='high']   { border-color: var(--stamp); color: var(--stamp); }
+.pill[data-risk='medium'] { border-color: var(--warn);  color: var(--warn); }
+.pill--acid { border-color: var(--acid); color: var(--acid); }
 
-.caution {
-  border-left: 3px solid var(--warn);
-  padding: 8px 0 8px 12px;
-  margin: 8px 0 0;
-  color: var(--warn);
+/* --- Buttons ------------------------------------------------------------- */
+
+.btn {
+  min-height: var(--tap);
+  padding: 11px 20px;
+  font-family: var(--hand);
   font-size: 15px;
+  letter-spacing: 0.03em;
+  color: #060a00;
+  background: var(--acid);
+  border: 0;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
 }
-
-.steps { list-style: none; counter-reset: step; padding: 0; margin: 0; }
-.steps li {
-  counter-increment: step;
-  position: relative;
-  padding: 0 0 18px 38px;
-  margin: 0;
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--edge);
+  clip-path: none;
 }
-.steps li::before {
-  content: counter(step);
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 26px;
-  height: 26px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--surface-raised);
-  border: 1px solid var(--border);
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-dim);
-}
+.btn--ghost:hover { border-color: var(--acid); color: var(--acid); }
 
 .search {
   width: 100%;
   min-height: var(--tap);
-  padding: 10px 14px;
+  padding: 11px 14px;
   font-size: 16px;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  font-family: var(--body);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--acid) 3%, var(--paper));
+  border: 0;
+  border-bottom: 1px solid var(--edge);
 }
+.search:focus { outline: none; border-bottom-color: var(--acid); }
+select.search { appearance: none; }
+
+label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); font-size: 12.5px; letter-spacing: 0.04em; }
+
+/* --- Empty states -------------------------------------------------------- */
 
 .empty {
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 28px 20px;
-  text-align: center;
-  color: var(--text-dim);
+  border: 1px dashed color-mix(in srgb, var(--acid) 28%, transparent);
+  padding: 26px 22px;
+  color: var(--ink-dim);
+  max-width: var(--measure);
+}
+.empty strong { color: var(--acid); font-family: var(--display); font-size: 21px; font-weight: 400; display: block; margin-bottom: 6px; }
+
+/* --- Steps: numbers hang in the gutter ----------------------------------- */
+
+.steps { list-style: none; counter-reset: step; padding: 0; margin: 0; max-width: var(--measure); }
+
+.steps > li {
+  counter-increment: step;
+  position: relative;
+  padding: 0 0 24px 0;
+  margin: 0;
 }
 
-.coverage { display: grid; gap: 8px; margin: 0 0 20px; }
+.steps > li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: calc(-1 * var(--gutter-w));
+  top: -2px;
+  width: calc(var(--gutter-w) - 24px);
+  text-align: right;
+  font-family: var(--display);
+  font-size: 19px;
+  color: var(--acid);
+  opacity: 0.85;
+  font-variant-numeric: tabular-nums;
+}
+
+.caution {
+  border-left: 2px solid var(--warn);
+  padding: 7px 0 7px 13px;
+  margin: 10px 0 0;
+  color: var(--warn);
+  font-size: 15px;
+  max-width: var(--measure);
+}
+
+/* --- Pull quote (editorial) ---------------------------------------------- */
+
+.pullquote {
+  font-family: var(--display);
+  font-size: clamp(21px, 3.2vw, 27px);
+  line-height: 1.22;
+  color: var(--acid);
+  margin: 34px 0 34px calc(-1 * var(--gutter-w) + 8px);
+  padding-left: 16px;
+  border-left: 2px solid var(--acid);
+  max-width: calc(var(--measure) + var(--gutter-w));
+}
+
+/* --- Coverage readout ---------------------------------------------------- */
+
+.coverage { margin: 0 0 8px; }
+
 .coverage__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 16px;
+  row-gap: 2px;
+  padding: 13px 0 14px;
+  border-bottom: 1px solid var(--rule-major);
+  max-width: var(--measure);
+}
+
+/*
+ * Numerals are set in the body face, not the display face.
+ * Redaction's halftone breaks digits badly at size — a 0 reads as a filled
+ * rectangle — and this is the number the whole product is about. Legibility
+ * of a safety figure outranks the type concept.
+ */
+.coverage__days {
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: clamp(42px, 8vw, 62px);
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--acid);
+  min-width: 1.6ch;
+}
+.coverage__days[data-thin='true'] { color: var(--stamp); }
+
+.coverage__label { font-size: 16px; color: var(--ink); line-height: 1.3; }
+.coverage__label small { display: block; color: var(--ink-faint); font-size: 12.5px; margin-top: 3px; line-height: 1.35; }
+
+.coverage__raw {
+  grid-column: 2;
+  font-size: 12px;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.coverage__bar {
+  height: 3px;
+  background: var(--rule-major);
+  position: relative;
+  grid-column: 1 / -1;
+  margin-top: -4px;
+}
+.coverage__bar i {
+  position: absolute; inset: 0 auto 0 0;
+  background: var(--acid);
+  display: block;
+}
+.coverage__bar[data-thin='true'] i { background: var(--stamp); }
+
+/* --- Ladder -------------------------------------------------------------- */
+
+.rung { position: relative; }
+.rung[data-locked='true'] { opacity: 0.42; }
+.rung__bar { height: 2px; background: var(--rule-major); margin-top: 9px; position: relative; }
+.rung__bar i { position: absolute; inset: 0 auto 0 0; background: var(--acid); display: block; }
+
+/* --- Motion: scroll choreography ----------------------------------------
+   CSS scroll-driven animation, so the choreography costs zero JavaScript and
+   nothing is added to the render path. */
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry 4% cover 22%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { animation: none !important; opacity: 1 !important; transform: none !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --- View transitions ---------------------------------------------------- */
+
+@view-transition { navigation: auto; }
+
+::view-transition-old(root) { animation: vt-out 140ms ease both; }
+::view-transition-new(root) { animation: vt-in 220ms ease both; }
+
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in  { from { opacity: 0; transform: translateY(6px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; }
+}
+
+/* =========================================================================
+   GREY SKY
+   Everything above is discarded. No gutter, no graph ruling, no stamps, no
+   acid, no motion, no character. Four things, white on black, 64px targets.
+   The product's state machine outranks the design direction — and the switch
+   from a glowing annotated notebook to this is the most dramatic thing the
+   interface does.
+   ========================================================================= */
+
+:root[data-state='grey-sky'] {
+  --bg: #000;
+  --paper: #000;
+  --paper-raised: #000;
+  --rule-minor: transparent;
+  --rule-major: #fff;
+  --edge: #fff;
+  --ink: #fff;
+  --ink-dim: #e4e4e4;
+  --ink-faint: #c4c4c4;
+  --acid: #fff;
+  --acid-deep: #fff;
+  --stamp: #fff;
+  --warn: #fff;
+  --tap: 64px;
+  --gutter-w: 0px;
+  --display: ui-sans-serif, system-ui, sans-serif;
+  --hand: ui-sans-serif, system-ui, sans-serif;
+}
+
+:root[data-state='grey-sky'] .sheet { background-image: none; }
+:root[data-state='grey-sky'] .sheet::after { display: none; }
+:root[data-state='grey-sky'] .main::before { display: none; }
+:root[data-state='grey-sky'] .main { padding-left: var(--gutter); }
+:root[data-state='grey-sky'] .card { clip-path: none; transform: none !important; border-width: 2px; }
+:root[data-state='grey-sky'] .statusbar { backdrop-filter: none; background: #000; }
+:root[data-state='grey-sky'] .tabbar { backdrop-filter: none; background: #000; }
+:root[data-state='grey-sky'] h1 { letter-spacing: -0.01em; font-weight: 700; }
+:root[data-state='grey-sky'] h2::before { display: none; }
+:root[data-state='grey-sky'] .margin-note { display: none; }
+:root[data-state='grey-sky'] .kicker { transform: none; }
+:root[data-state='grey-sky'] .steps > li { padding-left: 34px; }
+:root[data-state='grey-sky'] .steps > li::before { left: 0; width: 26px; text-align: left; }
+:root[data-state='grey-sky'] .pullquote { margin-left: 0; }
+:root[data-state='grey-sky'] .reveal { animation: none !important; opacity: 1 !important; transform: none !important; }
+:root[data-state='grey-sky'] ::view-transition-old(root),
+:root[data-state='grey-sky'] ::view-transition-new(root) { animation: none; }
+
+:root[data-state='grey-sky'] .main {
+  display: flex;
+  flex-direction: column;
+  /* The desktop grid rule sets align-items:start, which in a column flex
+     container collapses each child to its content width. */
+  align-items: stretch;
+  padding-bottom: 96px;
+}
+
+.grey-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  margin-top: 14px;
+}
+
+.grey-link {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-height: 88px;
+  padding: 20px 24px;
+  border: 2px solid #fff;
+  color: #fff;
+  text-decoration: none;
+  font-size: clamp(26px, 4.2vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.grey-link:hover, .grey-link:focus-visible { background: #fff; color: #000; }
+
+/* =========================================================================
+   THE STAMP SEQUENCE — the one unmistakable moment
+   A pinned sheet. The stamp rotates in and lands; the limits stage in beneath
+   it, one scroll beat each. You cannot reach the steps without passing
+   through it, which is the point: the brief requires that what a technique
+   does NOT do be impossible to miss.
+   ========================================================================= */
+
+.limits {
+  position: relative;
+  margin: 30px 0 26px calc(-1 * var(--gutter-w) + 10px);
+}
+
+.limits__pin {
+  position: sticky;
+  top: 60px;
+  padding: 4px 0 10px;
+}
+
+/* Tells the reader the sequence ends and the method follows, so the held
+   frame reads as deliberate rather than as a page that failed to load. */
+.limits__onward {
+  font-family: var(--hand);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 16px 0 0;
+}
+
+.limits__stamp {
+  position: relative;
+  margin: 0 0 20px;
+  max-width: 380px;
+}
+
+.stamp { display: block; width: 100%; height: auto; overflow: visible; }
+
+.limits__head {
+  font-family: var(--hand);
+  font-size: 12.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  margin: 0 0 10px;
+}
+
+.limits__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 58ch;
+  border-top: 1px solid color-mix(in srgb, var(--stamp) 35%, transparent);
+}
+
+.limits__list li {
+  position: relative;
+  padding: 11px 0 11px 26px;
+  border-bottom: 1px solid color-mix(in srgb, var(--stamp) 22%, transparent);
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+
+.limits__list li::before {
+  content: '×';
+  position: absolute;
+  left: 2px;
+  top: 10px;
+  color: var(--stamp);
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+/* Static by default; the choreography is layered on only where supported, so
+   the content is never dependent on the animation running. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .limits { min-height: 112vh; }
+
+    .limits__stamp {
+      animation: stamp-land linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 92%;
+      transform-origin: 28% 60%;
+    }
+
+    .limits__list li {
+      animation: rise linear both;
+      animation-timeline: view();
+    }
+    /* Staged: each limit lands on its own beat rather than all at once. */
+    .limits__list li:nth-child(1) { animation-range: entry 34% entry 58%; }
+    .limits__list li:nth-child(2) { animation-range: entry 42% entry 66%; }
+    .limits__list li:nth-child(3) { animation-range: entry 50% entry 74%; }
+    .limits__list li:nth-child(4) { animation-range: entry 58% entry 82%; }
+    .limits__list li:nth-child(5) { animation-range: entry 66% entry 90%; }
+  }
+}
+
+@keyframes stamp-land {
+  0%   { opacity: 0; transform: rotate(-19deg) scale(1.75); }
+  62%  { opacity: 1; transform: rotate(-3.4deg) scale(1.02); }
+  70%  { transform: rotate(-2.6deg) scale(0.985); }
+  100% { opacity: 1; transform: rotate(-2.6deg) scale(1); }
+}
+
+/* Grey Sky: no stamp sequence, no pin, no motion. Just the list. */
+:root[data-state='grey-sky'] .limits { min-height: 0; margin-left: 0; }
+:root[data-state='grey-sky'] .limits__pin { position: static; }
+:root[data-state='grey-sky'] .limits__stamp { display: none; }
+:root[data-state='grey-sky'] .limits__list li { animation: none !important; opacity: 1 !important; transform: none !important; }
+
+/* --- Skill card ---------------------------------------------------------- */
+
+.skill-card { padding: 16px 16px 15px; }
+.skill-card__title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.12;
+  margin: 6px 0 5px;
+  letter-spacing: -0.008em;
+}
+.skill-card__row { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; }
+.skill-card__limit {
+  margin: 9px 0 0;
+  font-family: var(--hand);
+  font-size: 12.5px;
+  color: var(--stamp);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-top: 1px solid color-mix(in srgb, var(--stamp) 25%, transparent);
+  padding-top: 7px;
+}
+
+/* --- Stave --------------------------------------------------------------- */
+
+.stave { display: block; width: 100%; max-width: 380px; height: 22px; grid-column: 2; margin-top: 7px; }
+.stave-legend {
+  grid-column: 2;
+  max-width: 380px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--hand);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-top: -2px;
+}
+
+/* --- Section index ------------------------------------------------------- */
+
+.index-line {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  padding: 10px 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--rule-major);
+  text-decoration: none;
+  color: var(--ink);
 }
-.coverage__days {
-  font-size: 24px;
-  font-weight: 650;
-  font-variant-numeric: tabular-nums;
-  min-width: 2.5ch;
-}
-.coverage__label { color: var(--text-dim); }
+.index-line:hover { color: var(--acid); }
+.index-line__n { font-family: var(--display); color: var(--acid); font-variant-numeric: tabular-nums; font-size: 14px; }
+.index-line__dots { flex: 1; border-bottom: 1px dotted var(--ink-faint); transform: translateY(-3px); }
 
-.btn {
-  min-height: var(--tap);
-  padding: 10px 18px;
+/* =========================================================================
+   STANDING POSTURE
+   Deliberately the opposite of an alert: no colour, no urgency, no call to
+   action. Baseline context sits apart from the live digest so the two are
+   never confused (CONTENT_POLICY §9).
+   ========================================================================= */
+
+.posture {
+  border: 1px solid var(--rule-major);
+  border-left: 3px solid var(--ink-faint);
+  padding: 18px 20px;
+  margin: 0 0 14px;
+  max-width: var(--measure);
+}
+
+.posture__status {
+  font-family: var(--hand);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 8px;
+}
+
+.posture__title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+}
+
+.posture__reported {
+  border-left: 2px solid var(--ink-faint);
+  padding-left: 12px;
+  color: var(--ink-dim);
   font-size: 15px;
-  font-weight: 550;
-  color: #000;
-  background: var(--accent);
-  border: 0;
-  border-radius: var(--radius);
-  cursor: pointer;
 }
-.btn--ghost {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
+.posture__reported strong { color: var(--ink); }
+
+.posture__inert {
+  font-size: 13.5px;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--rule-major);
+  padding-top: 10px;
+  margin-top: 14px;
 }
+
+.posture__sources { margin: 10px 0 0; padding-left: 18px; }
+.posture__sources li { margin-bottom: 3px; }
+
+/* The horizon gap. Two numbers, stated flat, with no verdict attached —
+   the comparison is the argument and it does not need help. */
+.horizon {
+  display: flex;
+  gap: 36px;
+  align-items: flex-end;
+  margin: 18px 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--rule-major);
+  border-bottom: 1px solid var(--rule-major);
+}
+
+.horizon__pair { display: flex; align-items: baseline; gap: 9px; }
+
+.horizon__n {
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: 42px;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+.horizon__n[data-them='true'] { color: var(--acid); }
+
+.horizon__label { font-size: 14px; color: var(--ink-dim); }
+.horizon__label small {
+  display: block;
+  font-family: var(--hand);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+:root[data-state='grey-sky'] .posture,
+:root[data-state='grey-sky'] .horizon { display: none; }

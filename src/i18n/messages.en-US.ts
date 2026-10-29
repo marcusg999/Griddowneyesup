@@ -61,7 +61,7 @@ export const messages = {
   'kit.locked': 'Locked',
   'kit.locked.hint': 'Finish {prereq} first. Each rung is meant to be easy.',
   'kit.complete': 'Complete',
-  'kit.criticalMissing': '{n} critical items missing',
+  'kit.criticalMissing': '{n, plural, one {# critical item missing} other {# critical items missing}}',
 
   // --- Weight budgeting, the killer feature ---------------------------------
   'weight.heading': 'Carry weight',

@@ -271,6 +271,65 @@ written now, while they cost nothing.
 
 ---
 
+## 9. Geopolitical, defense and infrastructure news
+
+This is the content type most likely to break §4.1 and §4.3 at once, so it has
+its own rules.
+
+### 9.1 The hard rule
+
+> **No geopolitical, defense or policy item may change the readiness state.**
+
+Enforced by test. The reasons are structural, not squeamish:
+
+1. **The readiness state is about the user's locality, not the world.** §3
+   defines WATCH as *something is forming* and drives a 48-hour action queue
+   from that household's own gaps. A defense programme is not forming near
+   anyone.
+2. **Driving it from news is exactly the forbidden aggregation.** §4.1 says
+   never editorialize, never predict, never aggregate separate stories into an
+   implied narrative. Flipping every user in a country to WATCH on the basis of
+   policy coverage *is* that narrative.
+3. **It would never come back down.** Every signal in the index has a threshold
+   and an expiry. A policy announcement has neither. A state that rises and
+   never falls is a permanently elevated app, which is the manufactured-alarm
+   failure §4.1 exists to prevent — and the thing that destroys trust when
+   nothing happens for two years.
+
+### 9.2 Where it does belong
+
+As **standing posture**: baseline context that informs *what horizon is worth
+planning for*, rendered deliberately as the opposite of an alert — no colour,
+no urgency, no call to action, and an explicit line saying it does not change
+the readiness state.
+
+It may also inform which existing hazard overlay content gets surfaced first
+(e.g. extended grid-down). It may raise **prominence**. It may never raise
+**alarm**.
+
+### 9.3 Epistemic status is mandatory
+
+Every posture note declares `official`, `press-reported` or `mixed`, and any
+note that is not fully official must say which part is only reported. "The
+Department of Defense announced a programme" and "press reporting on internal
+documents says 90 days" are different kinds of claim. An interface that renders
+them identically is lying by layout.
+
+Primary citations and press citations are stored in separate fields so the two
+can never be flattened into one list.
+
+### 9.4 No prediction, no urging
+
+The schema rejects a posture note whose text contains predictive or urging
+language — *will*, *imminent*, *inevitable*, *coming war*, *any day now*,
+*brace*, *prepare now*. Caught mechanically because this is the content type
+most likely to drift into forecasting, and the drift is gradual.
+
+State what happened, state what is merely reported, state what it means for a
+household, and stop.
+
+---
+
 ## 8. Review authority and cadence
 
 | Scope | Authority | Cadence |

@@ -16,6 +16,8 @@ const BUDGETS = {
   shellGzipKb: 150,
   /** Content pack as shipped. */
   contentKb: 2048,
+  /** Self-hosted subset faces. Already woff2-compressed, so measured raw. */
+  fontsKb: 100,
 };
 
 function walk(dir: string): string[] {
@@ -32,11 +34,16 @@ const shellGzipBytes = files
   .reduce((sum, f) => sum + gzipSync(readFileSync(f)).byteLength, 0);
 
 const contentBytes = files
-  .filter((f) => f.includes(`${'content'}/`))
+  .filter((f) => f.includes('content/'))
+  .reduce((sum, f) => sum + statSync(f).size, 0);
+
+const fontBytes = files
+  .filter((f) => f.endsWith('.woff2'))
   .reduce((sum, f) => sum + statSync(f).size, 0);
 
 const shellKb = shellGzipBytes / 1024;
 const contentKb = contentBytes / 1024;
+const fontsKb = fontBytes / 1024;
 
 const failures: string[] = [];
 if (shellKb > BUDGETS.shellGzipKb) {
@@ -49,9 +56,13 @@ if (contentKb > BUDGETS.contentKb) {
     `content pack is ${contentKb.toFixed(1)} KB, over the ${BUDGETS.contentKb} KB budget`,
   );
 }
+if (fontsKb > BUDGETS.fontsKb) {
+  failures.push(`fonts are ${fontsKb.toFixed(1)} KB, over the ${BUDGETS.fontsKb} KB budget`);
+}
 
 console.log(
   `Shell ${shellKb.toFixed(1)} / ${BUDGETS.shellGzipKb} KB gzipped · ` +
+    `fonts ${fontsKb.toFixed(1)} / ${BUDGETS.fontsKb} KB · ` +
     `content ${contentKb.toFixed(1)} / ${BUDGETS.contentKb} KB`,
 );
 
