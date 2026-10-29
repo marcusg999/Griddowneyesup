@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    // DOM as well as ES2022: the specs run in Node, but page.evaluate bodies
+    // are browser code and reference document, window and friends.
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "composite": true,
+    "types": ["node"]
+  },
+  // The release gate's own code was in no project at all, so `tsc -b` never
+  // looked at it — which is how a type error in the suite that decides whether
+  // a build ships would have gone unnoticed.
+  "include": ["tests/offline"]
+}

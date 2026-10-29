@@ -3,7 +3,6 @@ import { t } from '@/i18n';
 import { useContent } from '@/state/content';
 import { useSupply } from '@/features/supply/useSupply';
 import { useReadiness } from '@/state/readiness';
-import { weightTradeoff } from '@/features/supply/kits';
 import { acquisitionPath } from '@/features/supply/recommend';
 import { attachOffers } from '@/features/commerce/offers';
 import { Offers } from '@/ui/Offers';
@@ -419,5 +418,3 @@ function WeightLine({
     </p>
   );
 }
-
-export { weightTradeoff };

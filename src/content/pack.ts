@@ -101,6 +101,9 @@ export async function installContentPack(): Promise<boolean> {
     // Offline, or the network produced nonsense. Either way the installed pack
     // is what the user has and it keeps working. This is the expected path on
     // most launches, not an error condition.
+    // Deliberate, and on the expected path rather than a failure: this is how
+    // "why did my pack not update" gets answered without a debugger.
+    // eslint-disable-next-line no-console
     console.info('Content pack not refreshed; using the installed copy.', error);
     return false;
   }

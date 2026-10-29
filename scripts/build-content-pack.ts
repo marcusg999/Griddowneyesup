@@ -11,7 +11,7 @@
  * verify anything an attacker chose to substitute.
  */
 import { createHash, createSign } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import MiniSearch from 'minisearch';
 import { validateContent } from './validate-content.js';

@@ -224,8 +224,10 @@ npm run dev
 npm run verify
 ```
 
-`verify` runs typecheck, content validation, unit tests, the production build,
-the bundle-size budget check, and the offline Playwright suite. The offline
+`verify` runs the content pack build, lint, typecheck, content validation, unit
+tests, the production build, the bundle-size budget check, and the offline
+Playwright suite. The pack build comes first because it generates the signing
+key module the app imports, so lint and typecheck both need it present. The offline
 suite is a release gate: cold boot with the network disabled, navigate every
 route, search the library, mutate inventory, build a plan, export a PDF.
 
