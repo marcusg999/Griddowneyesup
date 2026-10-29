@@ -128,6 +128,12 @@ export function SkillDetail() {
       </ul>
       <p className="meta">{t('skill.lastReviewed', { date: skill.lastReviewed })}</p>
 
+      <p className="print-row">
+        <Link href={`/print/skill/${skill.id}`} className="btn btn--ghost">
+          Print this page
+        </Link>
+      </p>
+
       <aside className="rail">
         <h3>Entry</h3>
         <dl>

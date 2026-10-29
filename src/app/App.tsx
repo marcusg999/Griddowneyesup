@@ -10,6 +10,7 @@ import { Plan } from './pages/Plan';
 import { Skills } from './pages/Skills';
 import { SkillDetail } from './pages/SkillDetail';
 import { Settings } from './pages/Settings';
+import { PrintView } from './print/PrintView';
 
 function StatusBar() {
   const { state } = useReadiness();
@@ -114,7 +115,33 @@ function Routes() {
   );
 }
 
+/**
+ * Print routes render without the app's chrome.
+ *
+ * A printable sheet is a different document, not a page of the app wearing a
+ * print stylesheet: no tab bar, no status bar, no readiness theming, white
+ * paper. Kept as its own branch so nothing in the shell can leak onto paper.
+ */
+function PrintShell() {
+  useTransitionalNavigation();
+  return (
+    <Switch>
+      <Route path="/print/:doc/:id?" component={PrintView} />
+    </Switch>
+  );
+}
+
 export function App() {
+  const [location] = useLocation();
+
+  if (location.startsWith('/print/')) {
+    return (
+      <ContentProvider>
+        <PrintShell />
+      </ContentProvider>
+    );
+  }
+
   return (
     <ReadinessProvider>
       <ContentProvider>

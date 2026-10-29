@@ -174,6 +174,86 @@ export interface PostureNote {
 }
 
 // ---------------------------------------------------------------------------
+// Economic indicators and second-order effects (§4.1 supply-chain module)
+// ---------------------------------------------------------------------------
+
+/**
+ * One link in a transmission chain.
+ *
+ * The chain is stored as discrete links rather than a paragraph on purpose.
+ * A narrative paragraph is exactly the "aggregation into an implied narrative"
+ * §4.1 forbids; a chain of labelled links with stated lags is a model the
+ * reader can inspect and disagree with one link at a time.
+ */
+export interface TransmissionLink {
+  readonly from: string;
+  readonly to: string;
+  /** Typical delay before the first link shows up in the second. */
+  readonly lag: string;
+  /** How the link actually works, including where it is weaker than assumed. */
+  readonly note: string;
+}
+
+/**
+ * A measured economic value with a current reading.
+ *
+ * The distinction from a PostureNote matters and is the reason this may be a
+ * live signal while a policy announcement may not: an indicator has a current
+ * value, a baseline and a threshold, so it can fall as well as rise. A news
+ * story has none of those and would only ever ratchet upward.
+ */
+export interface Indicator {
+  readonly id: string;
+  readonly name: string;
+  readonly unit: string;
+  readonly current: number;
+  /** ISO date of the reading. Staleness is shown, never hidden. */
+  readonly asOf: string;
+  readonly baseline: { readonly label: string; readonly value: number };
+  readonly epistemicStatus: EpistemicStatus;
+  readonly whatItIs: string;
+  readonly reported?: string;
+  readonly transmission: readonly TransmissionLink[];
+  readonly whatItMeansForYou: string;
+  /** What would falsify or end this. An indicator with no exit is a scare. */
+  readonly wouldChangeThis: string;
+  readonly citations: readonly Citation[];
+  readonly pressCitations?: readonly {
+    readonly source: string;
+    readonly title: string;
+    readonly published: string;
+    readonly url?: string;
+  }[];
+  readonly lastReviewed: string;
+}
+
+// ---------------------------------------------------------------------------
+// Commerce (§14)
+// ---------------------------------------------------------------------------
+
+/**
+ * A purchasable offer for a catalog item.
+ *
+ * Deliberately a SEPARATE type from CatalogItem, loaded as a separate
+ * artifact, and joined only AFTER recommendation ordering has been computed.
+ * The ordering function cannot see this type, which is what makes "commerce
+ * never reorders a recommendation" a property of the code rather than a
+ * promise in a document.
+ */
+export interface Offer {
+  readonly id: string;
+  /** The catalog item this is an offer for. */
+  readonly itemId: string;
+  readonly merchant: string;
+  readonly url: string;
+  /** True when the link earns the publisher a commission. Always disclosed. */
+  readonly affiliate: boolean;
+  readonly priceCents?: number;
+  /** ISO date the offer was checked. Stale offers stop linking. */
+  readonly asOf: string;
+}
+
+// ---------------------------------------------------------------------------
 // Hazards and overlays (§4.2)
 // ---------------------------------------------------------------------------
 
@@ -360,4 +440,6 @@ export interface ContentPack {
   readonly hazardOverlays: readonly HazardOverlay[];
   readonly dependentOverlays: readonly DependentOverlay[];
   readonly posture: readonly PostureNote[];
+  readonly indicators: readonly Indicator[];
+  readonly offers: readonly Offer[];
 }

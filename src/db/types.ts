@@ -50,6 +50,15 @@ export interface Profile {
   readonly bodyweightKg?: number;
   /** Fraction of bodyweight treated as the carry ceiling. Default 0.20. */
   readonly carryFraction: number;
+
+  /**
+   * Optional spending figures, used only to compute this household's own
+   * exposure to an economic indicator. Never transmitted, never used for
+   * anything else, and the exposure section simply does not render without
+   * them rather than guessing.
+   */
+  readonly monthlyFuelSpendCents?: number;
+  readonly monthlyGrocerySpendCents?: number;
 }
 
 export interface InventoryRecord {

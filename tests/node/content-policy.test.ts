@@ -155,3 +155,103 @@ describe('posture schema gate', () => {
     ).toBe(false);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Economic indicators and offers. CONTENT_POLICY §7 and §10.
+// ---------------------------------------------------------------------------
+
+const validIndicator = {
+  id: 'diesel-retail',
+  name: 'Retail diesel',
+  unit: 'USD/gal',
+  current: 6.352,
+  asOf: '2026-10-26',
+  baseline: { label: '2026 year to date', value: 5.068 },
+  epistemicStatus: 'mixed',
+  whatItIs: 'The US average retail price of on-highway diesel.',
+  reported: 'Relayed through commercial aggregators rather than read from EIA.',
+  transmission: [
+    { from: 'Crude oil', to: 'Diesel', lag: '2 to 4 weeks', note: 'Refiners price off crude.' },
+  ],
+  whatItMeansForYou: 'Your fuel bill moved first and has already moved.',
+  wouldChangeThis: 'Diesel falling back toward the year-to-date average.',
+  citations: [],
+  lastReviewed: '2026-10-29',
+};
+
+describe('indicator schema gate', () => {
+  it('accepts a well-formed indicator', async () => {
+    const { indicatorSchema } = await import('../../scripts/schema');
+    expect(indicatorSchema.safeParse(validIndicator).success).toBe(true);
+  });
+
+  it('rejects an indicator with no transmission chain', async () => {
+    // A number with no stated mechanism is a number with no argument, and it
+    // is indistinguishable from a scare.
+    const { indicatorSchema } = await import('../../scripts/schema');
+    const result = indicatorSchema.safeParse({ ...validIndicator, transmission: [] });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects an indicator with no exit condition', async () => {
+    // Something that can only ever get worse is not a signal.
+    const { indicatorSchema } = await import('../../scripts/schema');
+    const { wouldChangeThis: _omitted, ...noExit } = validIndicator;
+    expect(indicatorSchema.safeParse(noExit).success).toBe(false);
+  });
+
+  it('rejects forecasting and urging language', async () => {
+    const { indicatorSchema } = await import('../../scripts/schema');
+    for (const text of [
+      'Prices will skyrocket.',
+      'Stock up now before it is too late.',
+      'A collapse is inevitable.',
+    ]) {
+      expect(
+        indicatorSchema.safeParse({ ...validIndicator, whatItMeansForYou: text }).success,
+        `should have rejected: ${text}`,
+      ).toBe(false);
+    }
+  });
+});
+
+describe('offer schema gate', () => {
+  const validOffer = {
+    id: 'example-filter',
+    itemId: 'filter-hollow-fibre',
+    merchant: 'Example Merchant',
+    url: 'https://example.com/offers/filter',
+    affiliate: true,
+    priceCents: 2499,
+    asOf: '2026-10-29',
+  };
+
+  it('accepts a well-formed offer', async () => {
+    const { offerSchema } = await import('../../scripts/schema');
+    expect(offerSchema.safeParse(validOffer).success).toBe(true);
+  });
+
+  it('requires affiliate status to be stated, never left to default', async () => {
+    const { offerSchema } = await import('../../scripts/schema');
+    const { affiliate: _omitted, ...undisclosed } = validOffer;
+    expect(offerSchema.safeParse(undisclosed).success).toBe(false);
+  });
+
+  it('has no vocabulary for rank, priority or placement', async () => {
+    // The §14 constraint at the schema level: commerce data literally cannot
+    // express "put this first", so it cannot ask to be reordered.
+    const { offerSchema } = await import('../../scripts/schema');
+    const parsed = offerSchema.safeParse({
+      ...validOffer,
+      rank: 1,
+      priority: 'top',
+      sponsoredPlacement: true,
+    });
+    expect(parsed.success).toBe(true);
+    if (parsed.success) {
+      expect(Object.keys(parsed.data).sort()).toEqual(
+        ['affiliate', 'asOf', 'id', 'itemId', 'merchant', 'priceCents', 'url'].sort(),
+      );
+    }
+  });
+});

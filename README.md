@@ -62,6 +62,14 @@ against a percentage of bodyweight — with the trade shown plainly: *dropping t
 **Days, not checkboxes.** The headline number is not "items owned." It is
 **"your household is covered for 4 days of water and 11 days of calories."**
 
+**Second-order analysis that calms rather than alarms.** When a distant event
+moves a price, the app shows the measured reading with its source and age, the
+transmission chain as discrete links you can disagree with one at a time, and
+what it costs *your* household as arithmetic on your own numbers. The chain
+states where it is weaker than assumed: freight is 3–8% of a grocery item's
+shelf price, so a 25% diesel rise is roughly 1–2% on most groceries — not a
+doubling. Saying so is the difference between analysis and alarm.
+
 **Baseline risk from day one.** FEMA's National Risk Index, ingested and joined
 to the user's county, produces a standing risk profile before a single alert
 fires: *your county ranks high for wildfire and drought, moderate for earthquake,
@@ -72,9 +80,13 @@ and conflating them kills people. A sand-and-charcoal column improves clarity an
 taste; it does not make water microbiologically safe. Every skill in the library
 carries a required `doesNotDo` field — enforced by schema, not by discipline.
 
-**Paper is the last backup.** The most likely failure mode is a dead phone.
-One-tap PDF export for the plan, the checklist, the wallet-sized rally card, the
-contact card and any skill page. Black and white, legible at arm's length.
+**Paper is the last backup.** The most likely failure mode is a dead phone, and
+this app lives on a phone. Five printable documents — household plan,
+wallet-sized rally card, contact card, supply checklist, and any skill page.
+Black and white, legible at arm's length, no colour dependency. An unfilled
+field prints as a ruled blank so you can finish the plan with a pen, and an
+incomplete plan says so on the sheet, because a printed plan with blanks in it
+is worse than none: it looks finished.
 
 ---
 
@@ -95,8 +107,13 @@ contact card and any skill page. Black and white, legible at arm's length.
 - **No weapons, munitions, or tactics content.** Personal defence is handled as
   planning — awareness, de-escalation, avoidance, securing a dwelling. See
   [`docs/CONTENT_POLICY.md`](docs/CONTENT_POLICY.md).
-- **No affiliate commerce.** Items are recommended by specification, never brand
-  or SKU.
+- **Commerce can never move a recommendation.** Affiliate links exist, and the
+  ordering is computed before any commerce data is attached — removing every
+  offer leaves the order byte-identical, which is asserted by a test. The offer
+  schema has no rank or placement field, so there is no position to buy.
+- **No purchase link on a threat screen.** Pairing a price shock with a buy
+  button is fear as a conversion mechanic. Enforced by test, and suppression
+  means absence from the document, not CSS invisibility.
 
 ---
 
@@ -110,7 +127,7 @@ disabled.**
 |---|---|---|
 | 1 | Content schema, pack format, offline shell — **prove airplane mode** | ✅ Done |
 | 2 | Supply system, gap analysis, kit ladder, achievements | 🔨 Coverage + ladder + weight budgeting in; achievements and rotation next |
-| 3 | Plan builder + PDF export | ⬜ Next |
+| 3 | Plan builder + printable documents | ✅ Done |
 | 4 | Skills library rendering and local full-text search | ✅ Rendering + search done; content volume at 6 of 40–60 |
 | 5 | Readiness-state machine and Grey Sky interface | ✅ State machine + Grey Sky in; Watch action queue pending |
 | — | Interface design: *field notebook, read by headlamp* | ✅ See [`docs/DESIGN_CONTRACT.md`](docs/DESIGN_CONTRACT.md) |
@@ -121,8 +138,8 @@ disabled.**
 ### The gate, currently passing
 
 ```
-Shell 71.2 / 150 KB gzipped · fonts 68.2 / 100 KB · content 62.8 / 2048 KB
-46 unit tests · 11 offline tests
+Shell 82.7 / 150 KB gzipped · fonts 68.2 / 100 KB · content 67.3 / 2048 KB
+90 unit tests · 20 offline tests
 ```
 
 The offline suite runs against the production build in a Pixel 5 profile with

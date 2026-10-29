@@ -1,0 +1,88 @@
+[
+  {
+    "id": "diesel-retail",
+    "name": "Retail diesel",
+    "unit": "USD/gal",
+    "current": 6.352,
+    "asOf": "2026-10-26",
+    "baseline": { "label": "2026 year to date", "value": 5.068 },
+    "epistemicStatus": "mixed",
+    "whatItIs": "The US average retail price of on-highway diesel, from the Energy Information Administration's weekly survey. Diesel is the single most load-bearing price in a supply chain: almost everything on a shelf arrived on a truck, a train or a ship burning it.",
+    "reported": "The 26 October reading was relayed through commercial aggregators rather than read from the EIA release directly. The 19 October reading of $6.276 appears consistently across sources. Confirm against eia.gov before treating either figure as exact.",
+    "transmission": [
+      {
+        "from": "Crude oil",
+        "to": "Diesel at the pump",
+        "lag": "2 to 4 weeks",
+        "note": "Refiners price off crude, but diesel also tracks distillate inventories and winter heating demand, so it can move independently of crude."
+      },
+      {
+        "from": "Diesel",
+        "to": "Freight cost",
+        "lag": "Immediate to 4 weeks",
+        "note": "Most trucking contracts carry a fuel surcharge that resets weekly or monthly, so this link is fast and close to mechanical."
+      },
+      {
+        "from": "Freight cost",
+        "to": "Shelf price",
+        "lag": "4 to 12 weeks",
+        "note": "Freight is typically 3 to 8 percent of a grocery item's retail price. A 25 percent diesel increase is therefore roughly 1 to 2 percent on most groceries — not a doubling. It bites hardest on heavy, cheap goods: bottled water, canned food, bulk grain, cat litter."
+      },
+      {
+        "from": "Diesel and natural gas",
+        "to": "Food production",
+        "lag": "One to two growing seasons",
+        "note": "Farm diesel and nitrogen fertiliser, which is made from natural gas. This link is slow, and it is the one that persists after prices fall."
+      }
+    ],
+    "whatItMeansForYou": "Your fuel bill moved first and has already moved. Grocery prices move later and by much less than the headline number suggests. The goods worth buying ahead are the heavy, cheap, storable ones, because those are where freight is the largest share of what you pay.",
+    "wouldChangeThis": "Diesel falling back toward the year-to-date average, distillate inventories recovering, or the Hormuz transit rate returning to normal.",
+    "citations": [
+      {
+        "source": "US Energy Information Administration",
+        "title": "Weekly Retail Gasoline and Diesel Prices",
+        "published": "2026",
+        "url": "https://www.eia.gov/petroleum/gasdiesel/",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-29"
+  },
+  {
+    "id": "brent-crude",
+    "name": "Brent crude",
+    "unit": "USD/bbl",
+    "current": 115.27,
+    "asOf": "2026-10-27",
+    "baseline": { "label": "Pre-February 2026", "value": 74.0 },
+    "epistemicStatus": "press-reported",
+    "whatItIs": "The international crude benchmark. It sits upstream of diesel, petrol, plastics, fertiliser and freight, which is why one number appears in so many unrelated bills.",
+    "reported": "Read from a commercial tracker, not an exchange feed or a government release. The pre-February baseline is approximate. Treat the level as indicative and the direction as reliable.",
+    "transmission": [
+      {
+        "from": "Shipping disruption",
+        "to": "Crude price",
+        "lag": "Days",
+        "note": "Crude reprices on expectation, not on barrels actually missing. This is why the price can move far more than the physical shortfall justifies, in both directions."
+      },
+      {
+        "from": "Crude price",
+        "to": "Everything downstream",
+        "lag": "Weeks to seasons",
+        "note": "Fuel first, then freight, then plastics and fertiliser, then food."
+      }
+    ],
+    "whatItMeansForYou": "Crude is the upstream number. It is useful for understanding why several unrelated bills moved at once, and it is not itself something a household can act on.",
+    "wouldChangeThis": "A negotiated reopening of Hormuz, sustained release from strategic reserves, or demand falling faster than supply.",
+    "citations": [],
+    "pressCitations": [
+      {
+        "source": "CBS News",
+        "title": "Strait of Hormuz traffic and oil price coverage",
+        "published": "2026",
+        "url": "https://www.cbsnews.com/live-updates/iran-war-trump-us-oil-gas-prices-strait-of-hormuz-midterms/"
+      }
+    ],
+    "lastReviewed": "2026-10-29"
+  }
+]

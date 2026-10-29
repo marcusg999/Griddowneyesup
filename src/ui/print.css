@@ -1,0 +1,263 @@
+/*
+ * PAPER IS THE LAST BACKUP. §7.
+ *
+ * The most likely failure in an emergency is a dead phone, and this app lives
+ * on a phone. These sheets are the answer to that.
+ *
+ * Design rules, all from §7:
+ *   - Black and white. Nothing is conveyed by colour alone.
+ *   - Legible at arm's length — 11pt minimum body, 14pt for anything you read
+ *     while moving.
+ *   - No background fills. A printer with low toner must still produce a
+ *     readable sheet, and a solid black panel is how you waste a cartridge.
+ */
+
+.printview {
+  background: #fff;
+  color: #000;
+  min-height: 100%;
+  font-family: var(--body);
+}
+
+.printview a { color: #000; }
+
+/* On-screen chrome. Never printed. */
+.printbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: #111;
+  color: #fff;
+  border-bottom: 1px solid #333;
+}
+.printbar a { color: #c9ff3d; }
+.printbar .btn { background: #c9ff3d; color: #000; }
+
+/*
+ * On screen the preview must measure the same as the printed page, or the
+ * preview lies: with box-sizing: border-box a 190mm max-width minus 14mm of
+ * padding leaves 162mm of content, while @page margins give the printer
+ * 190mm. Cards that fit on paper then stacked in the preview.
+ */
+.sheet-paper {
+  max-width: 218mm; /* 190mm of content + 14mm padding each side */
+  margin: 0 auto;
+  padding: 16mm 14mm;
+  background: #fff;
+  color: #000;
+}
+
+.sheet-paper h1 {
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: 20pt;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 2mm;
+  max-width: none;
+  color: #000;
+}
+
+.sheet-paper h2 {
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: 10.5pt;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 6mm 0 1.5mm;
+  padding-bottom: 1mm;
+  border-bottom: 1.5pt solid #000;
+  max-width: none;
+  color: #000;
+}
+.sheet-paper h2::before { display: none; }
+
+.sheet-paper p,
+.sheet-paper li,
+.sheet-paper td,
+.sheet-paper th {
+  font-size: 11pt;
+  line-height: 1.4;
+  color: #000;
+  max-width: none;
+}
+
+.sheet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 2.5pt solid #000;
+  padding-bottom: 2mm;
+  margin-bottom: 4mm;
+}
+.sheet-head small {
+  font-size: 8.5pt;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: right;
+  flex: none;
+  white-space: nowrap;
+  padding-left: 6mm;
+}
+
+/* Two columns on paper. Collapses to one at narrow page sizes. */
+.sheet-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10mm; }
+.sheet-cols--full { grid-column: 1 / -1; }
+
+.rowline {
+  display: grid;
+  grid-template-columns: 34mm 1fr;
+  gap: 3mm;
+  padding: 1.6mm 0;
+  border-bottom: 0.5pt solid #999;
+}
+.rowline dt { font-weight: 700; font-size: 10pt; }
+.rowline dd { margin: 0; font-size: 11pt; }
+.rowline dd em { font-style: normal; color: #555; }
+
+/* An unfilled field prints as a ruled blank, so the sheet is still usable
+   with a pen. A plan half-finished on screen is a plan you can finish on the
+   kitchen table. */
+.blankline {
+  display: inline-block;
+  min-width: 55mm;
+  border-bottom: 0.75pt solid #000;
+  height: 1em;
+}
+
+.sheet-warn {
+  border: 1.5pt solid #000;
+  padding: 3mm 4mm;
+  margin: 0 0 5mm;
+  font-size: 10pt;
+}
+.sheet-warn strong { text-transform: uppercase; letter-spacing: 0.08em; }
+
+.sheet-foot {
+  margin-top: 7mm;
+  padding-top: 2mm;
+  border-top: 1pt solid #000;
+  font-size: 8.5pt;
+  display: flex;
+  justify-content: space-between;
+  gap: 6mm;
+}
+
+/* --- The wallet card ------------------------------------------------------
+   85 x 54 mm, the size of a bank card, because that is a size wallets and
+   phone cases already accept. Printed two-up with cut guides. */
+
+.cards { display: flex; flex-wrap: wrap; gap: 8mm 6mm; }
+
+.card-cut {
+  width: 85mm;
+  border: 0.75pt dashed #666;
+  padding: 4mm 4.5mm;
+  display: flex;
+  flex-direction: column;
+  /* Never clip: a truncated rally point is a wrong rally point. If a card
+     overflows, it grows and the trim line moves — visibly. */
+  min-height: 54mm;
+  height: auto;
+  overflow: visible;
+  background: #fff;
+  color: #000;
+  clip-path: none;
+  margin: 0;
+}
+.card-cut h3 {
+  font-size: 8pt;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 1.5mm;
+  padding-bottom: 1mm;
+  border-bottom: 1pt solid #000;
+  font-weight: 800;
+}
+.card-cut dl { margin: 0; }
+.card-cut .rowline { grid-template-columns: 20mm 1fr; padding: 0.9mm 0; border-bottom: 0.4pt solid #bbb; }
+.card-cut .rowline dt { font-size: 7.5pt; }
+.card-cut .rowline dd { font-size: 8.5pt; }
+.card-cut .card-foot { margin-top: auto; font-size: 7pt; border-top: 0.5pt solid #000; padding-top: 1mm; }
+
+.checkbox-cell {
+  display: inline-block;
+  width: 3.5mm;
+  height: 3.5mm;
+  border: 0.75pt solid #000;
+  margin-right: 2mm;
+  vertical-align: -0.4mm;
+}
+
+.sheet-table { width: 100%; border-collapse: collapse; }
+.sheet-table th {
+  text-align: left;
+  font-size: 8.5pt;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1.5pt solid #000;
+  padding: 1.5mm 2mm 1.5mm 0;
+}
+.sheet-table td { padding: 1.4mm 2mm 1.4mm 0; border-bottom: 0.5pt solid #bbb; vertical-align: top; }
+.sheet-table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* --- Print ---------------------------------------------------------------- */
+
+@page {
+  size: auto;
+  margin: 12mm;
+}
+
+@media print {
+  /* Everything that is screen furniture leaves. */
+  .printbar,
+  .tabbar,
+  .statusbar,
+  .skip-link {
+    display: none !important;
+  }
+
+  html,
+  body,
+  #root,
+  .shell,
+  .main,
+  .printview {
+    background: #fff !important;
+    color: #000 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+  }
+
+  .sheet,
+  .shell.sheet { background-image: none !important; }
+  .sheet::after,
+  .main::before { display: none !important; }
+
+  .sheet-paper { max-width: none; padding: 0; margin: 0; }
+
+  /* Never break a section across a page in the middle of an instruction. */
+  .sheet-section,
+  .card-cut,
+  .rowline { break-inside: avoid; page-break-inside: avoid; }
+
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 8pt;
+    word-break: break-all;
+  }
+  a[href^='/']::after { content: ''; }
+
+  .card-cut { border-style: dashed; border-color: #000; }
+}

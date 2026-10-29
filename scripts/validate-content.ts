@@ -9,6 +9,8 @@ import { join } from 'node:path';
 import {
   catalogItemSchema,
   kitSchema,
+  indicatorSchema,
+  offerSchema,
   overlaysSchema,
   postureSchema,
   skillSchema,
@@ -45,6 +47,8 @@ export function validateContent(): { problems: Problem[]; warnings: Problem[] } 
   const rawKits = read('kits.json');
   const rawOverlays = read('overlays.json');
   const rawPosture = read('posture.json');
+  const rawIndicators = read('indicators.json');
+  const rawOffers = read('offers.json');
 
   const skills = [];
   for (const [i, raw] of (rawSkills as unknown[]).entries()) {
@@ -111,6 +115,42 @@ export function validateContent(): { problems: Problem[]; warnings: Problem[] } 
     }
   }
 
+  for (const [i, raw] of (rawIndicators as unknown[]).entries()) {
+    const parsed = indicatorSchema.safeParse(raw);
+    if (!parsed.success) {
+      for (const issue of parsed.error.issues) {
+        problems.push({
+          where: `indicators[${i}]${issue.path.length ? '.' + issue.path.join('.') : ''}`,
+          message: issue.message,
+        });
+      }
+      continue;
+    }
+    // An economic reading goes stale in weeks, not months.
+    const ageDays = (Date.now() - new Date(parsed.data.asOf).getTime()) / 86_400_000;
+    if (ageDays > 30) {
+      warnings.push({
+        where: `indicator:${parsed.data.id}`,
+        message: `reading is ${ageDays.toFixed(0)} days old; economic indicators go stale fast`,
+      });
+    }
+  }
+
+  const parsedOffers = [];
+  for (const [i, raw] of (rawOffers as unknown[]).entries()) {
+    const parsed = offerSchema.safeParse(raw);
+    if (!parsed.success) {
+      for (const issue of parsed.error.issues) {
+        problems.push({
+          where: `offers[${i}]${issue.path.length ? '.' + issue.path.join('.') : ''}`,
+          message: issue.message,
+        });
+      }
+      continue;
+    }
+    parsedOffers.push(parsed.data);
+  }
+
   const overlaysParsed = overlaysSchema.safeParse(rawOverlays);
   if (!overlaysParsed.success) {
     for (const issue of overlaysParsed.error.issues) {
@@ -126,6 +166,12 @@ export function validateContent(): { problems: Problem[]; warnings: Problem[] } 
   }
   if (new Set(skills.map((s) => s.id)).size !== skills.length) {
     problems.push({ where: 'skills', message: 'duplicate skill ids' });
+  }
+
+  for (const offer of parsedOffers) {
+    if (!itemIds.has(offer.itemId)) {
+      problems.push({ where: `offer:${offer.id}`, message: `unknown item "${offer.itemId}"` });
+    }
   }
 
   for (const skill of skills) {
