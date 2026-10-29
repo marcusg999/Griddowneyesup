@@ -10,6 +10,12 @@ The app a person opens in the ninety seconds after they hear bad news. It tells
 them what is actually happening near them, what to do in the next hour, and what
 to buy before the shelves empty — and it keeps working after the towers go down.
 
+**▶ [marcusg999.github.io/Griddowneyesup](https://marcusg999.github.io/Griddowneyesup/)**
+
+Installable from the browser. Load it once, then turn the network off — the
+library, your inventory and your plan are all still there, because they were
+never coming from the network in the first place.
+
 ---
 
 ## The premise
@@ -142,8 +148,8 @@ disabled.**
 ### The gate, currently passing
 
 ```
-Shell 85.1 / 150 KB gzipped · fonts 68.2 / 100 KB · content 67.3 / 2048 KB
-115 unit tests · 23 offline tests
+Shell 85.2 / 150 KB gzipped · fonts 68.2 / 100 KB · content 367.6 / 2048 KB
+115 unit tests · 24 offline tests
 ```
 
 The offline suite runs against the production build in a Pixel 5 profile with
@@ -222,3 +228,24 @@ npm run verify
 the bundle-size budget check, and the offline Playwright suite. The offline
 suite is a release gate: cold boot with the network disabled, navigate every
 route, search the library, mutate inventory, build a plan, export a PDF.
+
+### Deployment
+
+A push to `main` deploys to GitHub Pages. The workflow runs the full release
+gate first and uploads nothing if the offline suite fails — Pages is shipping,
+and §2 applies to shipping.
+
+Pages serves a project site from a subpath, so the deployed build is made with
+the prefix baked in:
+
+```bash
+PUBLIC_BASE_PATH=/Griddowneyesup/ npm run build
+```
+
+Left unset, the build targets a domain root, which is what `npm run dev` and the
+offline suite use. Everything that resolves a URL at runtime reads
+`import.meta.env.BASE_URL` rather than assuming either. If a custom domain is
+ever attached, drop the variable from the workflow — the site is at a root again.
+
+The build also emits `404.html` as a copy of the shell, because GitHub Pages has
+no history fallback and a deep link would otherwise miss on first visit.
