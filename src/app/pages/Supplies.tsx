@@ -39,57 +39,69 @@ export function Supplies() {
         <>
           <h2>
             <span className="margin-note" aria-hidden="true">
-              top down
+              climb down
             </span>
-            The ladder
+            The ladder down
           </h2>
           <p className="meta" style={{ marginTop: -4 }}>
-            Start at the top and work down. The first rung is the one you can finish
-            today, which is the whole point of doing it in this order.
+            You start at the top, in your pockets, and climb down into safety. Each rung
+            below you is deeper cover for longer — and each one is meant to be an easy
+            win, which is the whole point of going in this order.
           </p>
-          {ladder.map(({ status, locked, prerequisite }) => (
-            <div
-              className="card rung reveal"
-              key={status.kit.id}
-              data-locked={locked}
-            >
-              <span className="margin-note" aria-hidden="true">
-                rung {status.kit.rung}
-              </span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <strong>{status.kit.name}</strong>
-                {status.complete && <span className="pill">{t('kit.complete')}</span>}
-                {locked && <span className="pill">{t('kit.locked')}</span>}
-                <span className="meta" style={{ marginLeft: 'auto' }}>
-                  {status.present}/{status.total}
+          <ol className="ladder">
+            {ladder.map(({ status, locked, prerequisite }) => (
+              <li
+                className="ladder__step"
+                key={status.kit.id}
+                data-locked={locked}
+                data-complete={status.complete}
+              >
+                {/* On the step, not inside the card: .card's clip-path (the
+                    trimmed corner) clips pseudo-elements and children alike,
+                    and the marginalia sit at a negative offset, so a note
+                    inside the card never rendered at all. */}
+                <span className="margin-note" aria-hidden="true">
+                  rung {status.kit.rung}
                 </span>
-              </div>
-              <p className="meta" style={{ margin: '4px 0 0' }}>
-                {status.kit.scenario} · {status.kit.horizon}
-              </p>
-              {locked && prerequisite && (
-                <p className="meta" style={{ margin: '6px 0 0' }}>
-                  {t('kit.locked.hint', { prereq: prerequisite.name })}
-                </p>
-              )}
-              {status.missingCritical.length > 0 && (
-                <p className="caution" style={{ marginTop: 8 }}>
-                  {t('kit.criticalMissing', { n: status.missingCritical.length })}:{' '}
-                  {status.missingCritical.map((id) => byId.get(id)?.name ?? id).join(', ')}
-                </p>
-              )}
-              <div className="rung__bar" aria-hidden="true">
-                <i style={{ width: `${Math.round(status.fraction * 100)}%` }} />
-              </div>
-              {status.weightG !== undefined && status.weightG > 0 && (
-                <WeightLine
-                  weightG={status.weightG}
-                  budgetG={status.weightBudgetG}
-                  overG={status.overBudgetG}
-                />
-              )}
-            </div>
-          ))}
+                <div className="card rung reveal" data-locked={locked}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <strong>{status.kit.name}</strong>
+                    {status.complete && <span className="pill">{t('kit.complete')}</span>}
+                    {locked && <span className="pill">{t('kit.locked')}</span>}
+                    <span className="meta" style={{ marginLeft: 'auto' }}>
+                      {status.present}/{status.total}
+                    </span>
+                  </div>
+                  <p className="meta" style={{ margin: '4px 0 0' }}>
+                    {status.kit.scenario} · {status.kit.horizon}
+                  </p>
+                  {locked && prerequisite && (
+                    <p className="meta" style={{ margin: '6px 0 0' }}>
+                      {t('kit.locked.hint', { prereq: prerequisite.name })}
+                    </p>
+                  )}
+                  {status.missingCritical.length > 0 && (
+                    <p className="caution" style={{ marginTop: 8 }}>
+                      {t('kit.criticalMissing', { n: status.missingCritical.length })}:{' '}
+                      {status.missingCritical
+                        .map((id) => byId.get(id)?.name ?? id)
+                        .join(', ')}
+                    </p>
+                  )}
+                  <div className="rung__bar" aria-hidden="true">
+                    <i style={{ width: `${Math.round(status.fraction * 100)}%` }} />
+                  </div>
+                  {status.weightG !== undefined && status.weightG > 0 && (
+                    <WeightLine
+                      weightG={status.weightG}
+                      budgetG={status.weightBudgetG}
+                      overG={status.overBudgetG}
+                    />
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
         </>
       )}
 

@@ -547,6 +547,70 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
 
 /* --- Ladder -------------------------------------------------------------- */
 
+/* --- The ladder down ----------------------------------------------------
+   The section used to be seven cards in a column, which read as a list and
+   not as a ladder — and a list has no direction, which is what made it
+   confusing. So the stile is drawn: one continuous rail with the rungs
+   hanging off it, descending.
+
+   The rail and the connectors cannot live on .card. Its clip-path (the
+   trimmed corner) clips pseudo-elements too, so anything drawn outside the
+   card's box disappears. Hence the <li> wrapper carrying the connector. */
+.ladder {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 26px;
+  max-width: calc(var(--measure) + 6ch);
+  position: relative;
+}
+
+/* The stile. Stops short at both ends so it reads as a ladder with a top and
+   a bottom rather than a line running off the page. */
+.ladder::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 10px;
+  bottom: 22px;
+  width: 2px;
+  background: var(--rule-major);
+}
+
+.ladder__step { position: relative; }
+
+/* The rung itself: the short bar from stile to card. Acid where you have
+   been, dim where you have not — so how far down you have got is legible
+   from the rail alone, without reading a single card. */
+.ladder__step::before {
+  content: '';
+  position: absolute;
+  left: -19px;
+  top: 21px;
+  width: 17px;
+  height: 2px;
+  background: var(--acid);
+}
+
+.ladder__step[data-locked='true']::before { background: var(--rule-major); }
+
+/* A reached-but-unfinished rung gets a hollow collar; a finished one is
+   filled. Shape as well as colour, because Grey Sky drops colour and because
+   colour alone is never the only carrier here. */
+.ladder__step::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 16px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--acid);
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.ladder__step[data-complete='true']::after { background: var(--acid); }
+.ladder__step[data-locked='true']::after { border-color: var(--rule-major); }
+
 .rung { position: relative; }
 .rung[data-locked='true'] { opacity: 0.42; }
 .rung__bar { height: 2px; background: var(--rule-major); margin-top: 9px; position: relative; }

@@ -59,7 +59,7 @@ export const messages = {
   'kit.bov': 'Bug Out Vehicle',
   'kit.inch': 'INCH Bag',
   'kit.locked': 'Locked',
-  'kit.locked.hint': 'Finish {prereq} first. Each rung is meant to be easy.',
+  'kit.locked.hint': 'Finish {prereq} first — it is the rung above this one. Each one is meant to be an easy win.',
   'kit.complete': 'Complete',
   'kit.criticalMissing': '{n, plural, one {# critical item missing} other {# critical items missing}}',
 

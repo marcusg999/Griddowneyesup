@@ -161,6 +161,43 @@ test.describe('offline release gate', () => {
     await expect(page.getByTestId('inventory-row')).toContainText('Stored drinking water');
   });
 
+  test('the ladder reads as a descent, with the reachable rung at the top', async ({
+    page,
+  }) => {
+    await installThenGoOffline(page);
+    await page.goto('/supplies');
+
+    // The section is a climb DOWN into deeper cover. Framing and order have to
+    // agree: a list with no direction is what made this confusing before.
+    await expect(page.getByRole('heading', { name: 'The ladder down' })).toBeVisible();
+
+    const steps = page.locator('.ladder__step');
+    await expect(steps).toHaveCount(7);
+
+    // First step is the one you can act on, and it needs no scrolling.
+    await expect(steps.first()).toHaveAttribute('data-locked', 'false');
+    await expect(steps.first()).toContainText('Everyday Carry');
+    await expect(steps.last()).toContainText('INCH Bag');
+
+    // The lock explains itself spatially, which is the whole mental model.
+    await expect(steps.nth(1)).toContainText('it is the rung above this one');
+  });
+
+  test('the rung labels actually render', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/supplies');
+
+    // Regression: the labels used to sit inside .card, whose clip-path cut off
+    // anything at a negative offset — so the marginalia existed in the DOM and
+    // had never once been drawn. In the DOM is not the same as on the screen.
+    const label = page.locator('.ladder__step > .margin-note').first();
+    await expect(label).toHaveText(/rung 1/);
+    const box = await label.boundingBox();
+    expect(box?.width ?? 0).toBeGreaterThan(0);
+    expect(box?.x ?? -1).toBeGreaterThan(0);
+  });
+
   test('coverage is computed offline from local inventory', async ({ page }) => {
     await installThenGoOffline(page);
     await page.goto('/supplies');
