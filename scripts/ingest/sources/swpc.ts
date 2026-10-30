@@ -81,5 +81,8 @@ export function parseSwpc(raw: unknown, now: Date): SourceResult {
 }
 
 export async function collectSwpc(now: Date): Promise<SourceResult> {
-  return parseSwpc(await getJson('https://services.swpc.noaa.gov/products/noaa-scales.json'), now);
+  return parseSwpc(
+    await getJson('https://services.swpc.noaa.gov/products/noaa-scales.json', { retries: 1, backoffMs: 2_000 }),
+    now,
+  );
 }

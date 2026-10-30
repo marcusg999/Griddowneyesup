@@ -81,5 +81,5 @@ export function parseUsgs(raw: unknown, now: Date): SourceResult {
 }
 
 export async function collectUsgs(now: Date): Promise<SourceResult> {
-  return parseUsgs(await getJson(SIGNIFICANT_WEEK), now);
+  return parseUsgs(await getJson(SIGNIFICANT_WEEK, { retries: 1, backoffMs: 2_000 }), now);
 }

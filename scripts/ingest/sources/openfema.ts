@@ -66,5 +66,5 @@ export async function collectOpenFema(state: string, now: Date): Promise<SourceR
     'https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries' +
     `?$filter=state%20eq%20'${encodeURIComponent(state)}'` +
     '&$orderby=declarationDate%20desc&$top=20';
-  return parseOpenFema(await getJson(url), state, now);
+  return parseOpenFema(await getJson(url, { retries: 1, backoffMs: 2_000 }), state, now);
 }

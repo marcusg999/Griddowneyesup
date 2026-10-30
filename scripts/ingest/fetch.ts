@@ -13,9 +13,94 @@ const USER_AGENT =
 
 const TIMEOUT_MS = 15_000;
 
-export class SourceError extends Error {}
+export class SourceError extends Error {
+  constructor(
+    message: string,
+    /** Present when the server answered and the answer was not ok. */
+    readonly status?: number,
+  ) {
+    super(message);
+  }
+}
 
-export async function getJson<T>(url: string): Promise<T> {
+export const sleep = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+export interface GetJsonOptions {
+  /**
+   * How many times to try again after a 429 or a 5xx.
+   *
+   * Off by default. A government feed that errors is telling us something and
+   * hammering it is rude. This exists for GDELT, which is a free public
+   * endpoint with a per-IP rate limit — and CI runners share their IPs with
+   * everyone else's CI, so a 429 there says nothing about whether our request
+   * was reasonable.
+   */
+  readonly retries?: number;
+  /** First backoff, doubled each time. */
+  readonly backoffMs?: number;
+}
+
+/** Statuses that mean busy or briefly broken, rather than refusing us. */
+const RETRY_STATUS = new Set([429, 502, 503, 504]);
+
+/**
+ * Transport failures worth another go. A connect timeout or a reset socket is
+ * the network having a moment; a DNS miss is a host that is not there.
+ *
+ * `UND_ERR_CONNECT_TIMEOUT` is the one that matters in CI: undici gives up on
+ * the TCP connect after 10 seconds, before our own 15-second abort, so it
+ * arrives with no HTTP status at all and the status rule alone would write
+ * the source off as dead.
+ */
+const RETRY_CODE = new Set([
+  'UND_ERR_CONNECT_TIMEOUT',
+  'UND_ERR_SOCKET',
+  'UND_ERR_HEADERS_TIMEOUT',
+  'UND_ERR_BODY_TIMEOUT',
+  'ECONNRESET',
+  'ECONNREFUSED',
+  'ETIMEDOUT',
+  'EAI_AGAIN',
+]);
+
+/** The codes anywhere in the cause chain, which is where undici hides them. */
+function codesIn(error: unknown): string[] {
+  const codes: string[] = [];
+  let current: unknown = error;
+  for (let depth = 0; current instanceof Error && depth < 4; depth += 1) {
+    const code = (current as { code?: unknown }).code;
+    if (typeof code === 'string') codes.push(code);
+    current = (current as { cause?: unknown }).cause;
+  }
+  return codes;
+}
+
+function worthRetrying(error: unknown): boolean {
+  const status = error instanceof SourceError ? error.status : undefined;
+  if (status !== undefined) return RETRY_STATUS.has(status);
+  return codesIn(error).some((code) => RETRY_CODE.has(code));
+}
+
+/**
+ * `fetch failed` on its own is useless in a log: it is what undici says for a
+ * DNS failure, a refused connection, a reset socket and a TLS error alike, and
+ * the thing that actually happened is buried in `cause`. Unwrap it, because
+ * the difference between "that host does not resolve" and "they hung up on us"
+ * decides whether a source is misconfigured or merely throttled.
+ */
+function describe(error: unknown): string {
+  const parts: string[] = [];
+  let current: unknown = error;
+  for (let depth = 0; current instanceof Error && depth < 4; depth += 1) {
+    const code = (current as { code?: unknown }).code;
+    parts.push(typeof code === 'string' ? `${current.message} (${code})` : current.message);
+    current = (current as { cause?: unknown }).cause;
+  }
+  return parts.join(' <- ') || String(error);
+}
+
+async function once<T>(url: string): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
@@ -24,7 +109,7 @@ export async function getJson<T>(url: string): Promise<T> {
       headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' },
     });
     if (!response.ok) {
-      throw new SourceError(`HTTP ${response.status} from ${url}`);
+      throw new SourceError(`HTTP ${response.status} from ${url}`, response.status);
     }
     return (await response.json()) as T;
   } catch (error) {
@@ -32,10 +117,27 @@ export async function getJson<T>(url: string): Promise<T> {
     // again. Double-wrapping printed the whole query string twice in CI, which
     // is how a one-line failure becomes an unreadable one.
     if (error instanceof SourceError) throw error;
-    throw new SourceError(
-      `${url}: ${error instanceof Error ? error.message : String(error)}`,
-    );
+    const wrapped = new SourceError(`${url}: ${describe(error)}`);
+    // Keep the original reachable so the retry rule can read its code chain.
+    wrapped.cause = error;
+    throw wrapped;
   } finally {
     clearTimeout(timer);
+  }
+}
+
+export async function getJson<T>(url: string, options: GetJsonOptions = {}): Promise<T> {
+  const retries = options.retries ?? 0;
+  const backoff = options.backoffMs ?? 5_000;
+
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await once<T>(url);
+    } catch (error) {
+      // A 403, a 404 and a 410 are answers, not hiccups. Trying again changes
+      // nothing and just makes the log longer.
+      if (attempt >= retries || !worthRetrying(error)) throw error;
+      await sleep(backoff * 2 ** attempt);
+    }
   }
 }

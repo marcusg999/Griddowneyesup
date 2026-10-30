@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadOrCreateKeyPair } from './signing';
 import { snapshotSchema, type Brief, type Signal, type Snapshot } from './ingest/schema';
+import { collectGdelt } from './ingest/sources/gdelt';
 import { collectNws } from './ingest/sources/nws';
 import { collectOpenFema } from './ingest/sources/openfema';
 import { collectReliefWeb } from './ingest/sources/reliefweb';
@@ -127,6 +128,12 @@ async function main(): Promise<void> {
     attempt('usgs', () => collectUsgs(now)),
     attempt('swpc', () => collectSwpc(now)),
     attempt('reliefweb', () => collectReliefWeb()),
+    // Unrest and conflict. ReliefWeb carried these until its v1 was retired
+    // and its v2 started refusing unregistered callers; GDELT fills the gap
+    // behind a publisher allow-list. Both are kept: if a ReliefWeb appname is
+    // ever registered it comes back on its own, and the two overlapping is
+    // better than the category going dark again.
+    attempt('gdelt', () => collectGdelt()),
   ]);
 
   const globalSignals: Signal[] = [];
