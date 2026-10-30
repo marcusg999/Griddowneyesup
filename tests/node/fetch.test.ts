@@ -133,3 +133,47 @@ describe('error messages', () => {
     expect((error as Error).message).toContain('ENOTFOUND');
   });
 });
+
+describe('transport failures', () => {
+  /** What undici actually throws when a TCP connect never completes. */
+  const connectTimeout = () =>
+    Object.assign(new TypeError('fetch failed'), {
+      cause: Object.assign(
+        new Error('Connect Timeout Error (attempted address: api.example.gov:443)'),
+        { code: 'UND_ERR_CONNECT_TIMEOUT' },
+      ),
+    });
+
+  it('retries a connect timeout, which arrives with no status at all', async () => {
+    // undici gives up on the connect after 10s, inside our own 15s abort, so
+    // this has no HTTP status. Judging it on status alone wrote a live source
+    // off as dead — which is how GDELT came to be recorded as unreachable.
+    const stub = vi
+      .spyOn(globalThis, 'fetch')
+      .mockRejectedValueOnce(connectTimeout())
+      .mockResolvedValueOnce(ok({ articles: [] }));
+
+    const body = await withoutWaiting(() =>
+      getJson('https://api.example.gov/x', { retries: 2, backoffMs: 10 }),
+    );
+
+    expect(body).toEqual({ articles: [] });
+    expect(stub).toHaveBeenCalledTimes(2);
+  });
+
+  it('still refuses to retry a host that is not there', async () => {
+    // A DNS miss is not a busy server. Asking again just spends the timeout
+    // twice.
+    const stub = vi.spyOn(globalThis, 'fetch').mockRejectedValue(
+      Object.assign(new TypeError('fetch failed'), {
+        cause: Object.assign(new Error('getaddrinfo ENOTFOUND nope.example'), {
+          code: 'ENOTFOUND',
+        }),
+      }),
+    );
+    await expect(
+      getJson('https://nope.example/x', { retries: 3, backoffMs: 10 }),
+    ).rejects.toThrow(/ENOTFOUND/);
+    expect(stub).toHaveBeenCalledTimes(1);
+  });
+});

@@ -41,9 +41,45 @@ export interface GetJsonOptions {
   readonly backoffMs?: number;
 }
 
-/** Worth trying again: the server is busy or briefly broken, not refusing us. */
-function worthRetrying(status: number | undefined): boolean {
-  return status === 429 || status === 503 || status === 502 || status === 504;
+/** Statuses that mean busy or briefly broken, rather than refusing us. */
+const RETRY_STATUS = new Set([429, 502, 503, 504]);
+
+/**
+ * Transport failures worth another go. A connect timeout or a reset socket is
+ * the network having a moment; a DNS miss is a host that is not there.
+ *
+ * `UND_ERR_CONNECT_TIMEOUT` is the one that matters in CI: undici gives up on
+ * the TCP connect after 10 seconds, before our own 15-second abort, so it
+ * arrives with no HTTP status at all and the status rule alone would write
+ * the source off as dead.
+ */
+const RETRY_CODE = new Set([
+  'UND_ERR_CONNECT_TIMEOUT',
+  'UND_ERR_SOCKET',
+  'UND_ERR_HEADERS_TIMEOUT',
+  'UND_ERR_BODY_TIMEOUT',
+  'ECONNRESET',
+  'ECONNREFUSED',
+  'ETIMEDOUT',
+  'EAI_AGAIN',
+]);
+
+/** The codes anywhere in the cause chain, which is where undici hides them. */
+function codesIn(error: unknown): string[] {
+  const codes: string[] = [];
+  let current: unknown = error;
+  for (let depth = 0; current instanceof Error && depth < 4; depth += 1) {
+    const code = (current as { code?: unknown }).code;
+    if (typeof code === 'string') codes.push(code);
+    current = (current as { cause?: unknown }).cause;
+  }
+  return codes;
+}
+
+function worthRetrying(error: unknown): boolean {
+  const status = error instanceof SourceError ? error.status : undefined;
+  if (status !== undefined) return RETRY_STATUS.has(status);
+  return codesIn(error).some((code) => RETRY_CODE.has(code));
 }
 
 /**
@@ -81,7 +117,10 @@ async function once<T>(url: string): Promise<T> {
     // again. Double-wrapping printed the whole query string twice in CI, which
     // is how a one-line failure becomes an unreadable one.
     if (error instanceof SourceError) throw error;
-    throw new SourceError(`${url}: ${describe(error)}`);
+    const wrapped = new SourceError(`${url}: ${describe(error)}`);
+    // Keep the original reachable so the retry rule can read its code chain.
+    wrapped.cause = error;
+    throw wrapped;
   } finally {
     clearTimeout(timer);
   }
@@ -95,10 +134,9 @@ export async function getJson<T>(url: string, options: GetJsonOptions = {}): Pro
     try {
       return await once<T>(url);
     } catch (error) {
-      const status = error instanceof SourceError ? error.status : undefined;
       // A 403, a 404 and a 410 are answers, not hiccups. Trying again changes
       // nothing and just makes the log longer.
-      if (attempt >= retries || !worthRetrying(status)) throw error;
+      if (attempt >= retries || !worthRetrying(error)) throw error;
       await sleep(backoff * 2 ** attempt);
     }
   }

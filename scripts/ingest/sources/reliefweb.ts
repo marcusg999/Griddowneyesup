@@ -107,5 +107,5 @@ export function parseReliefWeb(raw: unknown): SourceResult {
 }
 
 export async function collectReliefWeb(): Promise<SourceResult> {
-  return parseReliefWeb(await getJson(API));
+  return parseReliefWeb(await getJson(API, { retries: 1, backoffMs: 2_000 }));
 }

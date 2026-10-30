@@ -71,5 +71,7 @@ export function parseNws(raw: unknown, state: string, now: Date): SourceResult {
 
 export async function collectNws(state: string, now: Date): Promise<SourceResult> {
   const url = `https://api.weather.gov/alerts/active?area=${encodeURIComponent(state)}`;
-  return parseNws(await getJson(url), state, now);
+  // One retry: api.weather.gov answered 503 on a live run and the county
+  // lost its alerts for the day. A routine blip should not cost a signal.
+  return parseNws(await getJson(url, { retries: 1, backoffMs: 2_000 }), state, now);
 }
