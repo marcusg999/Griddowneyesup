@@ -424,6 +424,41 @@ occur in production tests a shape production never produces.
 
 ---
 
+### D28 — News may feed the brief, but only behind a publisher allow-list **[CONFIRMED]**
+
+ReliefWeb was the only source carrying unrest and conflict — every other feed
+is US disaster or weather. Its v1 is retired and its v2 refuses an
+unregistered caller, so the category the brief was asked for first went dark.
+
+GDELT replaces it. GDELT needs no key and indexes world news in near real
+time, and that is both why it works and why it is dangerous: an unfiltered
+query returns aggregator reprints, content farms and partisan outlets
+alongside the wires, attributed to a bare domain. §5 says this must never
+become a news app. §4.4 requires a named publisher and a canonical link.
+Unfiltered GDELT fails both.
+
+So the admissibility condition is an allow-list of publishers, enforced in the
+collector. A domain not on the list is **dropped**, not down-ranked. The list
+is wire services first and then outlets with a standing foreign desk and a
+published corrections policy; its value is what it leaves out. Matching is on
+a label boundary, so `reuters.com.evil.net` is not Reuters.
+
+Three further constraints, each a test:
+
+- Everything is `press-reported`. Never `official`. These are reports about
+  events, not primary documents.
+- GDELT never produces a signal. Unrest elsewhere does not move a household's
+  readiness state, and wiring a news feed into the band would be the fastest
+  way to make the band meaningless (D11, D21).
+- Three items per category, deduplicated by headline. The feed ends.
+
+Category comes from which query found an item, not from a regex over its
+headline, so it is a fact rather than a guess. ReliefWeb stays wired: if an
+appname is ever registered it comes back on its own, and two overlapping
+sources beats the category going dark again.
+
+---
+
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**
 
 Decided after the first release. §14 said to decide it up front precisely

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { briefSchema, signalSchema } from '../../scripts/ingest/schema';
+import { parseGdelt, parseSeenDate, queryUrl } from '../../scripts/ingest/sources/gdelt';
 import { parseNws } from '../../scripts/ingest/sources/nws';
 import { parseOpenFema } from '../../scripts/ingest/sources/openfema';
 import { parseReliefWeb } from '../../scripts/ingest/sources/reliefweb';
@@ -210,5 +211,119 @@ describe('ReliefWeb', () => {
     for (const junk of [null, {}, { data: 'nope' }]) {
       expect(parseReliefWeb(junk).brief).toEqual([]);
     }
+  });
+});
+
+describe('GDELT', () => {
+  const article = (over: Record<string, unknown> = {}) => ({
+    url: 'https://www.reuters.com/world/example-report',
+    title: 'Thousands march in the capital over fuel prices',
+    seendate: '20260601T090000Z',
+    domain: 'reuters.com',
+    language: 'English',
+    sourcecountry: 'Chile',
+    ...over,
+  });
+
+  const feed = (...articles: unknown[]) => ({ articles });
+
+  it('republishes an allow-listed publisher by name, not by domain', () => {
+    const { brief } = parseGdelt(feed(article()), 'unrest');
+    expect(brief).toHaveLength(1);
+    expect(brief?.[0]?.source).toBe('Reuters');
+    expect(brief?.[0]?.headline).toBe('Thousands march in the capital over fuel prices');
+    expect(brief?.[0]?.category).toBe('unrest');
+    expect(brief?.[0]?.where).toBe('Chile');
+    expect(briefSchema.safeParse(brief?.[0]).success).toBe(true);
+  });
+
+  it('drops a publisher that is not on the list', () => {
+    // The editorial floor, and the only reason this source is admissible:
+    // without it GDELT is an unfiltered news feed, which §5 forbids.
+    for (const domain of ['contentfarm.example', 'news-aggregator.co', 'someblog.wordpress.com']) {
+      expect(parseGdelt(feed(article({ domain })), 'unrest').brief).toHaveLength(0);
+    }
+  });
+
+  it('treats a subdomain of an allow-listed publisher as that publisher', () => {
+    expect(parseGdelt(feed(article({ domain: 'edition.cnn.com' })), 'unrest').brief?.[0]?.source).toBe(
+      'CNN',
+    );
+    expect(parseGdelt(feed(article({ domain: 'www.bbc.co.uk' })), 'unrest').brief?.[0]?.source).toBe(
+      'BBC News',
+    );
+  });
+
+  it('is not fooled by a lookalike domain', () => {
+    // reuters.com.evil.net ends with neither `reuters.com` on a label
+    // boundary nor an exact match, and must not borrow Reuters' name.
+    for (const domain of ['reuters.com.evil.net', 'notreuters.com', 'bbc.co.uk.phish.io']) {
+      expect(parseGdelt(feed(article({ domain })), 'unrest').brief).toHaveLength(0);
+    }
+  });
+
+  it('marks everything press-reported, never official', () => {
+    // These are news reports about events, not primary documents. Dressing
+    // them as a government source is the one thing this surface must not do.
+    expect(parseGdelt(feed(article()), 'conflict').brief?.[0]?.epistemicStatus).toBe(
+      'press-reported',
+    );
+  });
+
+  it('reads GDELT compact timestamps, and drops a record it cannot date', () => {
+    expect(parseSeenDate('20260601T090000Z')).toBe('2026-06-01T09:00:00.000Z');
+    for (const bad of ['', undefined, 'not a date', '2026-06-01', '20261301T090000Z']) {
+      expect(parseSeenDate(bad)).toBeUndefined();
+    }
+    expect(parseGdelt(feed(article({ seendate: 'nonsense' })), 'unrest').brief).toHaveLength(0);
+  });
+
+  it('refuses a plain http link', () => {
+    // A link a network can rewrite is not a link the reader can check.
+    expect(
+      parseGdelt(feed(article({ url: 'http://www.reuters.com/world/x' })), 'unrest').brief,
+    ).toHaveLength(0);
+  });
+
+  it('keeps one copy when the same story runs on several wires', () => {
+    const same = feed(
+      article({ domain: 'reuters.com', url: 'https://www.reuters.com/a' }),
+      article({ domain: 'apnews.com', url: 'https://apnews.com/b' }),
+    );
+    expect(parseGdelt(same, 'unrest').brief).toHaveLength(1);
+  });
+
+  it('stays finite, however much comes back', () => {
+    // §5: the feed ends. It does not scroll.
+    const many = feed(
+      ...Array.from({ length: 40 }, (_, i) =>
+        article({ url: `https://www.reuters.com/world/item-${i}`, title: `Headline number ${i}` }),
+      ),
+    );
+    expect(parseGdelt(many, 'conflict').brief?.length).toBeLessThanOrEqual(3);
+  });
+
+  it('never produces a signal', () => {
+    // Unrest on the other side of the world does not move a household's
+    // readiness state, and wiring a news feed into the band would make the
+    // band meaningless (D11, D21).
+    expect(parseGdelt(feed(article()), 'unrest').signal).toBeUndefined();
+  });
+
+  it('survives junk', () => {
+    for (const junk of [null, undefined, {}, { articles: 'nope' }, []]) {
+      expect(() => parseGdelt(junk, 'unrest')).not.toThrow();
+      expect(parseGdelt(junk, 'unrest').brief).toEqual([]);
+    }
+  });
+
+  it('asks GDELT for a bounded, recent, sorted article list', () => {
+    const url = new URL(queryUrl('theme:PROTEST sourcelang:english'));
+    expect(url.origin + url.pathname).toBe('https://api.gdeltproject.org/api/v2/doc/doc');
+    expect(url.searchParams.get('mode')).toBe('artlist');
+    expect(url.searchParams.get('format')).toBe('json');
+    expect(url.searchParams.get('timespan')).toBe('24h');
+    expect(url.searchParams.get('sort')).toBe('datedesc');
+    expect(url.searchParams.get('query')).toBe('theme:PROTEST sourcelang:english');
   });
 });
