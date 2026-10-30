@@ -102,6 +102,9 @@ jobs:
           # source is not attempted, which the confidence line reflects in its
           # denominator rather than reporting as a gap.
           AIRNOW_API_KEY: ${{ secrets.AIRNOW_API_KEY }}
+          # Optional override. Not a credential — it travels in the query
+          # string — but a variable means it can change without a release.
+          RELIEFWEB_APPNAME: ${{ vars.RELIEFWEB_APPNAME }}
 
       # The gate verified the samples' signatures. These are different bytes,
       # signed after the gate ran, and they are what users actually fetch — so
