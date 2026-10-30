@@ -209,12 +209,21 @@ export function parseGdelt(
 
 /**
  * GDELT rate-limits per IP, and CI runners share their IPs with every other
- * project's CI — the first real run came back 429 on the opening query. So the
- * queries are spaced, and a 429 is retried with backoff rather than recorded
- * as a dead source: being throttled behind a stranger is not the same thing as
- * being unreachable.
+ * project's CI. Four consecutive live runs came back 429, 429, and twice a
+ * TCP connect timeout — we are queueing behind strangers, not being refused.
+ *
+ * So the backoff is patient rather than brisk: 20s, 40s, 80s, and the two
+ * queries are spaced fifteen seconds apart. That is slow for a web request
+ * and free for a job that runs once a day, and the alternative is recording a
+ * working source as dead because we were in a hurry.
+ *
+ * It may still fail, and that is survivable: the digest publishes with a named
+ * gap. The durable fix is a registered ReliefWeb appname, which is a human
+ * errand rather than a code change.
  */
-const SPACING_MS = 6_000;
+const SPACING_MS = 15_000;
+const RETRIES = 3;
+const BACKOFF_MS = 20_000;
 
 export async function collectGdelt(): Promise<SourceResult> {
   const brief: Brief[] = [];
@@ -223,7 +232,7 @@ export async function collectGdelt(): Promise<SourceResult> {
     // Sequentially and spaced, rather than in parallel: two polite requests
     // beat two simultaneous ones against a free public endpoint.
     if (index > 0) await sleep(SPACING_MS);
-    const raw = await getJson(queryUrl(query), { retries: 2, backoffMs: 6_000 });
+    const raw = await getJson(queryUrl(query), { retries: RETRIES, backoffMs: BACKOFF_MS });
     brief.push(...(parseGdelt(raw, category).brief ?? []));
   }
 
