@@ -25,5 +25,57 @@
       }
     ],
     "lastReviewed": "2026-10-29"
+  },
+  {
+    "id": "enso-el-nino",
+    "title": "A strong El Niño is forecast to run through the winter",
+    "published": "2026-10-08",
+    "epistemicStatus": "official",
+    "whatItIs": "The NOAA Climate Prediction Center's 8 October 2026 ENSO Diagnostic Discussion carries an El Nino Advisory, with a strong to very strong event forecast to persist through the January-March 2027 season. ENSO is the El Nino-Southern Oscillation: a shift in Pacific sea surface temperatures that reorganises where storm tracks go for a season at a time. The Advisory is a statement that the condition is present now, not a forecast of something yet to come.",
+    "whatItMeansForYou": "This is the rare kind of warning that arrives months early. El Nino winters tend to run wetter across the southern tier of the United States and drier across the Pacific Northwest and the Ohio Valley, with a warmer north. It does not tell you a flood is coming to your street; it tells you which of your county's hazards is the one to bet on this winter, and it tells you now. The practical consequence is the horizon: a seasonal signal is an argument for stocking against a season rather than against seventy-two hours, and you have until December to do it at normal prices rather than during a run on a shop.",
+    "horizonSignalDays": 120,
+    "citations": [
+      {
+        "source": "NOAA Climate Prediction Center",
+        "title": "ENSO Diagnostic Discussion",
+        "published": "2026-10-08",
+        "url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.html",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "NOAA Climate Prediction Center",
+        "title": "Oceanic Nino Index (ONI), monthly values",
+        "published": "2026-10-08",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-30"
+  },
+  {
+    "id": "mass-fatality-planning",
+    "title": "Mass-fatality capacity is a standing part of official planning",
+    "published": "2026-10-30",
+    "epistemicStatus": "mixed",
+    "whatItIs": "Fatality management is a named planning factor in federal emergency guidance, not a contingency invented for a crisis. FEMA's Key Planning Factors direct jurisdictions to set a mass-fatality threshold in advance, arrange mutual aid across jurisdictional lines before it is needed, and test the plan through exercises; FEMA runs a course on mass-fatalities incident response that ends in a tabletop exercise. Separately, US Army doctrine for contingency fatality operations provides for temporary interment of remains when evacuating them is not possible, and requires their later recovery. Both are long-standing published doctrine.",
+    "reported": "Reporting in October 2026 described a US Army exercise rehearsing temporary interment, and attributed specific trench dimensions and daily capacity figures to Army doctrine. No Army release confirming that exercise or those figures has been located, and the outlets carrying it do not meet the sourcing bar this app applies elsewhere. Treat the exercise and its numbers as unverified. What is established is the doctrine above, not any particular drill.",
+    "whatItMeansForYou": "Planners size their arrangements to the worst case they consider plausible, and publishing that arrangement is not a prediction of its use. The honest reading is the same one the FORTRESS note makes: the scale institutions quietly plan for is larger than the scale households are advised to plan for, and the gap is the interesting part. The concrete household action is unglamorous and nothing to do with mortality. Mass-fatality planning is built around identification and next of kin, which is the same paperwork that makes an ordinary separated family findable: current identification, written medical and contact details for everyone in the household, and an out-of-area contact who is not in the affected area. The plan builder produces exactly that, and it is worth an hour on a quiet evening rather than none at all.",
+    "citations": [
+      {
+        "source": "FEMA",
+        "title": "Key Planning Factors for Response to a Biological Incident, KPF 5: Fatality Management",
+        "published": "2023",
+        "url": "https://www.fema.gov/cbrn-tools/key-planning-factors-bio/kpf-5/5",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA Emergency Management Institute",
+        "title": "G0386 Mass Fatalities Incident Response",
+        "published": "2024",
+        "url": "https://www.fema.gov/emergency-managers/national-preparedness/training/course-catalog",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-30"
   }
 ]

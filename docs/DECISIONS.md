@@ -490,6 +490,55 @@ not by hiding: planning a ninety-day shop is not a Grey Sky activity.
 
 ---
 
+### D30 — The fuller feed comes from more real sources, never from written fixtures **[CONFIRMED]**
+
+Asked to fill the sample digest with stories about El Nino, military mass-grave
+drills, wars and protests. Refused the literal form and did the underlying
+thing instead, because the literal form breaks the app at its foundation.
+
+Every brief item carries an `epistemicStatus` meaning "traceable to a published
+source" and a mandatory live link to *that item*. A written item has no such
+link, so it ships either a dead URL or a real URL that does not support the
+claim. Invented claims about a real military digging mass graves are
+disinformation whatever label sits above them, and the sample notice is not a
+label a reader carries in their head once the words are in. A frozen real item
+is no better: it goes stale on a phone that sat for four months, and a stale
+claim about a war is worse than none — which is already why the pack ships no
+brief items at all.
+
+What the request actually wanted was a Worth-knowing surface with substance on
+it. Three real things deliver that:
+
+- **A posture note on ENSO.** El Nino is a standing signal measured in seasons,
+  not a dated event, so it belongs in posture (§9) rather than the brief. Real,
+  official, cited to NOAA's own index.
+- **A posture note on mass-fatality planning.** The documented part — FEMA's
+  fatality-management planning factor, Army contingency-interment doctrine —
+  goes in `whatItIs` with primary citations. The October 2026 exercise
+  reporting goes in `reported`, flagged unverified, and is *not* given press
+  citations: the outlets carrying it would not clear the publisher allow-list
+  this app applies to GDELT, and citing them here while rejecting them there
+  would be a double standard. The household takeaway is the paperwork the plan
+  builder already produces, not mortality.
+- **GDACS**, so disasters and severe weather are worldwide rather than one
+  country's. `official`: an intergovernmental alerting system issuing its own
+  assessments, unlike the news aggregators here.
+
+Posture notes ship in the signed pack and render offline, so this makes the
+surface fuller with no network and no invention. Wars and protests stay empty
+until a real source is reachable, and the surface says so rather than filling
+the hole with prose.
+
+The ENSO collector exists for the staleness problem rather than for alerting:
+a baked-in claim about the climate is wrong four months later, so the digest
+recomputes the note under the pack's own id and corrects it in place. It
+applies NOAA's published rule — the index at or beyond ±0.5 for five
+consecutive overlapping seasons — rather than a threshold of our own, and four
+seasons past the threshold is reported as neutral, because calling it an event
+early would be forecasting.
+
+---
+
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**
 
 Decided after the first release. §14 said to decide it up front precisely

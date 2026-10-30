@@ -100,18 +100,20 @@ function describe(error: unknown): string {
   return parts.join(' <- ') || String(error);
 }
 
-async function once<T>(url: string): Promise<T> {
+type Reader<T> = (response: Response) => Promise<T>;
+
+async function once<T>(url: string, accept: string, read: Reader<T>): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
     const response = await fetch(url, {
       signal: controller.signal,
-      headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' },
+      headers: { 'User-Agent': USER_AGENT, Accept: accept },
     });
     if (!response.ok) {
       throw new SourceError(`HTTP ${response.status} from ${url}`, response.status);
     }
-    return (await response.json()) as T;
+    return await read(response);
   } catch (error) {
     // Already ours, and already naming the URL — rethrow rather than wrap it
     // again. Double-wrapping printed the whole query string twice in CI, which
@@ -126,13 +128,18 @@ async function once<T>(url: string): Promise<T> {
   }
 }
 
-export async function getJson<T>(url: string, options: GetJsonOptions = {}): Promise<T> {
+async function withRetries<T>(
+  url: string,
+  options: GetJsonOptions,
+  accept: string,
+  read: Reader<T>,
+): Promise<T> {
   const retries = options.retries ?? 0;
   const backoff = options.backoffMs ?? 5_000;
 
   for (let attempt = 0; ; attempt += 1) {
     try {
-      return await once<T>(url);
+      return await once<T>(url, accept, read);
     } catch (error) {
       // A 403, a 404 and a 410 are answers, not hiccups. Trying again changes
       // nothing and just makes the log longer.
@@ -140,4 +147,17 @@ export async function getJson<T>(url: string, options: GetJsonOptions = {}): Pro
       await sleep(backoff * 2 ** attempt);
     }
   }
+}
+
+export async function getJson<T>(url: string, options: GetJsonOptions = {}): Promise<T> {
+  return withRetries(url, options, 'application/json', (response) => response.json() as Promise<T>);
+}
+
+/**
+ * Some official data is still published as a fixed-width text table rather
+ * than JSON — NOAA's ONI series among them. Reading a stable text file beats
+ * scraping an HTML page that was never meant to be parsed.
+ */
+export async function getText(url: string, options: GetJsonOptions = {}): Promise<string> {
+  return withRetries(url, options, 'text/plain', (response) => response.text());
 }

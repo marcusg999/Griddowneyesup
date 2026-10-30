@@ -1,4 +1,4 @@
-import type { Brief, Signal } from './schema';
+import type { Brief, Posture, Signal } from './schema';
 
 /**
  * What one source contributes to a digest.
@@ -12,6 +12,12 @@ import type { Brief, Signal } from './schema';
 export interface SourceResult {
   readonly signal?: Signal;
   readonly brief?: readonly Brief[];
+  /**
+   * Standing posture, corrected. A source that recomputes a baseline the pack
+   * ships — the ENSO state, say — publishes it under the pack's own note id so
+   * the client merges it in place rather than showing two.
+   */
+  readonly posture?: readonly Posture[];
 }
 
 export interface RegionSpec {
