@@ -115,3 +115,21 @@ describe('getJson retries', () => {
     expect((error as SourceError).message.split(url).length - 1).toBe(1);
   });
 });
+
+describe('error messages', () => {
+  it('unwraps what undici hides behind "fetch failed"', async () => {
+    // Every network failure arrives as the same two words. The cause chain is
+    // the only place the actual problem is written down, and a log that says
+    // "fetch failed" cannot tell a dead host from a throttled one.
+    const cause = Object.assign(new Error('getaddrinfo ENOTFOUND api.example.gov'), {
+      code: 'ENOTFOUND',
+    });
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(
+      Object.assign(new TypeError('fetch failed'), { cause }),
+    );
+
+    const error: unknown = await getJson('https://api.example.gov/x').catch((e: unknown) => e);
+    expect((error as Error).message).toContain('fetch failed');
+    expect((error as Error).message).toContain('ENOTFOUND');
+  });
+});

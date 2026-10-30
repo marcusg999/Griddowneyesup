@@ -46,6 +46,24 @@ function worthRetrying(status: number | undefined): boolean {
   return status === 429 || status === 503 || status === 502 || status === 504;
 }
 
+/**
+ * `fetch failed` on its own is useless in a log: it is what undici says for a
+ * DNS failure, a refused connection, a reset socket and a TLS error alike, and
+ * the thing that actually happened is buried in `cause`. Unwrap it, because
+ * the difference between "that host does not resolve" and "they hung up on us"
+ * decides whether a source is misconfigured or merely throttled.
+ */
+function describe(error: unknown): string {
+  const parts: string[] = [];
+  let current: unknown = error;
+  for (let depth = 0; current instanceof Error && depth < 4; depth += 1) {
+    const code = (current as { code?: unknown }).code;
+    parts.push(typeof code === 'string' ? `${current.message} (${code})` : current.message);
+    current = (current as { cause?: unknown }).cause;
+  }
+  return parts.join(' <- ') || String(error);
+}
+
 async function once<T>(url: string): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -63,7 +81,7 @@ async function once<T>(url: string): Promise<T> {
     // again. Double-wrapping printed the whole query string twice in CI, which
     // is how a one-line failure becomes an unreadable one.
     if (error instanceof SourceError) throw error;
-    throw new SourceError(`${url}: ${error instanceof Error ? error.message : String(error)}`);
+    throw new SourceError(`${url}: ${describe(error)}`);
   } finally {
     clearTimeout(timer);
   }
