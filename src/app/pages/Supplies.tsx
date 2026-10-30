@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { t } from '@/i18n';
+import { store } from '@/db';
 import { useContent } from '@/state/content';
 import { useSupply } from '@/features/supply/useSupply';
 import { useReadiness } from '@/state/readiness';
 import { acquisitionPath } from '@/features/supply/recommend';
 import { attachOffers } from '@/features/commerce/offers';
 import { Offers } from '@/ui/Offers';
+import { Horizon } from '@/ui/Horizon';
 import { rotationQueue, suggestedExpiry } from '@/features/supply/rotation';
 import { useAchievements } from '@/features/supply/useAchievements';
 import { achievementBySlug } from '@/features/supply/achievements';
@@ -13,12 +15,23 @@ import type { KitId } from '@/content/types';
 
 export function Supplies() {
   const { pack } = useContent();
-  const { inventory, ladder, loading, addItem, removeItem, profile } = useSupply();
+  const { inventory, ladder, loading, addItem, removeItem, profile, coverage, reload } =
+    useSupply();
   const { state, suppressGamification } = useReadiness();
   const [selectedKit, setSelectedKit] = useState<KitId>('edc');
   const [itemId, setItemId] = useState('');
   const [expiresOn, setExpiresOn] = useState('');
   const { earned, standing } = useAchievements(profile, inventory);
+
+  // Written straight to IndexedDB and reloaded, rather than held in component
+  // state: the horizon drives the coverage staves on Today and the WATCH
+  // queue too, and a target that resets when you change page is not a target.
+  const setHorizon = useCallback(
+    (targetHorizonDays: number) => {
+      void store.profile.put({ ...profile, targetHorizonDays }).then(reload);
+    },
+    [profile, reload],
+  );
 
   if (loading || !pack) return <p className="lede">Reading your inventory…</p>;
 
@@ -109,6 +122,24 @@ export function Supplies() {
           merely invisible is still a purchase link in the document. */}
       {state !== 'grey-sky' && (
         <>
+          <h2>
+            <span className="margin-note" aria-hidden="true">
+              how far out
+            </span>
+            How long are you planning for?
+          </h2>
+          <p className="meta" style={{ marginTop: -6 }}>
+            The standard advice to households is three days. Change the number and the
+            maths runs again on the same shelf: what is short, what would close it, what
+            it weighs and roughly what it costs. Nothing here is rounded in your favour.
+          </p>
+          <Horizon
+            coverage={coverage}
+            catalog={pack.items}
+            targetDays={profile.targetHorizonDays}
+            onChange={setHorizon}
+          />
+
           <h2>
             <span className="margin-note" aria-hidden="true">
               cheapest first

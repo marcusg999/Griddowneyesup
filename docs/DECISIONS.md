@@ -459,6 +459,37 @@ sources beats the category going dark again.
 
 ---
 
+### D29 — The horizon is a dial, and it shows its bill **[DEFAULT]**
+
+`targetHorizonDays` existed in the profile from the start and nothing could
+change it. Three days was effectively hard-coded, which made the posture
+note's argument — that institutions plan in months while households are told
+seventy-two hours — rhetoric the app could state but not act on.
+
+The dial offers 3, 7, 21, 30, 60 and 90. Not a free-text field: "47 days" is
+not a number anyone can plan against. A profile carrying some other value is
+snapped to the nearest, and ties round **up**, because rounding fourteen down
+to seven would quietly halve somebody's target.
+
+Changing it re-runs the same maths on the same shelf and reports the result as
+things to buy, what they weigh and roughly what they cost — not a percentage.
+A percentage is a feeling; four containers and eight kilograms is a fact a
+household can act on or decide against. Deliberately not reassuring: the
+weight is not rounded down, the cost is not hidden, and when only some lines
+have a typical price the partial total says so rather than passing for the
+whole.
+
+One item per gap, ordered by value per dollar and nothing else, which is the
+same rule every other recommendation in the app follows (§7, D14). A gap
+closed by seven different products is a shopping list nobody follows. Where
+the catalogue provides nothing for a resource, the row says so instead of
+inventing a suggestion.
+
+It lives on the acquisition surface and is absent in Grey Sky, by absence and
+not by hiding: planning a ninety-day shop is not a Grey Sky activity.
+
+---
+
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**
 
 Decided after the first release. §14 said to decide it up front precisely
