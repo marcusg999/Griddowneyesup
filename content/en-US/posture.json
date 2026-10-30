@@ -25,5 +25,57 @@
       }
     ],
     "lastReviewed": "2026-10-29"
+  },
+  {
+    "id": "enso-el-nino",
+    "title": "El Nino and La Nina are the preparedness warning that arrives months early",
+    "published": "2026-10-30",
+    "epistemicStatus": "official",
+    "whatItIs": "ENSO, the El Nino-Southern Oscillation, is a shift in Pacific sea surface temperatures that reorganises where storm tracks go for a season at a time. NOAA tracks it with the Oceanic Nino Index and records an event once the index sits at or beyond plus or minus 0.5 C for five consecutive overlapping three-month seasons. This note carries no phase of its own. A phase is a fact with a date on it, and baking one into an app that may sit unopened for months would mean asserting last season's climate as though it were this one. The current reading arrives with the digest, and replaces this text when it does.",
+    "whatItMeansForYou": "Almost everything else on this screen tells you about something that already happened. ENSO is the exception: it is a seasonal signal, so when a phase is established it is telling you which of your county's hazards to weight for the months ahead, with time left to act at ordinary prices rather than during a run on a shop. El Nino winters tend to run wetter across the southern tier of the United States and drier across the Pacific Northwest and the Ohio Valley; La Nina tends to do the reverse and bring a more active Atlantic hurricane season. Neither says anything about your street. Both are an argument for measuring your horizon in seasons rather than in days.",
+    "horizonSignalDays": 120,
+    "citations": [
+      {
+        "source": "NOAA Climate Prediction Center",
+        "title": "Oceanic Nino Index (ONI), monthly values",
+        "published": "2026-10-30",
+        "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "NOAA Climate Prediction Center",
+        "title": "ENSO Diagnostic Discussion",
+        "published": "2026-10-30",
+        "url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.html",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-30"
+  },
+  {
+    "id": "mass-fatality-planning",
+    "title": "Mass-fatality capacity is a standing part of official planning",
+    "published": "2026-10-30",
+    "epistemicStatus": "mixed",
+    "whatItIs": "Fatality management is a named planning factor in federal emergency guidance, not a contingency invented for a crisis. FEMA's Key Planning Factors direct jurisdictions to set a mass-fatality threshold in advance, arrange mutual aid across jurisdictional lines before it is needed, and test the plan through exercises; FEMA runs a course on mass-fatalities incident response that ends in a tabletop exercise. Separately, US Army doctrine for contingency fatality operations provides for temporary interment of remains when evacuating them is not possible, and requires their later recovery. Both are long-standing published doctrine.",
+    "reported": "Reporting in October 2026 described a US Army exercise rehearsing temporary interment, and attributed specific trench dimensions and daily capacity figures to Army doctrine. No Army release confirming that exercise or those figures has been located, and the outlets carrying it do not meet the sourcing bar this app applies elsewhere. Treat the exercise and its numbers as unverified. What is established is the doctrine above, not any particular drill.",
+    "whatItMeansForYou": "Planners size their arrangements to the worst case they consider plausible, and publishing that arrangement is not a prediction of its use. The honest reading is the same one the FORTRESS note makes: the scale institutions quietly plan for is larger than the scale households are advised to plan for, and the gap is the interesting part. The concrete household action is unglamorous and nothing to do with mortality. Mass-fatality planning is built around identification and next of kin, which is the same paperwork that makes an ordinary separated family findable: current identification, written medical and contact details for everyone in the household, and an out-of-area contact who is not in the affected area. The plan builder produces exactly that, and it is worth an hour on a quiet evening rather than none at all.",
+    "citations": [
+      {
+        "source": "FEMA",
+        "title": "Key Planning Factors for Response to a Biological Incident, KPF 5: Fatality Management",
+        "published": "2023",
+        "url": "https://www.fema.gov/cbrn-tools/key-planning-factors-bio/kpf-5/5",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA Emergency Management Institute",
+        "title": "G0386 Mass Fatalities Incident Response",
+        "published": "2024",
+        "url": "https://www.fema.gov/emergency-managers/national-preparedness/training/course-catalog",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-10-30"
   }
 ]

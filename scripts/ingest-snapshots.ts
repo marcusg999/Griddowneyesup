@@ -3,7 +3,15 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadOrCreateKeyPair } from './signing';
-import { snapshotSchema, type Brief, type Signal, type Snapshot } from './ingest/schema';
+import {
+  snapshotSchema,
+  type Brief,
+  type Posture,
+  type Signal,
+  type Snapshot,
+} from './ingest/schema';
+import { collectEnso } from './ingest/sources/enso';
+import { collectGdacs } from './ingest/sources/gdacs';
 import { collectGdelt } from './ingest/sources/gdelt';
 import { collectNws } from './ingest/sources/nws';
 import { collectOpenFema } from './ingest/sources/openfema';
@@ -66,6 +74,7 @@ async function attempt(
 async function buildRegion(
   spec: RegionSpec,
   globalBrief: readonly Brief[],
+  globalPosture: readonly Posture[],
   globalSignals: readonly Signal[],
   globalUnreachable: readonly string[],
   now: Date,
@@ -102,6 +111,7 @@ async function buildRegion(
     publishedAt: now.toISOString(),
     signals,
     ...(globalBrief.length > 0 ? { brief: [...globalBrief] } : {}),
+    ...(globalPosture.length > 0 ? { posture: [...globalPosture] } : {}),
     ...(unreachable.length > 0 ? { unreachable } : {}),
   };
 
@@ -134,10 +144,19 @@ async function main(): Promise<void> {
     // ever registered it comes back on its own, and the two overlapping is
     // better than the category going dark again.
     attempt('gdelt', () => collectGdelt()),
+    // Disasters and severe weather worldwide. Until this, every disaster
+    // source here stopped at the US border except USGS, which left the feed
+    // claiming to be about the world while reporting one country's weather.
+    attempt('gdacs', () => collectGdacs()),
+    // Not an alert: a correction. The pack ships a posture note on the ENSO
+    // state, and a baked-in claim about the climate is wrong four months later
+    // on a phone nobody opened. This recomputes it from NOAA's index.
+    attempt('enso', () => collectEnso(now)),
   ]);
 
   const globalSignals: Signal[] = [];
   const globalBrief: Brief[] = [];
+  const globalPosture: Posture[] = [];
   const globalUnreachable: string[] = [];
 
   for (const outcome of globals) {
@@ -148,12 +167,15 @@ async function main(): Promise<void> {
     }
     if (outcome.result.signal) globalSignals.push(outcome.result.signal);
     if (outcome.result.brief) globalBrief.push(...outcome.result.brief);
+    if (outcome.result.posture) globalPosture.push(...outcome.result.posture);
     console.log(
-      `  ${outcome.id}: ${outcome.result.signal ? '1 signal' : 'no signal'}, ${outcome.result.brief?.length ?? 0} brief items`,
+      `  ${outcome.id}: ${outcome.result.signal ? '1 signal' : 'no signal'}, ` +
+        `${outcome.result.brief?.length ?? 0} brief items, ` +
+        `${outcome.result.posture?.length ?? 0} posture notes`,
     );
   }
 
-  if (globalSignals.length === 0 && globalBrief.length === 0) {
+  if (globalSignals.length === 0 && globalBrief.length === 0 && globalPosture.length === 0) {
     // Everything failed. Exit 0 rather than 1: a scheduled job that goes red
     // because an upstream API had an outage trains people to ignore it, and
     // the published digest is still there and still correct.
@@ -165,7 +187,14 @@ async function main(): Promise<void> {
   const published: string[] = [];
 
   for (const spec of REGIONS) {
-    const snapshot = await buildRegion(spec, globalBrief, globalSignals, globalUnreachable, now);
+    const snapshot = await buildRegion(
+      spec,
+      globalBrief,
+      globalPosture,
+      globalSignals,
+      globalUnreachable,
+      now,
+    );
     if (!snapshot) continue;
 
     const body = Buffer.from(JSON.stringify(snapshot));
@@ -175,7 +204,8 @@ async function main(): Promise<void> {
       createSign('SHA256').update(body).end().sign(privateKey).toString('base64'),
     );
     published.push(
-      `${spec.region} (${snapshot.signals.length} signals, ${snapshot.brief?.length ?? 0} brief)`,
+      `${spec.region} (${snapshot.signals.length} signals, ${snapshot.brief?.length ?? 0} brief, ` +
+        `${snapshot.posture?.length ?? 0} posture)`,
     );
   }
 

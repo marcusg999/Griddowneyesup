@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { postureSchema } from '../schema.js';
 
 /**
  * The published digest, validated at runtime.
@@ -52,9 +53,18 @@ export const snapshotSchema = z.object({
   publishedAt: isoDate,
   signals: z.array(signalSchema),
   brief: z.array(briefSchema).optional(),
+  /**
+   * Standing posture the publisher has fresher than the pack shipped with.
+   * Validated against the pack's own posture schema rather than a second copy
+   * of it: a note published here is read by the same client code that reads
+   * the pack's, so it has to meet the same bar — including the refinement
+   * that forbids predicting.
+   */
+  posture: z.array(postureSchema).optional(),
   unreachable: z.array(z.string()).optional(),
 });
 
 export type Signal = z.infer<typeof signalSchema>;
 export type Brief = z.infer<typeof briefSchema>;
+export type Posture = z.infer<typeof postureSchema>;
 export type Snapshot = z.infer<typeof snapshotSchema>;

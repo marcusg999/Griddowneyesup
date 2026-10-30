@@ -595,10 +595,18 @@ test.describe('standing posture', () => {
     // readiness state. A policy announcement has no threshold that would ever
     // bring the state back down, so it must never be able to raise it.
     await expect(page.getByRole('status')).toContainText('Blue Sky');
-    await expect(page.getByText(/does not change your readiness state/i)).toBeVisible();
 
-    // Epistemic status is shown rather than flattened into the prose.
-    await expect(page.getByText(/Reported, not confirmed/i)).toBeVisible();
+    // EVERY note carries the inert line, not merely one of them. Asserting
+    // that a single note says so passed for years while there was only one
+    // note; the invariant is that none of them can move the state, so the
+    // count is the assertion.
+    const notes = page.locator('.posture');
+    await expect(notes.first()).toBeVisible();
+    expect(await page.locator('.posture__inert').count()).toBe(await notes.count());
+
+    // Epistemic status is shown rather than flattened into the prose. At
+    // least one note here is only partly official, and says which part.
+    await expect(page.getByText(/Reported, not confirmed/i).first()).toBeVisible();
   });
 
   test('is suppressed entirely in Grey Sky', async ({ page }) => {

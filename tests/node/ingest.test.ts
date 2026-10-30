@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { briefSchema, signalSchema } from '../../scripts/ingest/schema';
+import { postureSchema } from '../../scripts/schema';
+import { parseGdacs, parseGdacsDate } from '../../scripts/ingest/sources/gdacs';
+import { ensoState, parseEnso, parseOni } from '../../scripts/ingest/sources/enso';
 import { parseGdelt, parseSeenDate, queryUrl } from '../../scripts/ingest/sources/gdelt';
 import { parseNws } from '../../scripts/ingest/sources/nws';
 import { parseOpenFema } from '../../scripts/ingest/sources/openfema';
@@ -325,5 +328,191 @@ describe('GDELT', () => {
     expect(url.searchParams.get('timespan')).toBe('24h');
     expect(url.searchParams.get('sort')).toBe('datedesc');
     expect(url.searchParams.get('query')).toBe('theme:PROTEST sourcelang:english');
+  });
+});
+
+describe('GDACS', () => {
+  const event = (over: Record<string, unknown> = {}) => ({
+    properties: {
+      eventid: 1234567,
+      eventtype: 'TC',
+      name: 'Tropical Cyclone EXAMPLE-26',
+      alertlevel: 'Red',
+      fromdate: '2026-10-29T06:00:00',
+      country: 'Philippines',
+      url: { report: 'https://www.gdacs.org/report.aspx?eventid=1234567' },
+      ...((over['properties'] as Record<string, unknown>) ?? {}),
+    },
+  });
+
+  const feed = (...features: unknown[]) => ({ type: 'FeatureCollection', features });
+
+  it('republishes the alert with its own report page', () => {
+    const { brief } = parseGdacs(feed(event()));
+    expect(brief).toHaveLength(1);
+    expect(brief?.[0]?.headline).toBe('Tropical Cyclone EXAMPLE-26');
+    expect(brief?.[0]?.url).toContain('gdacs.org/report.aspx');
+    expect(brief?.[0]?.source).toBe('Global Disaster Alert and Coordination System');
+    expect(brief?.[0]?.where).toBe('Philippines');
+    expect(briefSchema.safeParse(brief?.[0]).success).toBe(true);
+  });
+
+  it('is official, because GDACS issues its own assessment', () => {
+    // The distinction from the news sources: an intergovernmental alerting
+    // system, not an aggregator republishing someone else's reporting.
+    expect(parseGdacs(feed(event())).brief?.[0]?.epistemicStatus).toBe('official');
+  });
+
+  it('drops Green alerts, which are the routine background of a planet', () => {
+    // GDACS issues them constantly. A feed that reports the routine is a feed
+    // people stop reading, which costs them the one item that mattered.
+    for (const alertlevel of ['Green', 'green', '', null]) {
+      expect(
+        parseGdacs(feed(event({ properties: { alertlevel } }))).brief,
+      ).toHaveLength(0);
+    }
+    expect(parseGdacs(feed(event({ properties: { alertlevel: 'Orange' } }))).brief).toHaveLength(1);
+  });
+
+  it('maps event types onto the allow-list and refuses to invent a home', () => {
+    const categoryOf = (eventtype: string) =>
+      parseGdacs(feed(event({ properties: { eventtype } }))).brief?.[0]?.category;
+    expect(categoryOf('EQ')).toBe('disaster');
+    expect(categoryOf('FL')).toBe('disaster');
+    expect(categoryOf('TC')).toBe('weather');
+    expect(categoryOf('DR')).toBe('weather');
+    // An event type with no home is dropped rather than forced into one.
+    expect(parseGdacs(feed(event({ properties: { eventtype: 'XX' } }))).brief).toHaveLength(0);
+  });
+
+  it('reads an unzoned GDACS date as UTC, not as the runner timezone', () => {
+    // `2026-10-29T06:00:00` with no Z would be read in whatever zone the
+    // machine happens to be set to, which moves a published date by a day.
+    expect(parseGdacsDate('2026-10-29T06:00:00')).toBe('2026-10-29T06:00:00.000Z');
+    expect(parseGdacsDate('2026-10-29T06:00:00Z')).toBe('2026-10-29T06:00:00.000Z');
+    expect(parseGdacsDate('2026-10-29T06:00:00+00:00')).toBe('2026-10-29T06:00:00.000Z');
+    for (const bad of ['', null, undefined, 'not a date']) {
+      expect(parseGdacsDate(bad)).toBeUndefined();
+    }
+  });
+
+  it('drops a record missing its link, headline or date', () => {
+    expect(parseGdacs(feed(event({ properties: { url: null } }))).brief).toHaveLength(0);
+    expect(
+      parseGdacs(feed(event({ properties: { url: { report: 'http://www.gdacs.org/x' } } }))).brief,
+    ).toHaveLength(0);
+    expect(
+      parseGdacs(feed(event({ properties: { name: null, eventname: null, description: null } })))
+        .brief,
+    ).toHaveLength(0);
+    expect(parseGdacs(feed(event({ properties: { fromdate: null } }))).brief).toHaveLength(0);
+  });
+
+  it('never produces a signal', () => {
+    // A red alert on another continent must not move a county's band (D11).
+    expect(parseGdacs(feed(event())).signal).toBeUndefined();
+  });
+
+  it('stays finite and drops duplicate events', () => {
+    const many = feed(...Array.from({ length: 30 }, () => event()));
+    // Same eventid thirty times is one event.
+    expect(parseGdacs(many).brief).toHaveLength(1);
+
+    const distinct = feed(
+      ...Array.from({ length: 30 }, (_, i) => event({ properties: { eventid: i } })),
+    );
+    expect(parseGdacs(distinct).brief?.length).toBeLessThanOrEqual(6);
+  });
+
+  it('survives junk', () => {
+    for (const junk of [null, undefined, {}, { features: 'nope' }, []]) {
+      expect(() => parseGdacs(junk)).not.toThrow();
+      expect(parseGdacs(junk).brief).toEqual([]);
+    }
+  });
+});
+
+describe('ENSO', () => {
+  const NOW_ENSO = new Date('2026-10-30T00:00:00.000Z');
+
+  /** NOAA's own layout: a header, then SEAS YR TOTAL ANOM. */
+  const table = (...anomalies: number[]) =>
+    ['SEAS YR TOTAL ANOM', ...anomalies.map((a, i) => `NDJ ${2020 + i} 26.00 ${a.toFixed(1)}`)].join(
+      '\n',
+    );
+
+  it('reads the fixed-width series and skips the header', () => {
+    const readings = parseOni(table(0.1, 0.2));
+    expect(readings).toHaveLength(2);
+    expect(readings[0]?.anomaly).toBeCloseTo(0.1);
+    expect(readings[0]?.year).toBe(2020);
+  });
+
+  it('skips rows it cannot read rather than guessing at them', () => {
+    // A half-read climate record is worse than none.
+    const readings = parseOni('SEAS YR TOTAL ANOM\nNDJ 2020 26.0 0.4\ngarbage\nNDJ x 26.0 0.5\n');
+    expect(readings).toHaveLength(1);
+  });
+
+  it('needs five consecutive seasons before it calls an event', () => {
+    // NOAA's published rule, applied rather than invented. Four seasons past
+    // the threshold is not an El Nino, and saying it was would be forecasting.
+    expect(ensoState(parseOni(table(0.6, 0.7, 0.8, 0.9)))?.phase).toBe('neutral');
+    expect(ensoState(parseOni(table(0.6, 0.7, 0.8, 0.9, 1.0)))?.phase).toBe('el-nino');
+  });
+
+  it('recognises La Nina in the other direction', () => {
+    const state = ensoState(parseOni(table(-0.6, -0.7, -0.9, -1.2, -1.4)));
+    expect(state?.phase).toBe('la-nina');
+    expect(state?.peak).toBeCloseTo(-1.4);
+  });
+
+  it('breaks the run when the index comes back inside the threshold', () => {
+    // 0.4 interrupts, so only the three after it count.
+    expect(ensoState(parseOni(table(0.9, 0.9, 0.4, 0.9, 0.9, 0.9)))?.run).toBe(3);
+  });
+
+  it('is neutral when the latest season is inside the threshold', () => {
+    const state = ensoState(parseOni(table(1.5, 1.6, 1.7, 1.8, 1.9, 0.2)));
+    expect(state?.phase).toBe('neutral');
+    expect(state?.run).toBe(0);
+  });
+
+  it('publishes a posture note under the pack own id, so it corrects in place', () => {
+    // worldContext merges by id. A different id would show two notes about
+    // the same thing, which is how a correction becomes a contradiction.
+    const { posture } = parseEnso(table(1.6, 1.7, 1.8, 1.9, 2.1), NOW_ENSO);
+    expect(posture).toHaveLength(1);
+    expect(posture?.[0]?.id).toBe('enso-el-nino');
+    expect(posture?.[0]?.title).toMatch(/very strong El Nino/);
+    expect(posture?.[0]?.epistemicStatus).toBe('official');
+    expect(posture?.[0]?.horizonSignalDays).toBe(120);
+  });
+
+  it('meets the pack posture schema, including the rule against predicting', () => {
+    // Published through the same client code that reads the pack's own notes,
+    // so it has to clear the same bar — `will`, `imminent` and the rest.
+    for (const series of [
+      table(1.6, 1.7, 1.8, 1.9, 2.1),
+      table(-0.6, -0.8, -0.9, -1.1, -1.3),
+      table(0.1, 0.2, 0.1),
+    ]) {
+      const note = parseEnso(series, NOW_ENSO).posture?.[0];
+      expect(postureSchema.safeParse(note).success).toBe(true);
+    }
+  });
+
+  it('produces no signal and no brief items', () => {
+    const result = parseEnso(table(1.6, 1.7, 1.8, 1.9, 2.1), NOW_ENSO);
+    expect(result.signal).toBeUndefined();
+    expect(result.brief).toBeUndefined();
+  });
+
+  it('says nothing at all when the file is empty or unreadable', () => {
+    // Rather than publishing a claim about the climate derived from nothing,
+    // which would overwrite the pack's own note with an invention.
+    for (const junk of ['', 'SEAS YR TOTAL ANOM', 'total nonsense']) {
+      expect(parseEnso(junk, NOW_ENSO).posture).toBeUndefined();
+    }
   });
 });

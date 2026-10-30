@@ -19,13 +19,19 @@ export type SignalSourceId = 'nws' | 'usgs' | 'wildfire-air' | 'openfema' | 'swp
 /**
  * Everything the publisher fetches, which is more than the signal sources.
  *
- * ReliefWeb and GDELT feed the Worth-knowing brief and never produce a signal,
- * so neither is a `SignalSourceId` — but either can still be the thing that
- * was down when the digest was cut, and `unreachable` has to be able to name
- * it. Declaring that field as signal sources only was a type that disagreed
- * with the bytes the publisher actually writes.
+ * ReliefWeb, GDELT and GDACS feed the Worth-knowing brief, and ENSO corrects
+ * a standing posture note; none of them produces a signal, so none is a
+ * `SignalSourceId`. Any of them can still be the thing that was down when the
+ * digest was cut, and `unreachable` has to be able to name it. Declaring that
+ * field as signal sources only was a type that disagreed with the bytes the
+ * publisher actually writes.
  */
-export type IngestSourceId = SignalSourceId | 'reliefweb' | 'gdelt';
+export type IngestSourceId =
+  | SignalSourceId
+  | 'reliefweb'
+  | 'gdelt'
+  | 'gdacs'
+  | 'enso';
 
 /**
  * Per-signal state. Deliberately three values and no number: these inputs have
