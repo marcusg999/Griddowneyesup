@@ -2,6 +2,8 @@ import { useCallback, useEffect } from 'react';
 import { Link, Route, Router, Switch, useLocation, useRoute } from 'wouter';
 import { ContentProvider } from '@/state/content';
 import { ReadinessProvider, useReadiness } from '@/state/readiness';
+import { useLastSynced } from '@/state/sync';
+import { timeAgo } from '@/ui/relativeTime';
 import { navigateWithTransition } from '@/ui/viewTransition';
 import { t } from '@/i18n';
 import { Today } from './pages/Today';
@@ -14,6 +16,15 @@ import { PrintView } from './print/PrintView';
 
 function StatusBar() {
   const { state } = useReadiness();
+  const { lastSyncedAt, online } = useLastSynced();
+
+  // This line claimed "Never synced" unconditionally, which stopped being true
+  // at the first refresh and stayed on screen anyway.
+  const syncLine = !online
+    ? t('sync.offline')
+    : lastSyncedAt
+      ? t('sync.lastSynced', { ago: timeAgo(lastSyncedAt) })
+      : t('sync.neverSynced');
   const band = state === 'grey-sky' ? 'active' : state === 'watch' ? 'elevated' : 'quiet';
   const label =
     state === 'grey-sky'
@@ -26,8 +37,10 @@ function StatusBar() {
     <div className="statusbar" role="status">
       <span className="statusbar__dot" data-band={band} aria-hidden="true" />
       <strong>{label}</strong>
-      {/* Offline is a labelled, normal state. Never a spinner, never an error. */}
-      <span className="statusbar__sync">{t('sync.neverSynced')}</span>
+      {/* Offline is a labelled, normal state. Never a spinner, never an error.
+          Each of the three says "everything here still works", because that is
+          the point of all three. */}
+      <span className="statusbar__sync">{syncLine}</span>
     </div>
   );
 }
