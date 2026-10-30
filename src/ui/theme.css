@@ -1502,3 +1502,74 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
   .horizon-table th,
   .horizon-table td { padding-left: 8px; }
 }
+
+/* --- How this works: instructions, not a tour ----------------------------
+   A details element, open while the shelf is empty. Nothing is stored, so
+   nothing is lost when site data is cleared — which is exactly when someone
+   needs the instructions most. */
+.how {
+  border: 1px solid var(--rule-major);
+  padding: 14px 16px;
+  margin: 0 0 26px;
+  max-width: calc(var(--measure) + 4ch);
+}
+
+.how > summary {
+  cursor: pointer;
+  font-family: var(--display);
+  font-size: 19px;
+  letter-spacing: 0.01em;
+}
+
+.how[open] > summary { margin-bottom: 12px; }
+
+.how__steps {
+  margin: 0;
+  padding-left: 1.4em;
+  display: grid;
+  gap: 10px;
+}
+
+.how__steps li { max-width: var(--measure); }
+.how__steps strong { color: var(--ink); }
+
+/* --- Next move: the loop -------------------------------------------------
+   Days of coverage is the score and it cannot be faked; the binding
+   constraint is the move; the catalogue knows what a dollar buys in days.
+   The arrow is the whole design — a number going up, for a stated price. */
+.next-move { margin: 18px 0 0; }
+
+.next-move__kicker {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--acid-deep);
+  margin: 0 0 8px;
+}
+
+.next-move__item {
+  font-family: var(--display);
+  font-size: 25px;
+  line-height: 1.1;
+  margin: 0 0 2px;
+}
+
+.next-move__payoff {
+  font-size: 17px;
+  margin: 12px 0 6px;
+}
+
+.next-move__after { color: var(--acid); font-weight: 600; }
+
+.next-move__household,
+.next-move__milestone { margin: 0 0 6px; max-width: var(--measure); }
+
+.next-move__milestone { color: var(--ink); }
+.next-move__milestone strong { color: var(--acid); }
+
+/* Grey Sky drops colour entirely, so the emphasis has to survive without it. */
+:root[data-state='grey-sky'] .next-move__after,
+:root[data-state='grey-sky'] .next-move__milestone strong {
+  color: #fff;
+  text-decoration: underline;
+}

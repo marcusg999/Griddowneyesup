@@ -578,6 +578,56 @@ nothing about.
 
 ---
 
+### D32 — The game is the binding constraint, priced in days **[CONFIRMED]**
+
+Asked whether the app could be truly gamified, since gathering supplies was
+neither clear nor engaging. D16 rules out the obvious answers: no mechanic may
+reward app usage, and a score that rises because somebody opened a screen
+measures the wrong thing. So no points, no streaks, no levels, nothing to
+collect, and no leaderboard (G01, G03).
+
+What was left turned out to be better, and it was already in the data.
+Coverage is measured in days. Every catalogue item states what it provides per
+unit and what it typically costs. Divide one by the other and you get the only
+sentence that has ever made anybody buy a water container:
+
+> **$25 and two kilograms takes you from four days to eleven.**
+
+That is a complete loop. A score nobody can fake, because it is a physical
+quantity in a cupboard. One clear move, because the binding constraint picks
+it. A visible payoff in the same units as the score. And a named goal, because
+the tiers are real doctrine — 72 hours, two weeks, a month, a season — rather
+than invented levels.
+
+Three deliberate properties:
+
+- **One item, not a list.** The acquisition tiers already answer "what should I
+  buy in total". This answers "what do I do now", and its whole value is that
+  the answer is one thing a person can act on today.
+- **The household figure is stated separately from the resource figure**, and
+  the card names what becomes the limit next. "You fixed water and now food
+  binds" is the single most useful idea in household preparedness, and watching
+  it happen teaches it better than being told would.
+- **The payoff is computed, not asserted.** The coverage is recalculated with
+  the new stock in place, so when the household number does not move as far as
+  the resource does, the card says so instead of flattering the purchase.
+
+Where the catalogue cannot serve the binding resource, the card renders
+nothing rather than offering the next-best resource: pointing a household away
+from its actual constraint is worse than an empty space.
+
+Achievements stay what they were — acknowledgements of things that already
+happened, not goals. The goal is the next milestone, which is stated as a
+countdown in days.
+
+Instructions are four steps in a `details` element, open while the shelf is
+empty and collapsed once it is not. Deliberately not a dismissible tour: a
+tour needs a "seen it" flag, that flag is exactly the state that does not
+survive clearing site data, and the moment a person most needs instructions is
+the moment after they have lost everything.
+
+---
+
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**
 
 Decided after the first release. §14 said to decide it up front precisely
