@@ -132,7 +132,7 @@ const QUERY_DOMAINS: readonly string[] = [
  */
 const DOMAIN_CLAUSE = `(${QUERY_DOMAINS.slice(0, 3).map((d) => `domain:${d}`).join(' OR ')})`;
 
-const QUERIES: ReadonlyArray<{
+export const QUERIES: ReadonlyArray<{
   readonly category: Brief['category'];
   readonly query: string;
 }> = [

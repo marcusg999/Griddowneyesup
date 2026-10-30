@@ -14,6 +14,7 @@ import {
   parseGdelt,
   parseResponse,
   parseSeenDate,
+  QUERIES,
   queryUrl,
 } from '../../scripts/ingest/sources/gdelt';
 import { parseNws } from '../../scripts/ingest/sources/nws';
@@ -639,10 +640,25 @@ describe('the GDELT query', () => {
     // dropped every one: most of what GDELT indexes is not a wire service, so
     // asking for a theme and hoping is not a strategy. The query asks for the
     // publishers and GDELT filters where it is cheap.
-    const query = new URL(queryUrl('x')).searchParams.get('query') ?? '';
-    expect(query).toContain('domain:reuters.com');
-    expect(query).toContain('domain:apnews.com');
-    expect(query).toContain(' OR ');
+    //
+    // Asserted on the queries themselves rather than on queryUrl, which only
+    // wraps whatever string it is handed — the first version of this test
+    // passed `'x'` in and checked the result for domains it could not contain.
+    expect(QUERIES.length).toBeGreaterThan(0);
+    for (const { query } of QUERIES) {
+      expect(query).toContain('domain:reuters.com');
+      expect(query).toContain('domain:apnews.com');
+      expect(query).toContain(' OR ');
+      expect(query).toContain('theme:');
+    }
+    expect(QUERIES.map((q) => q.category)).toEqual(['unrest', 'conflict']);
+  });
+
+  it('puts the query into the request unchanged', () => {
+    // What queryUrl actually does, which is the thing the test above was
+    // accidentally checking.
+    const url = new URL(queryUrl(QUERIES[0]!.query));
+    expect(url.searchParams.get('query')).toBe(QUERIES[0]!.query);
   });
 
   it('still verifies the publisher after asking for it', () => {
