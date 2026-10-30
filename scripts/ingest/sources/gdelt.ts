@@ -83,14 +83,57 @@ const PUBLISHERS: Readonly<Record<string, string>> = {
  * English edition, and a headline we cannot read is a headline we cannot
  * vouch for.
  */
+/**
+ * The allow-list, pushed into the query.
+ *
+ * The first run that actually reached GDELT returned 75 articles per query and
+ * the allow-list dropped every single one: asking for a theme and hoping a
+ * wire service turns up in the first 75 results does not work, because most
+ * of what GDELT indexes is not a wire service. So the query names the
+ * publishers instead, and GDELT does the filtering where it is cheap.
+ *
+ * The parser still enforces the list afterwards. That is not redundant — it
+ * is the difference between asking for something and verifying you got it,
+ * and the verification is what stops a query typo or a GDELT change from
+ * quietly admitting anything.
+ *
+ * A subset of the full list, chosen to keep the URL a sane length: the wires
+ * and the broadest international desks. The parser's list stays longer, so
+ * widening the query later needs no change to the safety check.
+ */
+const QUERY_DOMAINS: readonly string[] = [
+  'reuters.com',
+  'apnews.com',
+  'bbc.com',
+  'bbc.co.uk',
+  'aljazeera.com',
+  'theguardian.com',
+  'npr.org',
+  'dw.com',
+  'france24.com',
+  'cbc.ca',
+  'abc.net.au',
+  'nytimes.com',
+  'washingtonpost.com',
+  'cnn.com',
+  'nbcnews.com',
+  'cbsnews.com',
+  'scmp.com',
+];
+
+const DOMAIN_CLAUSE = `(${QUERY_DOMAINS.map((d) => `domain:${d}`).join(' OR ')})`;
+
 const QUERIES: ReadonlyArray<{
   readonly category: Brief['category'];
   readonly query: string;
 }> = [
-  { category: 'unrest', query: '(theme:PROTEST OR theme:UNREST_POLICEBRUTALITY) sourcelang:english' },
+  {
+    category: 'unrest',
+    query: `(theme:PROTEST OR theme:UNREST_POLICEBRUTALITY) ${DOMAIN_CLAUSE} sourcelang:english`,
+  },
   {
     category: 'conflict',
-    query: '(theme:ARMEDCONFLICT OR theme:MILITARY_ESCALATION) sourcelang:english',
+    query: `(theme:ARMEDCONFLICT OR theme:MILITARY_ESCALATION) ${DOMAIN_CLAUSE} sourcelang:english`,
   },
 ];
 
@@ -104,9 +147,9 @@ export function queryUrl(query: string): string {
     query,
     mode: 'artlist',
     format: 'json',
-    // Fetched wide and cut down to PER_CATEGORY after the allow-list, because
-    // most of what comes back will not be from an allow-listed publisher.
-    maxrecords: '75',
+    // The query already restricts to allow-listed publishers, so this only
+    // needs enough headroom for the dedupe to have something to choose from.
+    maxrecords: '50',
     timespan: '24h',
     sort: 'datedesc',
   });

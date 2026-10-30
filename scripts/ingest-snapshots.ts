@@ -106,7 +106,7 @@ async function buildRegion(
     const zip = spec.zip;
     local.push({ id: 'wildfire-air', run: () => collectAirNow(zip, spec.label) });
   } else if (spec.zip) {
-    console.warn(`  ${spec.region}: AIRNOW_API_KEY not set, air quality not attempted`);
+    console.log(`  ${spec.region}: AIRNOW_API_KEY not set, air quality not attempted`);
   }
 
   if (local.length > 0) {
@@ -122,7 +122,7 @@ async function buildRegion(
   }
 
   if (signals.length === 0) {
-    console.warn(`  ${spec.region}: no source reported, leaving the published digest alone`);
+    console.log(`  ${spec.region}: no source reported, leaving the published digest alone`);
     return undefined;
   }
 
@@ -265,8 +265,11 @@ async function main(): Promise<void> {
     console.log('Every source reported.');
     return;
   }
-  console.warn(`\n${failures.length} source(s) did not report:`);
-  for (const line of failures) console.warn(`  ${line}`);
+  // stdout, not stderr. Node flushes the two independently, so a warn lands
+  // at an unpredictable point in a captured log — which is why these lines
+  // kept appearing in a different place in every CI run.
+  console.log(`\n${failures.length} source(s) did not report:`);
+  for (const line of failures) console.log(`  ${line}`);
 }
 
 await main();

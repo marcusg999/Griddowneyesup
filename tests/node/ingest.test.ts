@@ -627,3 +627,33 @@ describe('AirNow', () => {
     expect(parseAirNow([obs()], 'anywhere').brief).toBeUndefined();
   });
 });
+
+describe('the GDELT query', () => {
+  it('names the allow-listed publishers, rather than hoping one turns up', () => {
+    // The first run that reached GDELT returned 75 articles and the allow-list
+    // dropped every one: most of what GDELT indexes is not a wire service, so
+    // asking for a theme and hoping is not a strategy. The query asks for the
+    // publishers and GDELT filters where it is cheap.
+    const query = new URL(queryUrl('x')).searchParams.get('query') ?? '';
+    expect(query).toContain('domain:reuters.com');
+    expect(query).toContain('domain:apnews.com');
+    expect(query).toContain(' OR ');
+  });
+
+  it('still verifies the publisher after asking for it', () => {
+    // Not redundant: asking for something and checking you got it are
+    // different, and the check is what stops a query typo or a change at
+    // GDELT's end from quietly admitting anything.
+    const sneaked = {
+      articles: [
+        {
+          url: 'https://contentfarm.example/a',
+          title: 'Something',
+          seendate: '20260601T090000Z',
+          domain: 'contentfarm.example',
+        },
+      ],
+    };
+    expect(parseGdelt(sneaked, 'unrest').brief).toHaveLength(0);
+  });
+});
