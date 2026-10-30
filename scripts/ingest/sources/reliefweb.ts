@@ -20,8 +20,16 @@ import type { Brief } from '../schema';
  * this surface must never do is dress reporting as a government source.
  */
 
+// v2, not v1. The first live run in CI got `HTTP 410 Gone` from /v1/reports:
+// the version is decommissioned, not having a bad afternoon. v2 is documented
+// as compatible with v1, so the query below is unchanged.
+//
+// `appname` is required and, per ReliefWeb's own terms, is meant to identify
+// the caller. If they ever start rejecting unregistered ones this source will
+// come back as a 403 rather than data, which the ingester records as a named
+// gap — the digest still publishes, without it.
 const API =
-  'https://api.reliefweb.int/v1/reports' +
+  'https://api.reliefweb.int/v2/reports' +
   '?appname=ballast-preparedness' +
   '&profile=list&limit=12&sort[]=date.created:desc' +
   '&filter[operator]=OR' +

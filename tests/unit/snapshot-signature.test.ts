@@ -89,7 +89,14 @@ describe.skipIf(!ready)('threat snapshot signatures', () => {
 
     expect(await verifyDetachedSignature(arrayBuffer as ArrayBuffer, signature)).toBe(true);
 
-    // And that what shipped is marked as sample, not presented as real.
-    expect(JSON.parse(body.toString()).provenance).toBe('sample');
+    // And that it says where it came from. Both values are legitimate now that
+    // the ingester runs in the pipeline: a scheduled run publishes `live`, and
+    // a build on a machine that could not reach the sources leaves the signed
+    // `sample` fixture in place. What must never happen is a third value, or a
+    // digest claiming `live` with nothing in it — an empty live digest reads as
+    // "we checked, all quiet", which is the one lie the reader cannot detect.
+    const parsed = JSON.parse(body.toString()) as { provenance: string; signals: unknown[] };
+    expect(['live', 'sample']).toContain(parsed.provenance);
+    if (parsed.provenance === 'live') expect(parsed.signals.length).toBeGreaterThan(0);
   });
 });

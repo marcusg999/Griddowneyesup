@@ -17,6 +17,17 @@ import type { EpistemicStatus, Indicator, PostureNote } from '@/content/types';
 export type SignalSourceId = 'nws' | 'usgs' | 'wildfire-air' | 'openfema' | 'swpc';
 
 /**
+ * Everything the publisher fetches, which is more than the signal sources.
+ *
+ * ReliefWeb feeds the Worth-knowing brief and never produces a signal, so it
+ * is not a `SignalSourceId` — but it can still be the thing that was down when
+ * the digest was cut, and `unreachable` has to be able to name it. Declaring
+ * that field as signal sources only was a type that disagreed with the bytes
+ * the publisher actually writes.
+ */
+export type IngestSourceId = SignalSourceId | 'reliefweb';
+
+/**
  * Per-signal state. Deliberately three values and no number: these inputs have
  * different units, cadences and reliability, and D11 rejected the composite
  * for exactly that reason.
@@ -129,7 +140,7 @@ export interface ThreatSnapshot {
    * Sources that could not be reached when the snapshot was cut. Named so the
    * confidence line can be specific rather than rounding a gap down to zero.
    */
-  readonly unreachable?: readonly SignalSourceId[];
+  readonly unreachable?: readonly IngestSourceId[];
 }
 
 /** The six of D10, for the confidence denominator. */
