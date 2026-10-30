@@ -243,6 +243,16 @@ async function main(): Promise<void> {
   }
 
   console.log(`Live digests published and signed: ${published.join(', ')}`);
+
+  // What actually came back, listed after the per-source warnings so one log
+  // tail shows both the failures and the content. Reading "10 brief items"
+  // does not tell you whether they are the categories the feed is for.
+  for (const item of globalBrief) {
+    console.log(`  [${item.category}] ${item.source}: ${item.headline}`);
+  }
+  for (const note of globalPosture) {
+    console.log(`  [posture] ${note.title}`);
+  }
 }
 
 await main();
