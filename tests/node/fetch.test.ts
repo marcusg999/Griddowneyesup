@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { getJson, SourceError } from '../../scripts/ingest/fetch';
+import { getJson, redact, SourceError } from '../../scripts/ingest/fetch';
 
 /**
  * The retry rule, which is the kind of logic that is wrong silently.
@@ -175,5 +175,83 @@ describe('transport failures', () => {
       getJson('https://nope.example/x', { retries: 3, backoffMs: 10 }),
     ).rejects.toThrow(/ENOTFOUND/);
     expect(stub).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('redaction', () => {
+  it('hides a key in a query string, because the failure path logs the URL', () => {
+    // AirNow carries its key as a query parameter, and getJson prints the URL
+    // it tried. A configured key would otherwise land in the workflow log.
+    const hidden = redact('https://www.airnowapi.org/aq/?zipCode=94102&API_KEY=secret123');
+    expect(hidden).not.toContain('secret123');
+    expect(hidden).toContain('REDACTED');
+    // Everything else stays, or the log stops being useful.
+    expect(hidden).toContain('zipCode=94102');
+  });
+
+  it('hides the usual aliases, case-insensitively', () => {
+    for (const name of ['api_key', 'apikey', 'API_KEY', 'key', 'token', 'access_token']) {
+      expect(redact(`https://e.gov/x?${name}=shhh`)).not.toContain('shhh');
+    }
+  });
+
+  it('keeps appname, which identifies rather than authenticates', () => {
+    // When a source refuses us, the caller id we sent is the first thing
+    // worth seeing — hiding it would hide the diagnosis.
+    expect(redact('https://api.reliefweb.int/v2/reports?appname=awareness')).toContain(
+      'appname=awareness',
+    );
+  });
+
+  it('says nothing useful rather than something dangerous on a junk url', () => {
+    expect(redact('not a url at all')).toBe('[unparseable url]');
+  });
+
+  it('reaches the error message', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(fail(403));
+    const error: unknown = await getJson('https://e.gov/x?API_KEY=secret123').catch(
+      (e: unknown) => e,
+    );
+    expect((error as Error).message).not.toContain('secret123');
+  });
+});
+
+describe('error bodies', () => {
+  const failWith = (status: number, body: string) =>
+    ({
+      ok: false,
+      status,
+      json: () => Promise.resolve({}),
+      text: () => Promise.resolve(body),
+    }) as unknown as Response;
+
+  it('includes what the server said, because 403 alone has two remedies', async () => {
+    // "Your caller id is not registered" is a form to fill in. "We do not
+    // serve this network" is infrastructure. Most APIs put the difference in
+    // the body and nowhere else.
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      failWith(403, '{"error":{"message":"Please provide a valid appname"}}'),
+    );
+    const error: unknown = await getJson('https://e.gov/x').catch((e: unknown) => e);
+    expect((error as Error).message).toContain('HTTP 403');
+    expect((error as Error).message).toContain('valid appname');
+  });
+
+  it('truncates a long body and collapses its whitespace', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(failWith(500, 'x\n\n   y'.padEnd(900, 'z')));
+    const error: unknown = await getJson('https://e.gov/x').catch((e: unknown) => e);
+    expect((error as Error).message).toContain('x y');
+    expect((error as Error).message.length).toBeLessThan(420);
+    expect((error as Error).message).toContain('…');
+  });
+
+  it('survives a body it cannot read', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: false,
+      status: 502,
+      json: () => Promise.resolve({}),
+      text: () => Promise.reject(new Error('stream broke')),
+    } as unknown as Response);
+    await expect(getJson('https://e.gov/x')).rejects.toThrow(/HTTP 502/);
   });
 });

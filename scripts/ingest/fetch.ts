@@ -100,6 +100,55 @@ function describe(error: unknown): string {
   return parts.join(' <- ') || String(error);
 }
 
+/**
+ * Query parameters that must never reach a log.
+ *
+ * The failure path prints the URL it tried, and AirNow carries its key in the
+ * query string — so a configured key would land in the workflow log. GitHub
+ * masks registered secret values, but relying on that is relying on the key
+ * having been registered as a secret somewhere else, which is not a property
+ * this code can check.
+ *
+ * `appname` is deliberately NOT here: it identifies the caller rather than
+ * authenticating it, and when a source refuses us the name we sent is the
+ * first thing worth seeing.
+ */
+const SECRET_PARAMS = new Set(['api_key', 'apikey', 'key', 'token', 'access_token']);
+
+export function redact(url: string): string {
+  try {
+    const parsed = new URL(url);
+    for (const name of [...parsed.searchParams.keys()]) {
+      if (SECRET_PARAMS.has(name.toLowerCase())) parsed.searchParams.set(name, 'REDACTED');
+    }
+    return parsed.toString();
+  } catch {
+    // Not a parseable URL. Returning it unchanged risks printing a secret, so
+    // say nothing useful rather than something dangerous.
+    return '[unparseable url]';
+  }
+}
+
+/**
+ * What the server said, truncated.
+ *
+ * `HTTP 403` alone does not distinguish "your caller id is not registered"
+ * from "we do not serve this network", and those have completely different
+ * remedies — one is a form to fill in, the other is infrastructure. Most APIs
+ * put the difference in the response body and nowhere else.
+ */
+const BODY_SNIPPET = 300;
+
+async function errorBody(response: Response): Promise<string> {
+  try {
+    const text = (await response.text()).trim().replace(/\s+/g, ' ');
+    if (!text) return '';
+    return ` — ${text.slice(0, BODY_SNIPPET)}${text.length > BODY_SNIPPET ? '…' : ''}`;
+  } catch {
+    return '';
+  }
+}
+
 type Reader<T> = (response: Response) => Promise<T>;
 
 async function once<T>(url: string, accept: string, read: Reader<T>): Promise<T> {
@@ -111,7 +160,10 @@ async function once<T>(url: string, accept: string, read: Reader<T>): Promise<T>
       headers: { 'User-Agent': USER_AGENT, Accept: accept },
     });
     if (!response.ok) {
-      throw new SourceError(`HTTP ${response.status} from ${url}`, response.status);
+      throw new SourceError(
+        `HTTP ${response.status} from ${redact(url)}${await errorBody(response)}`,
+        response.status,
+      );
     }
     return await read(response);
   } catch (error) {
@@ -119,7 +171,7 @@ async function once<T>(url: string, accept: string, read: Reader<T>): Promise<T>
     // again. Double-wrapping printed the whole query string twice in CI, which
     // is how a one-line failure becomes an unreadable one.
     if (error instanceof SourceError) throw error;
-    const wrapped = new SourceError(`${url}: ${describe(error)}`);
+    const wrapped = new SourceError(`${redact(url)}: ${describe(error)}`);
     // Keep the original reachable so the retry rule can read its code chain.
     wrapped.cause = error;
     throw wrapped;
