@@ -68,6 +68,32 @@ test.describe('offline release gate', () => {
     }
   });
 
+  test('the library can be browsed by someone who has no search term', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/skills');
+
+    // Search only helps someone who already has the word. The categories are
+    // the way in for someone who does not.
+    const chips = page.locator('.browse__chip');
+    expect(await chips.count()).toBeGreaterThan(5);
+    await expect(chips.first()).toContainText('Everything');
+
+    await page.getByRole('button', { name: /^water/ }).click();
+    await expect(page.locator('p.meta[role="status"]')).toContainText('water');
+    const filtered = await page.locator('.skill-card').count();
+    expect(filtered).toBeGreaterThan(0);
+    expect(filtered).toBeLessThan(50);
+
+    // The category narrows the search rather than replacing it.
+    await page.getByLabel('Search the library').fill('filter');
+    expect(await page.locator('.skill-card').count()).toBeLessThanOrEqual(filtered);
+
+    // And the active category clears itself, so the filter is never a trap.
+    await page.getByLabel('Search the library').fill('');
+    await page.getByRole('button', { name: /^water/ }).click();
+    await expect(page.locator('p.meta[role="status"]')).toContainText('50 of 50');
+  });
+
   test('searches the full-text library with the network disabled', async ({ page }) => {
     await installThenGoOffline(page);
     await page.goto('/skills');

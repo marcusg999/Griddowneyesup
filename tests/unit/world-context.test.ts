@@ -98,7 +98,61 @@ describe('world context', () => {
     });
   });
 
+  describe('the Worth knowing feed', () => {
+    const item = (id: string, published: string) =>
+      ({
+        id,
+        category: 'conflict' as const,
+        headline: `Headline ${id}`,
+        whatItMeansForYou: 'Consequence.',
+        url: `https://example.gov/${id}`,
+        source: 'Source',
+        published,
+        epistemicStatus: 'official' as const,
+      });
+
+    it('orders newest first, because the reader decides what to read', () => {
+      const world = worldContext(
+        pack,
+        snapshot({
+          brief: [
+            item('old', '2026-01-01T00:00:00.000Z'),
+            item('new', '2026-06-01T00:00:00.000Z'),
+            item('middle', '2026-03-01T00:00:00.000Z'),
+          ],
+        }),
+      );
+      expect(world.brief.map((b) => b.id)).toEqual(['new', 'middle', 'old']);
+    });
+
+    it('sorts an unparseable date last rather than scrambling the feed', () => {
+      const world = worldContext(
+        pack,
+        snapshot({ brief: [item('broken', 'not a date'), item('good', '2026-06-01T00:00:00.000Z')] }),
+      );
+      expect(world.brief.map((b) => b.id)).toEqual(['good', 'broken']);
+    });
+
+    it('is empty from the pack alone — events belong to the publisher', () => {
+      // A dated event baked into a build artifact goes stale on a phone that
+      // sits for months, and a stale claim about a war is worse than none.
+      expect(worldContext(pack, undefined).brief).toEqual([]);
+    });
+
+    it('is ignored entirely from a sample digest', () => {
+      const world = worldContext(
+        pack,
+        snapshot({ provenance: 'sample', brief: [item('invented', '2026-06-01T00:00:00.000Z')] }),
+      );
+      expect(world.brief).toEqual([]);
+    });
+  });
+
   it('survives a pack that has not loaded yet', () => {
-    expect(worldContext(undefined, snapshot())).toEqual({ posture: [], indicators: [] });
+    expect(worldContext(undefined, snapshot())).toEqual({
+      posture: [],
+      indicators: [],
+      brief: [],
+    });
   });
 });

@@ -1,5 +1,5 @@
 import type { Indicator, PostureNote } from '@/content/types';
-import type { ThreatSnapshot } from './types';
+import type { BriefItem, ThreatSnapshot } from './types';
 
 /**
  * World context, merged.
@@ -38,6 +38,8 @@ function mergeById<T extends { readonly id: string }>(
 export interface WorldContext {
   readonly posture: readonly PostureNote[];
   readonly indicators: readonly Indicator[];
+  /** Newest first, and finite — there is no more to scroll (§5). */
+  readonly brief: readonly BriefItem[];
 }
 
 export function worldContext(
@@ -47,6 +49,10 @@ export function worldContext(
   const base: WorldContext = {
     posture: pack?.posture ?? [],
     indicators: pack?.indicators ?? [],
+    // The pack ships no brief items. They are events with live links, which
+    // means they go stale, which means they belong to the publisher and not
+    // to a build artifact that may sit on a phone for months.
+    brief: [],
   };
 
   // A sample digest never contributes world context, whatever it carries.
@@ -59,5 +65,10 @@ export function worldContext(
   return {
     posture: mergeById(base.posture, snapshot.posture),
     indicators: mergeById(base.indicators, snapshot.indicators),
+    // Newest first. An item with an unparseable date sorts last rather than
+    // throwing the whole feed into an arbitrary order.
+    brief: [...(snapshot.brief ?? [])].sort(
+      (a, b) => (Date.parse(b.published) || 0) - (Date.parse(a.published) || 0),
+    ),
   };
 }

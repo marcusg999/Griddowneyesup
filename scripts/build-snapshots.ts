@@ -83,13 +83,14 @@ function main(): void {
     }
 
     // Fail closed on world context. The schema allows a digest to carry
-    // posture notes and economic indicators so the real pipeline can correct
-    // them, but a SAMPLE digest doing it would be fabricating claims about
-    // governments and markets, wearing an epistemic status that means
-    // "traceable to a published source" (D21). The client ignores them from a
+    // posture notes, economic indicators and Worth-knowing items so the real
+    // pipeline can publish them, but a SAMPLE digest doing it would be
+    // fabricating claims about governments, markets and wars, wearing an
+    // epistemic status that means "traceable to a published source" (D21).
+    // Inventing a war is not a thing a fixture gets to do. The client ignores them from a
     // sample digest; this stops one being published in the first place.
     const fixtureAny = fixture as unknown as Record<string, unknown>;
-    for (const field of ['posture', 'indicators']) {
+    for (const field of ['posture', 'indicators', 'brief']) {
       if (fixtureAny[field] !== undefined) {
         throw new Error(
           `${file}: a sample digest may not carry ${field} — see D21. World context ` +
