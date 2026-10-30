@@ -74,13 +74,19 @@ test.describe('offline release gate', () => {
 
     // Search only helps someone who already has the word. The categories are
     // the way in for someone who does not.
+    //
+    // Retrying assertions throughout: `expect(await locator.count())` reads
+    // once and never retries, so it races hydration and passes or fails on
+    // how warm the machine is. toContainText and toHaveCount wait.
     const chips = page.locator('.browse__chip');
-    expect(await chips.count()).toBeGreaterThan(5);
     await expect(chips.first()).toContainText('Everything');
+    expect(await chips.count()).toBeGreaterThan(5);
 
     await page.getByRole('button', { name: /^water/ }).click();
     await expect(page.locator('p.meta[role="status"]')).toContainText('water');
-    const filtered = await page.locator('.skill-card').count();
+    const cards = page.locator('.skill-card');
+    await expect(cards.first()).toBeVisible();
+    const filtered = await cards.count();
     expect(filtered).toBeGreaterThan(0);
     expect(filtered).toBeLessThan(50);
 
