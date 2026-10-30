@@ -54,26 +54,34 @@
   },
   {
     "id": "mass-fatality-planning",
-    "title": "Mass-fatality capacity is a standing part of official planning",
-    "published": "2026-10-30",
+    "title": "The Army has rehearsed battlefield burial at a scale not attempted since Korea",
+    "published": "2026-10-26",
     "epistemicStatus": "mixed",
-    "whatItIs": "Fatality management is a named planning factor in federal emergency guidance, not a contingency invented for a crisis. FEMA's Key Planning Factors direct jurisdictions to set a mass-fatality threshold in advance, arrange mutual aid across jurisdictional lines before it is needed, and test the plan through exercises; FEMA runs a course on mass-fatalities incident response that ends in a tabletop exercise. Separately, US Army doctrine for contingency fatality operations provides for temporary interment of remains when evacuating them is not possible, and requires their later recovery. Both are long-standing published doctrine.",
-    "reported": "Reporting in October 2026 described a US Army exercise rehearsing temporary interment, and attributed specific trench dimensions and daily capacity figures to Army doctrine. No Army release confirming that exercise or those figures has been located, and the outlets carrying it do not meet the sourcing bar this app applies elsewhere. Treat the exercise and its numbers as unverified. What is established is the doctrine above, not any particular drill.",
-    "whatItMeansForYou": "Planners size their arrangements to the worst case they consider plausible, and publishing that arrangement is not a prediction of its use. The honest reading is the same one the FORTRESS note makes: the scale institutions quietly plan for is larger than the scale households are advised to plan for, and the gap is the interesting part. The concrete household action is unglamorous and nothing to do with mortality. Mass-fatality planning is built around identification and next of kin, which is the same paperwork that makes an ordinary separated family findable: current identification, written medical and contact details for everyone in the household, and an out-of-area contact who is not in the affected area. The plan builder produces exactly that, and it is worth an hour on a quiet evening rather than none at all.",
+    "whatItIs": "On 20 and 21 October 2026 the 3rd Corps Sustainment Command and the 20th Engineer Brigade ran Phase II of Operation Dragon Covenant at Fort Bragg, North Carolina, testing battlefield temporary interment. Engineers from the 27th Engineer Battalion used D6 bulldozers to cut a twenty-remains trench in about seventy-five minutes; skeletal models and water containers stood in for remains so the Army could check whether backfilling preserved them for later identification. A unit chaplain consecrated the ground before digging began. The Army's stated purpose is preservation and future repatriation, not disposal — temporary interment is what doctrine provides for when remains cannot be evacuated, and it carries an obligation to recover them afterwards. The Army describes it as a capability it has not executed at scale since the Korean War, and has scheduled a third phase for spring 2027. Separately and for much longer, fatality management has been a named planning factor in federal civil guidance: FEMA directs jurisdictions to set a mass-fatality threshold in advance, arrange mutual aid across jurisdictional lines before it is needed, and exercise the plan.",
+    "reported": "Two things attached to this are reporting rather than record. Press coverage puts the Army's planning estimate at up to 2,400 remains temporarily interred in 24 hours using eight bulldozers and four excavators; that is an estimate of capacity, not a demonstrated rate, and the exercise itself was conducted at the scale of a single trench. Several outlets also tie the training to tensions with Iran. No Army statement located here makes that link, and the exercise is described in its own materials as validating a doctrinal capability rather than responding to a particular adversary. Treat the number as reported and the geopolitical framing as the outlets' own.",
+    "whatItMeansForYou": "Planners size their arrangements to the worst case they consider plausible, and rehearsing an arrangement is not a forecast of using it. The honest reading is the one the FORTRESS note makes: the scale institutions quietly plan for is larger than the scale households are advised to plan for, and the gap is the interesting part. Note too what the exercise was actually testing, because it is the opposite of callous — whether remains stay identifiable. That points at the concrete household action here, which has nothing to do with mortality and everything to do with paperwork. Identification and next of kin are the same problem that makes an ordinary separated family findable: current identification for everyone in the household, written medical and contact details, and an out-of-area contact who is not in the affected area. The plan builder produces exactly that, and it is worth an hour on a quiet evening.",
     "citations": [
+      {
+        "source": "US Army / Defense Visual Information Distribution Service",
+        "title": "Army Tests Battlefield Temporary Interment to Validate Remains Preservation and Future Repatriation",
+        "published": "2026-10-26",
+        "url": "https://www.dvidshub.net/news/577612/army-tests-battlefield-temporary-interment-validate-remains-preservation-and-future-repatriation",
+        "basis": "us-federal-work"
+      },
       {
         "source": "FEMA",
         "title": "Key Planning Factors for Response to a Biological Incident, KPF 5: Fatality Management",
         "published": "2023",
         "url": "https://www.fema.gov/cbrn-tools/key-planning-factors-bio/kpf-5/5",
         "basis": "us-federal-work"
-      },
+      }
+    ],
+    "pressCitations": [
       {
-        "source": "FEMA Emergency Management Institute",
-        "title": "G0386 Mass Fatalities Incident Response",
-        "published": "2024",
-        "url": "https://www.fema.gov/emergency-managers/national-preparedness/training/course-catalog",
-        "basis": "us-federal-work"
+        "source": "Army Times",
+        "title": "US Army practices digging temporary battlefield graves",
+        "published": "2026-10-26",
+        "url": "https://www.armytimes.com/news/your-army/2026/10/26/army-practices-digging-temporary-battlefield-graves/"
       }
     ],
     "lastReviewed": "2026-10-30"

@@ -47,6 +47,89 @@ export function Supplies() {
         One record, many kits. Add something once and every kit it belongs to counts it.
       </p>
 
+      {/* First, and before the ladder. Logging stock is the thing a user opens
+          this page to do, and it used to sit below the ladder, the horizon
+          planner and the acquisition tiers — three screens of scrolling to
+          reach the one control that changes any of them. Unconditional, unlike
+          the shopping sections: writing down what you already have is as much
+          a Grey Sky activity as a Blue Sky one. */}
+      <h2>
+        <span className="margin-note" aria-hidden="true">
+          log it
+        </span>
+        Add something
+      </h2>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!itemId) return;
+          // Deliberately keeps the selection: adding four gallons of water is
+          // a normal thing to do and should not need re-choosing each time.
+          void addItem(itemId, 1, [selectedKit], expiresOn || undefined);
+        }}
+      >
+        <label className="meta" htmlFor="kit-select">
+          Which kit
+        </label>
+        <select
+          id="kit-select"
+          className="search"
+          value={selectedKit}
+          onChange={(event) => setSelectedKit(event.target.value as KitId)}
+        >
+          {pack.kits.map((k) => (
+            <option key={k.id} value={k.id}>
+              {k.name}
+            </option>
+          ))}
+        </select>
+
+        <label className="meta" htmlFor="item-select" style={{ marginTop: 12, display: 'block' }}>
+          What
+        </label>
+        <select
+          id="item-select"
+          className="search"
+          value={itemId}
+          onChange={(event) => setItemId(event.target.value)}
+        >
+          <option value="">Choose an item…</option>
+          {(kit ? pack.items.filter((i) => kit.baseItems.includes(i.id)) : pack.items).map(
+            (item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ),
+          )}
+        </select>
+
+        <label className="meta" htmlFor="expiry" style={{ marginTop: 12, display: 'block' }}>
+          Expires (optional)
+        </label>
+        <input
+          id="expiry"
+          className="search"
+          type="date"
+          value={expiresOn}
+          onChange={(event) => setExpiresOn(event.target.value)}
+        />
+        {itemId && suggestedExpiry(byId.get(itemId)) && !expiresOn && (
+          <button
+            type="button"
+            className="btn btn--ghost"
+            style={{ minHeight: 36, padding: '4px 12px', marginTop: 8 }}
+            onClick={() => setExpiresOn(suggestedExpiry(byId.get(itemId)) ?? '')}
+          >
+            Use typical shelf life ({suggestedExpiry(byId.get(itemId))})
+          </button>
+        )}
+
+        <button className="btn" type="submit" style={{ marginTop: 12, display: 'block' }} disabled={!itemId}>
+          Add to {kit?.name ?? 'kit'}
+        </button>
+      </form>
+
+
       {!suppressGamification && (
         <>
           <h2>
@@ -158,82 +241,6 @@ export function Supplies() {
           />
         </>
       )}
-
-      <h2>
-        <span className="margin-note" aria-hidden="true">
-          log it
-        </span>
-        Add something
-      </h2>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (!itemId) return;
-          // Deliberately keeps the selection: adding four gallons of water is
-          // a normal thing to do and should not need re-choosing each time.
-          void addItem(itemId, 1, [selectedKit], expiresOn || undefined);
-        }}
-      >
-        <label className="meta" htmlFor="kit-select">
-          Which kit
-        </label>
-        <select
-          id="kit-select"
-          className="search"
-          value={selectedKit}
-          onChange={(event) => setSelectedKit(event.target.value as KitId)}
-        >
-          {pack.kits.map((k) => (
-            <option key={k.id} value={k.id}>
-              {k.name}
-            </option>
-          ))}
-        </select>
-
-        <label className="meta" htmlFor="item-select" style={{ marginTop: 12, display: 'block' }}>
-          What
-        </label>
-        <select
-          id="item-select"
-          className="search"
-          value={itemId}
-          onChange={(event) => setItemId(event.target.value)}
-        >
-          <option value="">Choose an item…</option>
-          {(kit ? pack.items.filter((i) => kit.baseItems.includes(i.id)) : pack.items).map(
-            (item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ),
-          )}
-        </select>
-
-        <label className="meta" htmlFor="expiry" style={{ marginTop: 12, display: 'block' }}>
-          Expires (optional)
-        </label>
-        <input
-          id="expiry"
-          className="search"
-          type="date"
-          value={expiresOn}
-          onChange={(event) => setExpiresOn(event.target.value)}
-        />
-        {itemId && suggestedExpiry(byId.get(itemId)) && !expiresOn && (
-          <button
-            type="button"
-            className="btn btn--ghost"
-            style={{ minHeight: 36, padding: '4px 12px', marginTop: 8 }}
-            onClick={() => setExpiresOn(suggestedExpiry(byId.get(itemId)) ?? '')}
-          >
-            Use typical shelf life ({suggestedExpiry(byId.get(itemId))})
-          </button>
-        )}
-
-        <button className="btn" type="submit" style={{ marginTop: 12, display: 'block' }} disabled={!itemId}>
-          Add to {kit?.name ?? 'kit'}
-        </button>
-      </form>
 
       {rotation.length > 0 && !suppressGamification && (
         <>

@@ -343,6 +343,39 @@ test.describe('offline release gate', () => {
     await expect(page.getByText(/Do these first/)).toHaveCount(0);
   });
 
+  test('logging stock is the first thing on the page, above the ladder', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/supplies');
+
+    // Adding stock is what a user opens this page to do. It used to sit below
+    // the ladder, the horizon planner and the acquisition tiers, which is
+    // three screens of scrolling to reach the control that changes all three.
+    const headings = await page.locator('h2').allTextContents();
+    const add = headings.findIndex((h) => /Add something/.test(h));
+    const ladder = headings.findIndex((h) => /The ladder down/.test(h));
+    expect(add).toBeGreaterThanOrEqual(0);
+    expect(ladder).toBeGreaterThanOrEqual(0);
+    expect(add).toBeLessThan(ladder);
+
+    // And reachable without scrolling on a phone-sized viewport.
+    const box = await page.getByLabel('Which kit').boundingBox();
+    const viewport = page.viewportSize();
+    expect(box).not.toBeNull();
+    expect(box?.y ?? Infinity).toBeLessThan(viewport?.height ?? 0);
+  });
+
+  test('stock can still be logged in Grey Sky, unlike shopping', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByTestId('state-grey-sky').click();
+    await page.goto('/supplies');
+
+    // Writing down what you already have is not a shopping activity, so it
+    // survives the Grey Sky suppression that removes the planner and tiers.
+    await expect(page.getByRole('heading', { name: 'Add something' })).toBeVisible();
+    await expect(page.getByLabel('Which kit')).toBeVisible();
+  });
+
   test('the horizon dial re-runs the maths offline, and the bill grows', async ({ page }) => {
     await installThenGoOffline(page);
     await page.goto('/supplies');
