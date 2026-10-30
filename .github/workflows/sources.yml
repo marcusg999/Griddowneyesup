@@ -59,4 +59,4 @@ jobs:
                 for (const n of d.posture ?? []) console.log(`  - [posture] ${n.title}`);
               ' "$f"
             done
-          } >> "$GITHUB_STEP_SUMMARY"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
