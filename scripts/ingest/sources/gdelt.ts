@@ -1,4 +1,4 @@
-import { getJson, sleep } from '../fetch';
+import { getText, sleep, SourceError } from '../fetch';
 import type { SourceResult } from '../types';
 import type { Brief } from '../schema';
 
@@ -121,7 +121,16 @@ const QUERY_DOMAINS: readonly string[] = [
   'scmp.com',
 ];
 
-const DOMAIN_CLAUSE = `(${QUERY_DOMAINS.map((d) => `domain:${d}`).join(' OR ')})`;
+/**
+ * Three wires, not seventeen publishers.
+ *
+ * OR-ing seventeen `domain:` clauses got `Your query ...` back as plain text
+ * with an HTTP 200 — GDELT's way of saying the query is invalid. Its query
+ * language has limits that are not documented in a way worth guessing at, so
+ * this asks for the three wire services and lets the parser's longer list
+ * admit anything else that happens to arrive.
+ */
+const DOMAIN_CLAUSE = `(${QUERY_DOMAINS.slice(0, 3).map((d) => `domain:${d}`).join(' OR ')})`;
 
 const QUERIES: ReadonlyArray<{
   readonly category: Brief['category'];
@@ -268,6 +277,25 @@ const SPACING_MS = 15_000;
 const RETRIES = 3;
 const BACKOFF_MS = 20_000;
 
+/**
+ * GDELT reports a bad query as plain text with an HTTP 200, so a JSON parser
+ * sees it as a syntax error and the actual complaint — which is a sentence in
+ * English explaining what is wrong — gets thrown away. Read the text, decide
+ * whether it is JSON, and if it is not, report what they said.
+ */
+export function parseResponse(text: string, url: string): unknown {
+  const trimmed = text.trim();
+  if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+    try {
+      return JSON.parse(trimmed) as unknown;
+    } catch {
+      throw new SourceError(`${url}: response looked like JSON and was not`);
+    }
+  }
+  // Their own words, which is the whole point of this function.
+  throw new SourceError(`${url}: GDELT refused the query — ${trimmed.slice(0, 200)}`);
+}
+
 export async function collectGdelt(): Promise<SourceResult> {
   const brief: Brief[] = [];
 
@@ -275,8 +303,9 @@ export async function collectGdelt(): Promise<SourceResult> {
     // Sequentially and spaced, rather than in parallel: two polite requests
     // beat two simultaneous ones against a free public endpoint.
     if (index > 0) await sleep(SPACING_MS);
-    const raw = await getJson(queryUrl(query), { retries: RETRIES, backoffMs: BACKOFF_MS });
-    brief.push(...(parseGdelt(raw, category).brief ?? []));
+    const url = queryUrl(query);
+    const text = await getText(url, { retries: RETRIES, backoffMs: BACKOFF_MS });
+    brief.push(...(parseGdelt(parseResponse(text, url), category).brief ?? []));
   }
 
   return { brief };

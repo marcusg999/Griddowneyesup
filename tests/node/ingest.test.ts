@@ -10,7 +10,12 @@ import {
 } from '../../scripts/ingest/sources/airnow';
 import { parseGdacs, parseGdacsDate } from '../../scripts/ingest/sources/gdacs';
 import { ensoState, parseEnso, parseOni } from '../../scripts/ingest/sources/enso';
-import { parseGdelt, parseSeenDate, queryUrl } from '../../scripts/ingest/sources/gdelt';
+import {
+  parseGdelt,
+  parseResponse,
+  parseSeenDate,
+  queryUrl,
+} from '../../scripts/ingest/sources/gdelt';
 import { parseNws } from '../../scripts/ingest/sources/nws';
 import { parseOpenFema } from '../../scripts/ingest/sources/openfema';
 import { parseReliefWeb } from '../../scripts/ingest/sources/reliefweb';
@@ -655,5 +660,27 @@ describe('the GDELT query', () => {
       ],
     };
     expect(parseGdelt(sneaked, 'unrest').brief).toHaveLength(0);
+  });
+});
+
+describe('GDELT error responses', () => {
+  const URL_ = 'https://api.gdeltproject.org/api/v2/doc/doc?query=x';
+
+  it('reports GDELT own words when it refuses a query', () => {
+    // GDELT answers a bad query with plain text and an HTTP 200, so a JSON
+    // parser sees a syntax error and the actual complaint — a sentence in
+    // English saying what is wrong — is thrown away.
+    expect(() => parseResponse('Your query was too short or malformed.', URL_)).toThrow(
+      /GDELT refused the query — Your query was too short/,
+    );
+  });
+
+  it('parses a real JSON body', () => {
+    expect(parseResponse('{"articles":[]}', URL_)).toEqual({ articles: [] });
+    expect(parseResponse('  [1,2]  ', URL_)).toEqual([1, 2]);
+  });
+
+  it('does not mistake broken JSON for a refusal', () => {
+    expect(() => parseResponse('{"articles":', URL_)).toThrow(/looked like JSON and was not/);
   });
 });
