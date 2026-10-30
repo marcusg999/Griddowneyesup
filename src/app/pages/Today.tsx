@@ -15,6 +15,7 @@ import { Exposure } from '@/ui/Exposure';
 import { NearYou } from '@/ui/NearYou';
 import { useThreat } from '@/features/threat/useThreat';
 import { threatIndex } from '@/features/threat/band';
+import { worldContext } from '@/features/threat/worldContext';
 import { useContent } from '@/state/content';
 import {
   bindingResourcesFor,
@@ -61,6 +62,10 @@ export function Today() {
   // cannot report different signal counts.
   const now = new Date();
   const index = threatIndex(snapshot, now);
+
+  // The pack is the floor; a live digest corrects it. See worldContext() for
+  // why a sample digest contributes nothing here.
+  const world = worldContext(pack, snapshot);
 
   const days = limitingDays(coverage, bindingResourcesFor(profile.hazards));
   const measured = coverage.filter((c) => c.dailyNeed > 0);
@@ -140,7 +145,7 @@ export function Today() {
 
       {/* Baseline context, kept well apart from the live digest above. It is
           measured in months and never moves the readiness state. */}
-      {(pack?.posture.length ?? 0) > 0 && (
+      {world.posture.length > 0 && (
         <>
           <h2>
             <span className="margin-note" aria-hidden="true">
@@ -151,7 +156,7 @@ export function Today() {
           <p className="meta" style={{ marginTop: -6, marginBottom: 14 }}>
             Background, not an alert. Nothing here needs doing today.
           </p>
-          {pack?.posture.map((note) => (
+          {world.posture.map((note) => (
             <Posture key={note.id} note={note} targetDays={profile.targetHorizonDays} />
           ))}
         </>
@@ -160,7 +165,7 @@ export function Today() {
       {/* Second-order economic effects. Measured values, an inspectable
           transmission chain, and arithmetic on this household's own numbers.
           No purchase links here — see CONTENT_POLICY §7.5. */}
-      {(pack?.indicators.length ?? 0) > 0 && (
+      {world.indicators.length > 0 && (
         <>
           <h2>
             <span className="margin-note" aria-hidden="true">
@@ -172,7 +177,7 @@ export function Today() {
             What moved, how it reaches a household, and what it costs yours. Observed
             readings, not forecasts.
           </p>
-          {pack?.indicators.map((indicator) => (
+          {world.indicators.map((indicator) => (
             <Exposure key={indicator.id} indicator={indicator} profile={profile} />
           ))}
         </>

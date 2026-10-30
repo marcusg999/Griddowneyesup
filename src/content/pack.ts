@@ -1,5 +1,6 @@
 import { store } from '@/db';
 import { verifyDetachedSignature } from './signature';
+import { recordSync } from '@/state/sync';
 import type {
   CatalogItem,
   ContentPackManifest,
@@ -75,6 +76,10 @@ export async function installContentPack(): Promise<boolean> {
       console.error('Content pack signature did not verify. Keeping the installed pack.');
       return false;
     }
+
+    // The manifest was fetched and verified, so this device has a route out.
+    // That is what "last synced" means, whether or not the pack moved.
+    await recordSync();
 
     const manifest = decode<ContentPackManifest>(manifestBytes);
     const installed = await store.meta.get<string>(META_INSTALLED_VERSION);

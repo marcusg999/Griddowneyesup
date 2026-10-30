@@ -1,6 +1,7 @@
 import { t } from '@/i18n';
 import { isStale, type ThreatBand, type ThreatIndex } from '@/features/threat/band';
 import type { ThreatSignal } from '@/features/threat/types';
+import { timeAgo } from './relativeTime';
 
 /**
  * "Near you" — the once-daily digest. §4.1, D11, CONTENT_POLICY §4.4 and §5.
@@ -25,17 +26,6 @@ const BAND_LABEL: Record<ThreatBand, string> = {
   active: t('band.active'),
 };
 
-/** "2 hours ago", for a reader deciding what a reading is still worth. */
-function ago(iso: string, now: Date): string {
-  const minutes = Math.round((now.getTime() - new Date(iso).getTime()) / 60_000);
-  if (!Number.isFinite(minutes)) return 'time unknown';
-  if (minutes < 1) return 'just now';
-  if (minutes < 60) return `${minutes} min ago`;
-  const hours = Math.round(minutes / 60);
-  if (hours < 48) return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
-  return `${Math.round(hours / 24)} days ago`;
-}
-
 function Signal({ signal, now }: { signal: ThreatSignal; now: Date }) {
   const stale = isStale(signal, now);
 
@@ -45,7 +35,7 @@ function Signal({ signal, now }: { signal: ThreatSignal; now: Date }) {
         {signal.sourceName}
         <span className="meta">
           {' · '}
-          {ago(signal.observedAt, now)}
+          {timeAgo(signal.observedAt, now)}
           {stale ? ' · past its freshness window' : ''}
         </span>
       </p>

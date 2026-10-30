@@ -82,6 +82,22 @@ function main(): void {
       }
     }
 
+    // Fail closed on world context. The schema allows a digest to carry
+    // posture notes and economic indicators so the real pipeline can correct
+    // them, but a SAMPLE digest doing it would be fabricating claims about
+    // governments and markets, wearing an epistemic status that means
+    // "traceable to a published source" (D21). The client ignores them from a
+    // sample digest; this stops one being published in the first place.
+    const fixtureAny = fixture as unknown as Record<string, unknown>;
+    for (const field of ['posture', 'indicators']) {
+      if (fixtureAny[field] !== undefined) {
+        throw new Error(
+          `${file}: a sample digest may not carry ${field} — see D21. World context ` +
+            `belongs to the content pack until the real ingester publishes it.`,
+        );
+      }
+    }
+
     const snapshot = {
       version: 1 as const,
       provenance: 'sample' as const,

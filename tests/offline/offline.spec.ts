@@ -410,6 +410,35 @@ test.describe('offline release gate', () => {
     await expect(page.getByText(/no more to scroll/)).toHaveCount(0);
   });
 
+  test('the status bar says offline, rather than claiming it never synced', async ({
+    page,
+  }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+
+    // It used to say "Never synced" unconditionally — true on day one, a lie
+    // from the first refresh on, and on screen either way.
+    await expect(page.locator('.statusbar__sync')).toContainText(/Offline/);
+    await expect(page.locator('.statusbar__sync')).not.toContainText(/Never synced/);
+  });
+
+  test('regaining the network pulls without the app being reopened', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+    await expect(page.locator('.statusbar__sync')).toContainText(/Offline/);
+
+    // A phone walking back into WiFi. Nothing is reopened, nothing is
+    // navigated: the page is sitting exactly where it was.
+    await page.context().setOffline(false);
+
+    // "Last synced" is the assertion that matters. Merely losing the Offline
+    // label would prove only that the browser's online flag flipped — this
+    // proves a fetch went out, came back, verified, and was recorded.
+    await expect(page.locator('.statusbar__sync')).toContainText(/Last synced/, {
+      timeout: 10_000,
+    });
+  });
+
   test('no render path awaits the network', async ({ page }) => {
     await installThenGoOffline(page);
 

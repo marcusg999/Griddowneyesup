@@ -341,6 +341,66 @@ would be manufacturing alarm from a record that has almost certainly expired.
 
 ---
 
+### D24 — Pull when the network returns, not only when the app opens **[DEFAULT]**
+
+Both fetch paths ran once on mount and never again. A phone that walked back
+into WiFi, or found a bar of signal on the way home, kept showing whatever it
+read hours earlier until somebody thought to close and reopen the app. Nobody
+thinks to do that, least of all on the day it matters.
+
+Two triggers now, because neither alone is enough: the `online` event, and a
+backgrounded tab becoming visible — `online` firing while the page is suspended
+is exactly the event a sleeping phone misses.
+
+Guarded per region rather than with a single in-flight flag. The profile loads
+after first render, so the region goes `default` to the user's county with the
+first fetch still outstanding, and a bare flag makes the second refresh return
+early and never fetch at all. The offline suite caught that regression; it was
+introduced and found inside the same change.
+
+### D25 — The digest may carry world context, and a sample digest may not **[DEFAULT]**
+
+Standing posture (§9) and economic indicators (§10) shipped inside the content
+pack, which froze them at build time: the Strait of Hormuz could reopen and the
+app would keep saying it was shut until somebody cut a release. Baseline
+context measured in months still changes, and a stale claim about the world is
+worse than no claim.
+
+A digest may now carry both, and what it carries wins by id. The pack is the
+floor — what the app knows with no network, forever — and the digest is the
+correction on top. By id rather than wholesale, so a publisher that reached
+four of six sources can correct the two it has without silently dropping the
+rest.
+
+A SAMPLE digest contributes none of it, enforced in two places: the client
+ignores world context from a sample digest, and the publisher refuses to emit
+it. A fabricated signal is bad enough. A fabricated posture note is a claim
+about a government's actions wearing an epistemic status that means "traceable
+to a published government source" (D21).
+
+This is NOT the curated news module. D10 deferred that pending a named owner
+who can curate it daily against §4.1, and that reasoning is unchanged: an
+unstaffed news feed goes stale, and a stale feed is worse than an absent one.
+
+### D26 — "Last synced" means this device reached the network **[DEFAULT]**
+
+The status bar said "Never synced. Everything here still works." unconditionally
+— true on day one, a lie from the first refresh onwards. The second half stayed
+true throughout, which is probably why nobody noticed the first half had
+stopped being.
+
+It now reports the last time a fetch actually landed, recorded centrally by
+both fetch paths and broadcast so the bar updates when a background refresh
+succeeds. Deliberately not the digest's publish date, which is a fact about the
+publisher rather than about this device: a phone that has been in a basement
+for two days should say so even if the digest it holds was cut an hour before
+it went down there.
+
+Recorded when the fetch verifies, not when it writes. Reaching the network and
+finding nothing new is still a successful sync.
+
+---
+
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**
 
 Decided after the first release. §14 said to decide it up front precisely

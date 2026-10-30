@@ -1,5 +1,6 @@
 import { store } from '@/db';
 import { verifyDetachedSignature } from '@/content/signature';
+import { recordSync } from '@/state/sync';
 import type { ThreatSnapshot } from './types';
 
 /**
@@ -91,6 +92,12 @@ export async function refreshSnapshot(region: string): Promise<ThreatSnapshot | 
     console.error('Threat snapshot failed its shape check. Keeping the stored digest.');
     return undefined;
   }
+
+  // Reaching the network and finding nothing new is still a successful sync.
+  // Recorded here rather than after the write, because what the status bar
+  // reports is whether this device has a route out, not whether the publisher
+  // happened to have something to say.
+  await recordSync();
 
   // Signed, well-formed, and for the region asked for — but still not worth
   // writing if it is older than what is on disk. Snapshots can be served from

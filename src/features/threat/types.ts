@@ -57,6 +57,8 @@ export interface ThreatSignal {
  */
 export type SnapshotProvenance = 'live' | 'sample';
 
+import type { Indicator, PostureNote } from '@/content/types';
+
 export interface ThreatSnapshot {
   readonly version: 1;
   readonly provenance: SnapshotProvenance;
@@ -66,6 +68,17 @@ export interface ThreatSnapshot {
   /** When this digest was cut. Drives the once-daily cadence. */
   readonly publishedAt: string;
   readonly signals: readonly ThreatSignal[];
+  /**
+   * Standing posture and economic indicators, when the publisher has fresher
+   * ones than the pack shipped with. Optional: a digest that carries neither
+   * leaves the pack's own in place.
+   *
+   * These are world context rather than local signals — §9 and §10 — and they
+   * still never move the readiness state. They are here so baseline context
+   * stops being frozen at build time, not so it can raise an alarm.
+   */
+  readonly posture?: readonly PostureNote[];
+  readonly indicators?: readonly Indicator[];
   /**
    * Sources that could not be reached when the snapshot was cut. Named so the
    * confidence line can be specific rather than rounding a gap down to zero.
