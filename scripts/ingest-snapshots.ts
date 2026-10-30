@@ -82,6 +82,7 @@ async function buildRegion(
   globalUnreachable: readonly string[],
   globalAttempted: readonly string[],
   now: Date,
+  onFailure: (line: string) => void,
 ): Promise<Snapshot | undefined> {
   const signals: Signal[] = [...globalSignals];
   const unreachable: string[] = [...globalUnreachable];
@@ -115,7 +116,7 @@ async function buildRegion(
       if (outcome.result?.signal) signals.push(outcome.result.signal);
       else {
         unreachable.push(outcome.id);
-        console.warn(`  ${spec.region}: ${outcome.id} unreachable — ${outcome.error ?? 'no data'}`);
+        onFailure(`${spec.region}/${outcome.id}: ${outcome.error ?? 'no data'}`);
       }
     }
   }
@@ -184,12 +185,16 @@ async function main(): Promise<void> {
   // Signal sources tried everywhere, so each region's denominator starts from
   // the same base. USGS and SWPC are global; the rest are per region.
   const globalAttempted: string[] = [];
+  // Why each source failed, not just that it did. Printed last, because a
+  // source check that buries its failures above its successes is a source
+  // check you have to scroll to use — and the reason is the whole point.
+  const failures: string[] = [];
 
   for (const outcome of globals) {
     if (SIGNAL_SOURCES.has(outcome.id)) globalAttempted.push(outcome.id);
     if (!outcome.result) {
       globalUnreachable.push(outcome.id);
-      console.warn(`  ${outcome.id} unreachable — ${outcome.error ?? 'no data'}`);
+      failures.push(`${outcome.id}: ${outcome.error ?? 'no data'}`);
       continue;
     }
     if (outcome.result.signal) globalSignals.push(outcome.result.signal);
@@ -222,6 +227,7 @@ async function main(): Promise<void> {
       globalUnreachable,
       globalAttempted,
       now,
+      (line) => failures.push(line),
     );
     if (!snapshot) continue;
 
@@ -253,6 +259,14 @@ async function main(): Promise<void> {
   for (const note of globalPosture) {
     console.log(`  [posture] ${note.title}`);
   }
+
+  // Last, deliberately.
+  if (failures.length === 0) {
+    console.log('Every source reported.');
+    return;
+  }
+  console.warn(`\n${failures.length} source(s) did not report:`);
+  for (const line of failures) console.warn(`  ${line}`);
 }
 
 await main();
