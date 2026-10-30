@@ -11,6 +11,7 @@ import type { Contact, Plan } from '@/features/plan/types';
 import type { Coverage } from '@/features/supply/coverage';
 import { CoverageStave } from '@/ui/CoverageStave';
 import { Posture } from '@/ui/Posture';
+import { Brief } from '@/ui/Brief';
 import { Exposure } from '@/ui/Exposure';
 import { NearYou } from '@/ui/NearYou';
 import { useThreat } from '@/features/threat/useThreat';
@@ -145,7 +146,7 @@ export function Today() {
 
       {/* Baseline context, kept well apart from the live digest above. It is
           measured in months and never moves the readiness state. */}
-      {world.posture.length > 0 && (
+      {(world.posture.length > 0 || world.brief.length > 0) && (
         <>
           <h2>
             <span className="margin-note" aria-hidden="true">
@@ -156,9 +157,22 @@ export function Today() {
           <p className="meta" style={{ marginTop: -6, marginBottom: 14 }}>
             Background, not an alert. Nothing here needs doing today.
           </p>
+          {/* The feed first, newest at the top, then the standing posture
+              notes underneath. Events change; baseline does not, and a reader
+              who has already seen the baseline should not have to scroll past
+              it to find what moved. */}
+          {world.brief.map((item) => (
+            <Brief key={item.id} item={item} now={now} />
+          ))}
+
           {world.posture.map((note) => (
             <Posture key={note.id} note={note} targetDays={profile.targetHorizonDays} />
           ))}
+
+          {/* §5: the feed is finite and says so. */}
+          {world.brief.length > 0 && (
+            <p className="meta">{t('threat.digestEnds')}</p>
+          )}
         </>
       )}
 

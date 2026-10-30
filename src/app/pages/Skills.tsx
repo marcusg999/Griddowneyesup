@@ -14,6 +14,20 @@ import type { Skill } from '@/content/types';
 export function Skills() {
   const { pack, status } = useContent();
   const [query, setQuery] = useState('');
+  const [category, setCategory] = useState<string | undefined>(undefined);
+
+  /**
+   * Search only helps someone who already knows the word. Fifty entries across
+   * eight categories is small enough to browse and too many to scroll blind,
+   * so the categories are the way in and the search box is the shortcut.
+   */
+  const categories = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const skill of pack?.skills ?? []) {
+      counts.set(skill.category, (counts.get(skill.category) ?? 0) + 1);
+    }
+    return [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [pack]);
 
   const index = useMemo(() => {
     if (!pack?.searchIndex) return undefined;
@@ -57,6 +71,13 @@ export function Skills() {
       .sort((a, b) => (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0));
   }, [pack, index, query]);
 
+  // The category narrows whatever search produced, rather than replacing it,
+  // so the two compose: "filtration, in water" is a reasonable thing to ask.
+  const shown = useMemo(
+    () => (category ? results.filter((skill) => skill.category === category) : results),
+    [results, category],
+  );
+
   if (status === 'loading') return <p className="lede">Opening the library…</p>;
 
   return (
@@ -66,6 +87,30 @@ export function Skills() {
       <p className="lede">
         Everything here is on your device already. It works with the radio off.
       </p>
+
+      <nav className="browse" aria-label="Browse by category">
+        <button
+          type="button"
+          className="browse__chip"
+          aria-pressed={category === undefined}
+          onClick={() => setCategory(undefined)}
+        >
+          Everything <span className="browse__n tnum">{pack?.skills.length ?? 0}</span>
+        </button>
+        {categories.map(([name, count]) => (
+          <button
+            key={name}
+            type="button"
+            className="browse__chip"
+            aria-pressed={category === name}
+            // Selecting the category you are already in clears it, so the
+            // filter never becomes a trap you have to hunt for the exit of.
+            onClick={() => setCategory((current) => (current === name ? undefined : name))}
+          >
+            {name} <span className="browse__n tnum">{count}</span>
+          </button>
+        ))}
+      </nav>
 
       <label htmlFor="skill-search" className="meta">
         Search the library
@@ -80,17 +125,19 @@ export function Skills() {
       />
 
       <p className="meta" style={{ margin: '12px 0' }} role="status">
-        {results.length} of {pack?.skills.length ?? 0} skills
+        {shown.length} of {pack?.skills.length ?? 0} skills
+        {category ? ` · ${category}` : ''}
       </p>
 
-      {results.length === 0 ? (
+      {shown.length === 0 ? (
         <div className="empty">
           <strong>Nothing matched</strong>
-          The library is deliberately small and deep rather than large and thin, so
-          try a broader word.
+          {category
+            ? 'Nothing in this category matches that search. Clear one or the other.'
+            : 'The library is deliberately small and deep rather than large and thin, so try a broader word.'}
         </div>
       ) : (
-        results.map((skill, i) => <SkillCard key={skill.id} skill={skill} n={i + 1} />)
+        shown.map((skill, i) => <SkillCard key={skill.id} skill={skill} n={i + 1} />)
       )}
     </>
   );

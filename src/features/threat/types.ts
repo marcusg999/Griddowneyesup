@@ -1,3 +1,5 @@
+import type { EpistemicStatus, Indicator, PostureNote } from '@/content/types';
+
 /**
  * The threat snapshot. §4.1, D10, D11.
  *
@@ -57,7 +59,46 @@ export interface ThreatSignal {
  */
 export type SnapshotProvenance = 'live' | 'sample';
 
-import type { Indicator, PostureNote } from '@/content/types';
+/**
+ * A Worth-knowing item: something happening in the world that may require
+ * preparation. §9 and §4.4 govern every field here.
+ *
+ * Deliberately narrow. The categories are the whole allow-list, and anything
+ * outside them does not belong on this surface — a feed that will carry
+ * anything becomes a news app, and §5 exists because a news app is the thing
+ * this must not become.
+ *
+ * This is NOT a posture note. A posture note is standing baseline measured in
+ * months, with citations, that informs the horizon. A brief item is a dated
+ * event with a live link, and it still never moves the readiness state.
+ */
+export type BriefCategory =
+  | 'unrest' // protests, civil unrest, disorder
+  | 'conflict' // strikes carried out, strikes threatened, mobilisation
+  | 'disaster' // earthquakes, floods, fires, eruptions
+  | 'weather' // warnings and standing climate signals such as El Nino
+  | 'infrastructure'; // grid, fuel, shipping, supply — the things that stop
+
+export interface BriefItem {
+  readonly id: string;
+  readonly category: BriefCategory;
+  /** The source's own words. Never ours, never a synthesis of several (§4.4). */
+  readonly headline: string;
+  /** Plain-language consequence for a household. Never a call to alarm (§4.3). */
+  readonly whatItMeansForYou: string;
+  /**
+   * A live link to THIS item, not to a publisher's front page. Mandatory, and
+   * enforced by the publisher: an unlinked claim about the world is one the
+   * reader cannot check, which is the definition of asking to be trusted.
+   */
+  readonly url: string;
+  readonly source: string;
+  /** ISO date of the event or the report, not of our fetch. */
+  readonly published: string;
+  readonly epistemicStatus: EpistemicStatus;
+  /** Where it is happening. Free text: "Strait of Hormuz", "worldwide". */
+  readonly where?: string;
+}
 
 export interface ThreatSnapshot {
   readonly version: 1;
@@ -79,6 +120,11 @@ export interface ThreatSnapshot {
    */
   readonly posture?: readonly PostureNote[];
   readonly indicators?: readonly Indicator[];
+  /**
+   * The Worth-knowing feed. Finite, bounded, and ordered newest first by the
+   * reader rather than by us (§5: no infinite feed).
+   */
+  readonly brief?: readonly BriefItem[];
   /**
    * Sources that could not be reached when the snapshot was cut. Named so the
    * confidence line can be specific rather than rounding a gap down to zero.
