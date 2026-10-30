@@ -1438,3 +1438,67 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
 
 :root[data-state='grey-sky'] .rotation,
 :root[data-state='grey-sky'] .badges { display: none; }
+
+/* --- Horizon plan: what a longer horizon actually costs -------------------
+   A ledger, not a dashboard. The numbers are meant to be read across a row
+   and added up, which is what a table is for and what a set of cards is not.
+   Right-aligned and tabular so the columns line up as quantities. */
+.horizon-plan { margin: 0 0 28px; }
+
+.horizon-plan__met {
+  border-left: 2px solid var(--acid);
+  padding-left: 12px;
+  max-width: var(--measure);
+}
+
+.horizon-table {
+  width: 100%;
+  max-width: calc(var(--measure) + 10ch);
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.horizon-table caption {
+  text-align: left;
+  margin-bottom: 10px;
+  max-width: var(--measure);
+}
+
+.horizon-table th,
+.horizon-table td {
+  text-align: right;
+  padding: 7px 0 7px 12px;
+  border-bottom: 1px solid var(--rule-minor);
+  vertical-align: baseline;
+}
+
+.horizon-table thead th {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 400;
+  border-bottom-color: var(--rule-major);
+}
+
+/* First column is the label, and labels read from the left. */
+.horizon-table th:first-child,
+.horizon-table td:first-child { text-align: left; padding-left: 0; }
+
+.horizon-table tbody th { font-weight: 400; color: var(--ink); }
+
+.horizon-table tfoot th,
+.horizon-table tfoot td {
+  border-bottom: none;
+  border-top: 1px solid var(--rule-major);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* Phone: the gap and cost columns are what matter, so the buy column wraps
+   rather than forcing a horizontal scroll. */
+@media (max-width: 560px) {
+  .horizon-table { font-size: 13px; }
+  .horizon-table th,
+  .horizon-table td { padding-left: 8px; }
+}

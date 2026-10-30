@@ -343,6 +343,74 @@ test.describe('offline release gate', () => {
     await expect(page.getByText(/Do these first/)).toHaveCount(0);
   });
 
+  test('the horizon dial re-runs the maths offline, and the bill grows', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/supplies');
+
+    // Log something, so there is a shelf for the maths to run against.
+    await page.getByLabel('Which kit').selectOption('home');
+    await page.getByLabel('What').selectOption('water-stored-gal');
+    await page.getByRole('button', { name: /^Add to/ }).click();
+
+    const dial = page.getByRole('group', { name: 'Target horizon' });
+    await expect(dial).toBeVisible();
+
+    // Grams, from the footer's weight cell. Read as a number so the
+    // comparison below is about quantity rather than about string equality,
+    // which would pass for a missing table as readily as for a smaller one.
+    const totalGrams = async (): Promise<number> => {
+      const cell = page.locator('.horizon-table tfoot .tnum').first();
+      await expect(cell).toBeVisible();
+      const text = (await cell.textContent()) ?? '';
+      const value = parseFloat(text);
+      return /kg/.test(text) ? value * 1000 : value;
+    };
+
+    await dial.getByRole('button', { name: /^7/ }).click();
+    await expect(dial.getByRole('button', { name: /^7/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    const atSeven = await totalGrams();
+
+    await dial.getByRole('button', { name: /^90/ }).click();
+    const atNinety = await totalGrams();
+
+    // Ninety days must ask for strictly more than seven. The whole point of
+    // the control is that the cost of a longer horizon is visible, and both
+    // numbers have to actually be on screen for that to mean anything.
+    expect(atSeven).toBeGreaterThan(0);
+    expect(atNinety).toBeGreaterThan(atSeven);
+
+    // And it survives a reload, because a target held in component state is
+    // not a target. Still offline throughout.
+    await page.reload();
+    await expect(
+      page.getByRole('group', { name: 'Target horizon' }).getByRole('button', { name: /^90/ }),
+    ).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('the horizon plan carries no purchase links', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/supplies');
+
+    // Commerce is permitted on the acquisition surface, but only through the
+    // offers component with its adjacent disclosure (§7, D14a). The planner
+    // states typical prices and must never become a storefront of its own.
+    await expect(page.locator('.horizon-plan a[href^="http"]')).toHaveCount(0);
+  });
+
+  test('Grey Sky shows no horizon planner', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByTestId('state-grey-sky').click();
+    await page.goto('/supplies');
+
+    // Shopping is not a Grey Sky activity, and absence rather than hiding.
+    await expect(page.locator('.horizon-plan')).toHaveCount(0);
+    await expect(page.getByRole('group', { name: 'Target horizon' })).toHaveCount(0);
+  });
+
   test('the digest renders with the network disabled', async ({ page }) => {
     await installThenGoOffline(page);
     await page.goto('/');
