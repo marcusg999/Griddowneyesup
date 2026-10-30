@@ -27,6 +27,11 @@ jobs:
       - name: Build content pack
         run: npm run content:build
 
+      # Sample digests, so a build with no network still has something to
+      # precache. The Pages workflow publishes live ones over the top.
+      - name: Build sample digests
+        run: npm run content:samples
+
       # Content gate. CONTENT_POLICY §3: a high-risk skill with no citation,
       # or any skill that does not state what it does NOT do, fails here.
       - name: Validate content
