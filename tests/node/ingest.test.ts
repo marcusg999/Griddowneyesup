@@ -10,7 +10,13 @@ import {
 } from '../../scripts/ingest/sources/airnow';
 import { parseGdacs, parseGdacsDate } from '../../scripts/ingest/sources/gdacs';
 import { ensoState, parseEnso, parseOni } from '../../scripts/ingest/sources/enso';
-import { parseGdelt, parseSeenDate, queryUrl } from '../../scripts/ingest/sources/gdelt';
+import {
+  parseGdelt,
+  parseResponse,
+  parseSeenDate,
+  QUERIES,
+  queryUrl,
+} from '../../scripts/ingest/sources/gdelt';
 import { parseNws } from '../../scripts/ingest/sources/nws';
 import { parseOpenFema } from '../../scripts/ingest/sources/openfema';
 import { parseReliefWeb } from '../../scripts/ingest/sources/reliefweb';
@@ -625,5 +631,72 @@ describe('AirNow', () => {
   it('produces no brief items', () => {
     // Air quality is a county signal, not a world event.
     expect(parseAirNow([obs()], 'anywhere').brief).toBeUndefined();
+  });
+});
+
+describe('the GDELT query', () => {
+  it('names the allow-listed publishers, rather than hoping one turns up', () => {
+    // The first run that reached GDELT returned 75 articles and the allow-list
+    // dropped every one: most of what GDELT indexes is not a wire service, so
+    // asking for a theme and hoping is not a strategy. The query asks for the
+    // publishers and GDELT filters where it is cheap.
+    //
+    // Asserted on the queries themselves rather than on queryUrl, which only
+    // wraps whatever string it is handed — the first version of this test
+    // passed `'x'` in and checked the result for domains it could not contain.
+    expect(QUERIES.length).toBeGreaterThan(0);
+    for (const { query } of QUERIES) {
+      expect(query).toContain('domain:reuters.com');
+      expect(query).toContain('domain:apnews.com');
+      expect(query).toContain(' OR ');
+      expect(query).toContain('theme:');
+    }
+    expect(QUERIES.map((q) => q.category)).toEqual(['unrest', 'conflict']);
+  });
+
+  it('puts the query into the request unchanged', () => {
+    // What queryUrl actually does, which is the thing the test above was
+    // accidentally checking.
+    const url = new URL(queryUrl(QUERIES[0]!.query));
+    expect(url.searchParams.get('query')).toBe(QUERIES[0]!.query);
+  });
+
+  it('still verifies the publisher after asking for it', () => {
+    // Not redundant: asking for something and checking you got it are
+    // different, and the check is what stops a query typo or a change at
+    // GDELT's end from quietly admitting anything.
+    const sneaked = {
+      articles: [
+        {
+          url: 'https://contentfarm.example/a',
+          title: 'Something',
+          seendate: '20260601T090000Z',
+          domain: 'contentfarm.example',
+        },
+      ],
+    };
+    expect(parseGdelt(sneaked, 'unrest').brief).toHaveLength(0);
+  });
+});
+
+describe('GDELT error responses', () => {
+  const URL_ = 'https://api.gdeltproject.org/api/v2/doc/doc?query=x';
+
+  it('reports GDELT own words when it refuses a query', () => {
+    // GDELT answers a bad query with plain text and an HTTP 200, so a JSON
+    // parser sees a syntax error and the actual complaint — a sentence in
+    // English saying what is wrong — is thrown away.
+    expect(() => parseResponse('Your query was too short or malformed.', URL_)).toThrow(
+      /GDELT refused the query — Your query was too short/,
+    );
+  });
+
+  it('parses a real JSON body', () => {
+    expect(parseResponse('{"articles":[]}', URL_)).toEqual({ articles: [] });
+    expect(parseResponse('  [1,2]  ', URL_)).toEqual([1, 2]);
+  });
+
+  it('does not mistake broken JSON for a refusal', () => {
+    expect(() => parseResponse('{"articles":', URL_)).toThrow(/looked like JSON and was not/);
   });
 });

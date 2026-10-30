@@ -24,13 +24,17 @@ import type { Brief } from '../schema';
 // the version is decommissioned, not having a bad afternoon. v2 is documented
 // as compatible with v1, so the query below is unchanged.
 //
-// `appname` is required and, per ReliefWeb's own terms, is meant to identify
-// the caller. If they ever start rejecting unregistered ones this source will
-// come back as a 403 rather than data, which the ingester records as a named
-// gap — the digest still publishes, without it.
+// `appname` identifies the caller and must be one ReliefWeb has registered —
+// an unregistered value is refused with a 403, which is what the earlier
+// `ballast-preparedness` got. It is not a credential: it travels in the query
+// string and appears in every log, so it belongs in the source rather than in
+// a secret store. Overridable by environment variable all the same, so it can
+// be changed without a release.
+const APPNAME = (process.env['RELIEFWEB_APPNAME'] ?? '').trim() || 'awareness';
+
 const API =
   'https://api.reliefweb.int/v2/reports' +
-  '?appname=ballast-preparedness' +
+  `?appname=${encodeURIComponent(APPNAME)}` +
   '&profile=list&limit=12&sort[]=date.created:desc' +
   '&filter[operator]=OR' +
   '&filter[conditions][0][field]=disaster_type.name' +

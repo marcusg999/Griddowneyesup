@@ -1,4 +1,4 @@
-import { getJson, sleep } from '../fetch';
+import { getText, sleep, SourceError } from '../fetch';
 import type { SourceResult } from '../types';
 import type { Brief } from '../schema';
 
@@ -83,14 +83,66 @@ const PUBLISHERS: Readonly<Record<string, string>> = {
  * English edition, and a headline we cannot read is a headline we cannot
  * vouch for.
  */
-const QUERIES: ReadonlyArray<{
+/**
+ * The allow-list, pushed into the query.
+ *
+ * The first run that actually reached GDELT returned 75 articles per query and
+ * the allow-list dropped every single one: asking for a theme and hoping a
+ * wire service turns up in the first 75 results does not work, because most
+ * of what GDELT indexes is not a wire service. So the query names the
+ * publishers instead, and GDELT does the filtering where it is cheap.
+ *
+ * The parser still enforces the list afterwards. That is not redundant — it
+ * is the difference between asking for something and verifying you got it,
+ * and the verification is what stops a query typo or a GDELT change from
+ * quietly admitting anything.
+ *
+ * A subset of the full list, chosen to keep the URL a sane length: the wires
+ * and the broadest international desks. The parser's list stays longer, so
+ * widening the query later needs no change to the safety check.
+ */
+const QUERY_DOMAINS: readonly string[] = [
+  'reuters.com',
+  'apnews.com',
+  'bbc.com',
+  'bbc.co.uk',
+  'aljazeera.com',
+  'theguardian.com',
+  'npr.org',
+  'dw.com',
+  'france24.com',
+  'cbc.ca',
+  'abc.net.au',
+  'nytimes.com',
+  'washingtonpost.com',
+  'cnn.com',
+  'nbcnews.com',
+  'cbsnews.com',
+  'scmp.com',
+];
+
+/**
+ * Three wires, not seventeen publishers.
+ *
+ * OR-ing seventeen `domain:` clauses got `Your query ...` back as plain text
+ * with an HTTP 200 — GDELT's way of saying the query is invalid. Its query
+ * language has limits that are not documented in a way worth guessing at, so
+ * this asks for the three wire services and lets the parser's longer list
+ * admit anything else that happens to arrive.
+ */
+const DOMAIN_CLAUSE = `(${QUERY_DOMAINS.slice(0, 3).map((d) => `domain:${d}`).join(' OR ')})`;
+
+export const QUERIES: ReadonlyArray<{
   readonly category: Brief['category'];
   readonly query: string;
 }> = [
-  { category: 'unrest', query: '(theme:PROTEST OR theme:UNREST_POLICEBRUTALITY) sourcelang:english' },
+  {
+    category: 'unrest',
+    query: `(theme:PROTEST OR theme:UNREST_POLICEBRUTALITY) ${DOMAIN_CLAUSE} sourcelang:english`,
+  },
   {
     category: 'conflict',
-    query: '(theme:ARMEDCONFLICT OR theme:MILITARY_ESCALATION) sourcelang:english',
+    query: `(theme:ARMEDCONFLICT OR theme:MILITARY_ESCALATION) ${DOMAIN_CLAUSE} sourcelang:english`,
   },
 ];
 
@@ -104,9 +156,9 @@ export function queryUrl(query: string): string {
     query,
     mode: 'artlist',
     format: 'json',
-    // Fetched wide and cut down to PER_CATEGORY after the allow-list, because
-    // most of what comes back will not be from an allow-listed publisher.
-    maxrecords: '75',
+    // The query already restricts to allow-listed publishers, so this only
+    // needs enough headroom for the dedupe to have something to choose from.
+    maxrecords: '50',
     timespan: '24h',
     sort: 'datedesc',
   });
@@ -225,6 +277,25 @@ const SPACING_MS = 15_000;
 const RETRIES = 3;
 const BACKOFF_MS = 20_000;
 
+/**
+ * GDELT reports a bad query as plain text with an HTTP 200, so a JSON parser
+ * sees it as a syntax error and the actual complaint — which is a sentence in
+ * English explaining what is wrong — gets thrown away. Read the text, decide
+ * whether it is JSON, and if it is not, report what they said.
+ */
+export function parseResponse(text: string, url: string): unknown {
+  const trimmed = text.trim();
+  if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+    try {
+      return JSON.parse(trimmed) as unknown;
+    } catch {
+      throw new SourceError(`${url}: response looked like JSON and was not`);
+    }
+  }
+  // Their own words, which is the whole point of this function.
+  throw new SourceError(`${url}: GDELT refused the query — ${trimmed.slice(0, 200)}`);
+}
+
 export async function collectGdelt(): Promise<SourceResult> {
   const brief: Brief[] = [];
 
@@ -232,8 +303,9 @@ export async function collectGdelt(): Promise<SourceResult> {
     // Sequentially and spaced, rather than in parallel: two polite requests
     // beat two simultaneous ones against a free public endpoint.
     if (index > 0) await sleep(SPACING_MS);
-    const raw = await getJson(queryUrl(query), { retries: RETRIES, backoffMs: BACKOFF_MS });
-    brief.push(...(parseGdelt(raw, category).brief ?? []));
+    const url = queryUrl(query);
+    const text = await getText(url, { retries: RETRIES, backoffMs: BACKOFF_MS });
+    brief.push(...(parseGdelt(parseResponse(text, url), category).brief ?? []));
   }
 
   return { brief };

@@ -82,6 +82,7 @@ async function buildRegion(
   globalUnreachable: readonly string[],
   globalAttempted: readonly string[],
   now: Date,
+  onFailure: (line: string) => void,
 ): Promise<Snapshot | undefined> {
   const signals: Signal[] = [...globalSignals];
   const unreachable: string[] = [...globalUnreachable];
@@ -105,7 +106,7 @@ async function buildRegion(
     const zip = spec.zip;
     local.push({ id: 'wildfire-air', run: () => collectAirNow(zip, spec.label) });
   } else if (spec.zip) {
-    console.warn(`  ${spec.region}: AIRNOW_API_KEY not set, air quality not attempted`);
+    console.log(`  ${spec.region}: AIRNOW_API_KEY not set, air quality not attempted`);
   }
 
   if (local.length > 0) {
@@ -115,13 +116,13 @@ async function buildRegion(
       if (outcome.result?.signal) signals.push(outcome.result.signal);
       else {
         unreachable.push(outcome.id);
-        console.warn(`  ${spec.region}: ${outcome.id} unreachable — ${outcome.error ?? 'no data'}`);
+        onFailure(`${spec.region}/${outcome.id}: ${outcome.error ?? 'no data'}`);
       }
     }
   }
 
   if (signals.length === 0) {
-    console.warn(`  ${spec.region}: no source reported, leaving the published digest alone`);
+    console.log(`  ${spec.region}: no source reported, leaving the published digest alone`);
     return undefined;
   }
 
@@ -184,12 +185,16 @@ async function main(): Promise<void> {
   // Signal sources tried everywhere, so each region's denominator starts from
   // the same base. USGS and SWPC are global; the rest are per region.
   const globalAttempted: string[] = [];
+  // Why each source failed, not just that it did. Printed last, because a
+  // source check that buries its failures above its successes is a source
+  // check you have to scroll to use — and the reason is the whole point.
+  const failures: string[] = [];
 
   for (const outcome of globals) {
     if (SIGNAL_SOURCES.has(outcome.id)) globalAttempted.push(outcome.id);
     if (!outcome.result) {
       globalUnreachable.push(outcome.id);
-      console.warn(`  ${outcome.id} unreachable — ${outcome.error ?? 'no data'}`);
+      failures.push(`${outcome.id}: ${outcome.error ?? 'no data'}`);
       continue;
     }
     if (outcome.result.signal) globalSignals.push(outcome.result.signal);
@@ -222,6 +227,7 @@ async function main(): Promise<void> {
       globalUnreachable,
       globalAttempted,
       now,
+      (line) => failures.push(line),
     );
     if (!snapshot) continue;
 
@@ -243,6 +249,27 @@ async function main(): Promise<void> {
   }
 
   console.log(`Live digests published and signed: ${published.join(', ')}`);
+
+  // What actually came back, listed after the per-source warnings so one log
+  // tail shows both the failures and the content. Reading "10 brief items"
+  // does not tell you whether they are the categories the feed is for.
+  for (const item of globalBrief) {
+    console.log(`  [${item.category}] ${item.source}: ${item.headline}`);
+  }
+  for (const note of globalPosture) {
+    console.log(`  [posture] ${note.title}`);
+  }
+
+  // Last, deliberately.
+  if (failures.length === 0) {
+    console.log('Every source reported.');
+    return;
+  }
+  // stdout, not stderr. Node flushes the two independently, so a warn lands
+  // at an unpredictable point in a captured log — which is why these lines
+  // kept appearing in a different place in every CI run.
+  console.log(`\n${failures.length} source(s) did not report:`);
+  for (const line of failures) console.log(`  ${line}`);
 }
 
 await main();

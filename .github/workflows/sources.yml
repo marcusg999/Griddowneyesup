@@ -42,6 +42,9 @@ jobs:
         run: npm run content:ingest
         env:
           AIRNOW_API_KEY: ${{ secrets.AIRNOW_API_KEY }}
+          # Optional override. Not a credential — it travels in the query
+          # string — but a variable means it can change without a release.
+          RELIEFWEB_APPNAME: ${{ vars.RELIEFWEB_APPNAME }}
 
       # Which sources answered, as a summary rather than buried in the log.
       - name: Summarise
@@ -58,8 +61,6 @@ jobs:
                 const gaps = (d.unreachable ?? []).join(", ") || "none";
                 const tried = (d.attempted ?? []).length;
                 console.log(`- **${d.region}** — \`${d.provenance}\`, ${d.signals.length} of ${tried} signals, ${(d.brief ?? []).length} brief items. Unreachable: ${gaps}`);
-                for (const b of d.brief ?? []) console.log(`  - [${b.category}] ${b.source}: ${b.headline}`);
-                for (const n of d.posture ?? []) console.log(`  - [posture] ${n.title}`);
               ' "$f"
             done
           } | tee -a "$GITHUB_STEP_SUMMARY"
