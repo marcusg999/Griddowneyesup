@@ -10,7 +10,7 @@
       "ageHours": 1,
       "headline": "Flood advisory in effect until 18:00",
       "meansForYou": "Water over roadways on the usual low-lying routes. If your evacuation route runs through one, the alternate is the one to use today.",
-      "url": "https://www.weather.gov/"
+      "url": "https://alerts.weather.gov/search?area=CA"
     },
     {
       "source": "wildfire-air",
@@ -37,8 +37,10 @@
       "ageHours": 30,
       "headline": "Geomagnetic field quiet, G0",
       "meansForYou": "Nothing to act on.",
-      "url": "https://www.swpc.noaa.gov/"
+      "url": "https://www.swpc.noaa.gov/products/notifications-timeline"
     }
   ],
-  "unreachable": ["openfema"]
+  "unreachable": [
+    "openfema"
+  ]
 }

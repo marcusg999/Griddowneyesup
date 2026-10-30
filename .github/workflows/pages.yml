@@ -48,18 +48,11 @@ jobs:
       - name: Build content pack
         run: npm run content:build
 
-      # Sample digests, so a build with no network still has something to
-      # precache. The Pages workflow publishes live ones over the top.
+      # Sample digests. These are what the release gate below runs against,
+      # and they are deliberately the only digests in the tree until the gate
+      # has passed — see the ingest step near the end.
       - name: Build sample digests
         run: npm run content:samples
-
-      # Fetch the live sources and publish signed digests over the samples.
-      # Fail-soft by design: a source that is down is recorded as a gap, and if
-      # every source is down nothing is overwritten and the sample digests
-      # ship. The step never fails the deploy — an upstream outage should not
-      # stop a working app from being published.
-      - name: Ingest live digest
-        run: npm run content:ingest
 
       - name: Validate content
         run: npm run content:validate
@@ -86,6 +79,30 @@ jobs:
 
       - name: Offline suite
         run: npm run test:offline
+
+      # Live digests, published over the samples — AFTER the gate, deliberately.
+      #
+      # This step used to run first, and that made the release gate depend on
+      # the weather. The offline suite asserts on the digest it finds: that it
+      # is marked `sample`, that the 06075 fixture's band reads Active, that a
+      # 30-hour-old reading is reported as outside its freshness window. Live
+      # data satisfies none of those on a quiet day and some of them on a loud
+      # one, so the gate passed or failed according to whether California had a
+      # flood warning. A gate that reports the weather is not a gate.
+      #
+      # So the order is: prove the client against bytes we control, then fetch
+      # the real ones and ship those. Fail-soft per source — a source that is
+      # down is recorded as a named gap, and if every source is down nothing is
+      # overwritten and the samples ship. The step never fails the deploy: an
+      # upstream outage should not stop a working app from being published.
+      - name: Ingest live digest
+        run: npm run content:ingest
+
+      # The gate verified the samples' signatures. These are different bytes,
+      # signed after the gate ran, and they are what users actually fetch — so
+      # they get verified too, by the same client verifier, before deploy.
+      - name: Verify the signatures on what will ship
+        run: npx vitest run tests/unit/snapshot-signature.test.ts
 
       # Pages serves a project site from /<repo>/, so the deployed build needs
       # that prefix baked in. Drop PUBLIC_BASE_PATH if a custom domain is ever

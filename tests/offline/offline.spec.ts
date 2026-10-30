@@ -407,6 +407,14 @@ test.describe('offline release gate', () => {
     await expect(page.locator('.band__confidence')).toContainText(/freshness window/);
   });
 
+  // The hosts the signal collectors actually cite, matched by domain rather
+  // than by prefix: the NWS link is alerts.weather.gov, and a pattern anchored
+  // on `weather.` rejected it while claiming to allow NWS. Any subdomain of
+  // these is a government source; anything else on a threat surface is a §7.5
+  // violation, which is what this test is for.
+  const SOURCE_HOST =
+    /^https:\/\/([a-z0-9-]+\.)*(weather\.gov|airnow\.gov|usgs\.gov|fema\.gov|noaa\.gov)(\/|$)/;
+
   test('no purchase links reach the digest', async ({ page }) => {
     await installThenGoOffline(page);
     await page.goto('/settings');
@@ -426,7 +434,7 @@ test.describe('offline release gate', () => {
     );
     expect(hrefs.length).toBeGreaterThan(0);
     for (const href of hrefs) {
-      expect(href).toMatch(/^https:\/\/(www\.)?(weather|airnow|earthquake\.usgs|fema|swpc\.noaa)\./);
+      expect(href).toMatch(SOURCE_HOST);
     }
     await expect(page.locator('.signal').getByText(/buy|shop|price/i)).toHaveCount(0);
   });

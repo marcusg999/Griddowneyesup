@@ -1,7 +1,7 @@
 {
   "region": "default",
   "regionLabel": "your area",
-  "note": "SAMPLE digest, all quiet. CONTENT_POLICY \u00a75: most days should show \"Nothing notable near you\", and the index going green is a feature, so the default region is the normal day. Signal ages are relative and stamped at build time. Nothing here is a claim about the world.",
+  "note": "SAMPLE digest, all quiet. CONTENT_POLICY §5: most days should show \"Nothing notable near you\", and the index going green is a feature, so the default region is the normal day. Signal ages are relative and stamped at build time. Nothing here is a claim about the world.",
   "signals": [
     {
       "source": "nws",
@@ -10,7 +10,7 @@
       "ageHours": 1,
       "headline": "No watches, warnings or advisories in effect",
       "meansForYou": "Nothing to act on.",
-      "url": "https://www.weather.gov/"
+      "url": "https://alerts.weather.gov/"
     },
     {
       "source": "usgs",
@@ -26,7 +26,7 @@
       "sourceName": "AirNow",
       "level": "quiet",
       "ageHours": 1,
-      "headline": "Air quality index 34 \u2014 good",
+      "headline": "Air quality index 34 — good",
       "meansForYou": "Nothing to act on. Windows can stay open.",
       "url": "https://www.airnow.gov/"
     },
@@ -46,7 +46,7 @@
       "ageHours": 3,
       "headline": "Geomagnetic field quiet to unsettled, G0",
       "meansForYou": "Nothing to act on. GPS and HF radio are behaving normally.",
-      "url": "https://www.swpc.noaa.gov/"
+      "url": "https://www.swpc.noaa.gov/products/notifications-timeline"
     }
   ]
 }
