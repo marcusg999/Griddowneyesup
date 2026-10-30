@@ -28,6 +28,10 @@ export async function getJson<T>(url: string): Promise<T> {
     }
     return (await response.json()) as T;
   } catch (error) {
+    // Already ours, and already naming the URL — rethrow rather than wrap it
+    // again. Double-wrapping printed the whole query string twice in CI, which
+    // is how a one-line failure becomes an unreadable one.
+    if (error instanceof SourceError) throw error;
     throw new SourceError(
       `${url}: ${error instanceof Error ? error.message : String(error)}`,
     );
