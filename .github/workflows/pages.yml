@@ -97,6 +97,11 @@ jobs:
       # upstream outage should not stop a working app from being published.
       - name: Ingest live digest
         run: npm run content:ingest
+        env:
+          # Optional. AirNow is the one source that needs a key; without it the
+          # source is not attempted, which the confidence line reflects in its
+          # denominator rather than reporting as a gap.
+          AIRNOW_API_KEY: ${{ secrets.AIRNOW_API_KEY }}
 
       # The gate verified the samples' signatures. These are different bytes,
       # signed after the gate ran, and they are what users actually fetch — so

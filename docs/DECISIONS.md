@@ -539,6 +539,45 @@ early would be forecasting.
 
 ---
 
+### D31 — The confidence denominator is what the publisher tried **[DEFAULT]**
+
+"4 of 6 signals reporting" was wrong in both numbers, and the two errors hid
+each other.
+
+The denominator was a constant, `SIGNAL_SOURCE_COUNT = 6`, taken from D10's
+six sources. But one of the six is the FEMA National Risk Index, which this
+codebase's own type comment describes as a standing county baseline that is
+"deliberately NOT a signal". So six was a total that could never be reached.
+The numerator then added one — with a comment explaining that the NRI "is
+always available: it ships in the content pack" — to compensate. A padded
+numerator over an unreachable denominator produced a plausible-looking
+fraction that described nothing.
+
+Worse, a source with no collector at all was indistinguishable from one that
+was down. AirNow had been in the signal union and the fixtures since step 7
+with nothing fetching it, so every live digest silently reported one fewer
+source than it claimed, and the surface gave no hint which one or why.
+
+Three changes, which are one idea:
+
+- The digest carries `attempted`: the signal sources the publisher actually
+  tried for that region. That is the denominator. Optional, so a digest cut
+  before this field falls back to the constant rather than claiming zero.
+- The numerator is signals present and fresh. No baseline padding.
+- `unreachable` is finally read. The confidence line names the sources that
+  failed, by publisher name rather than internal id: "FEMA declarations could
+  not be reached", not a quietly smaller fraction. Brief and posture sources
+  are excluded from that list — ReliefWeb, GDELT, GDACS and ENSO can be down
+  too, but they were never part of "signals reporting" and listing them would
+  make the county's own picture look worse than it is.
+
+A source not attempted is not a gap. AirNow needs a key, which is read from
+the environment and never committed; without one the source is skipped, so it
+leaves the denominator rather than appearing as a failure the reader can do
+nothing about.
+
+---
+
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**
 
 Decided after the first release. §14 said to decide it up front precisely

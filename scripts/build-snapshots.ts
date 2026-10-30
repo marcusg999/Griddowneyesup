@@ -45,6 +45,8 @@ interface Fixture {
   readonly note: string;
   readonly signals: readonly FixtureSignal[];
   readonly unreachable?: readonly string[];
+  /** Signal sources the fixture pretends were tried. Optional. */
+  readonly attempted?: readonly string[];
 }
 
 const REQUIRED_SIGNAL_FIELDS: Array<keyof FixtureSignal> = [
@@ -115,6 +117,12 @@ function main(): void {
         observedAt: new Date(now - s.ageHours * 3_600_000).toISOString(),
       })),
       ...(fixture.unreachable ? { unreachable: fixture.unreachable } : {}),
+      // The denominator. Stated rather than derived so a fixture can show a
+      // gap on purpose; defaults to the sources it carries, which is the
+      // honest reading of a fixture that names no gaps.
+      attempted:
+        fixture.attempted ??
+        [...new Set(fixture.signals.map((signal) => signal.source))],
     };
 
     const body = Buffer.from(JSON.stringify(snapshot));

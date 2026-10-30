@@ -25,6 +25,8 @@ const signal = (
 const snapshot = (
   signals: ThreatSignal[],
   provenance: ThreatSnapshot['provenance'] = 'live',
+  /** Omit to exercise the fallback for a digest cut before this field. */
+  attempted?: ThreatSnapshot['attempted'],
 ): ThreatSnapshot => ({
   version: 1,
   provenance,
@@ -32,6 +34,7 @@ const snapshot = (
   regionLabel: 'Test County',
   publishedAt: hoursAgo(1),
   signals,
+  ...(attempted ? { attempted } : {}),
 });
 
 describe('the Threat Index band', () => {
@@ -114,27 +117,89 @@ describe('the Threat Index band', () => {
   });
 
   describe('confidence', () => {
-    it('counts the NRI baseline as reporting, since it ships with the app', () => {
+    it('counts only the signals that reported, with no baseline padding', () => {
+      // This used to add one for the FEMA National Risk Index, on the grounds
+      // that it ships in the pack and is therefore always available. The NRI
+      // is a standing county baseline that never reports a signal, so the
+      // extra was padding a numerator to flatter a denominator that was
+      // itself unreachable.
+      const index = threatIndex(
+        snapshot([signal('nws', 'quiet'), signal('usgs', 'quiet')], 'live', ['nws', 'usgs']),
+        NOW,
+      );
+      expect(index.reportingCount).toBe(2);
+      expect(index.sourceCount).toBe(2);
+    });
+
+    it('takes the denominator from what the publisher tried', () => {
+      // A constant nobody could reach is not a confidence statement. Five
+      // sources attempted, two reached, and the fraction says so.
+      const index = threatIndex(
+        snapshot([signal('nws', 'quiet'), signal('usgs', 'quiet')], 'live', [
+          'nws',
+          'usgs',
+          'wildfire-air',
+          'openfema',
+          'swpc',
+        ]),
+        NOW,
+      );
+      expect(index.reportingCount).toBe(2);
+      expect(index.sourceCount).toBe(5);
+    });
+
+    it('falls back to the old constant for a digest cut before attempted existed', () => {
       const index = threatIndex(snapshot([signal('nws', 'quiet'), signal('usgs', 'quiet')]), NOW);
       expect(index.sourceCount).toBe(6);
-      expect(index.reportingCount).toBe(3);
+      expect(index.reportingCount).toBe(2);
     });
 
     it('does not count a stale source as reporting', () => {
       const index = threatIndex(
-        snapshot([signal('nws', 'quiet', 9), signal('usgs', 'quiet', 1)]),
+        snapshot([signal('nws', 'quiet', 9), signal('usgs', 'quiet', 1)], 'live', ['nws', 'usgs']),
         NOW,
       );
-      expect(index.reportingCount).toBe(2);
+      expect(index.reportingCount).toBe(1);
+      expect(index.sourceCount).toBe(2);
     });
 
-    it('never claims more sources than D10 has', () => {
+    it('never reports more than it attempted', () => {
       const many = (['nws', 'usgs', 'wildfire-air', 'openfema', 'swpc'] as SignalSourceId[]).map(
         (s) => signal(s, 'quiet'),
       );
-      const index = threatIndex(snapshot(many), NOW);
-      expect(index.reportingCount).toBe(6);
+      const index = threatIndex(snapshot(many, 'live', ['nws', 'usgs']), NOW);
+      // Five signals arrived against two attempted, which should not happen —
+      // but if a publisher ever contradicts itself the fraction must stay
+      // readable rather than reading "5 of 2".
       expect(index.reportingCount).toBeLessThanOrEqual(index.sourceCount);
+      expect(index.sourceCount).toBe(5);
+    });
+
+    it('names the signal sources it could not reach', () => {
+      // A gap the reader can see is a gap they can judge. A gap folded into a
+      // smaller numerator is one they cannot.
+      const index = threatIndex(
+        {
+          ...snapshot([signal('nws', 'quiet')], 'live', ['nws', 'usgs', 'wildfire-air']),
+          unreachable: ['usgs', 'wildfire-air'],
+        },
+        NOW,
+      );
+      expect(index.missing).toEqual(['usgs', 'wildfire-air']);
+    });
+
+    it('leaves brief and posture sources out of the signal gap list', () => {
+      // ReliefWeb, GDELT, GDACS and ENSO can be unreachable too, but they were
+      // never part of "signals reporting" and padding the list with them would
+      // make the county's own picture look worse than it is.
+      const index = threatIndex(
+        {
+          ...snapshot([signal('nws', 'quiet')], 'live', ['nws', 'usgs']),
+          unreachable: ['usgs', 'gdelt', 'reliefweb', 'gdacs', 'enso'],
+        },
+        NOW,
+      );
+      expect(index.missing).toEqual(['usgs']);
     });
   });
 

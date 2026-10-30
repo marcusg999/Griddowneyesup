@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { briefSchema, signalSchema } from '../../scripts/ingest/schema';
 import { postureSchema } from '../../scripts/schema';
+import {
+  apiKey,
+  levelFor,
+  observedAt,
+  parseAirNow,
+  queryUrl as queryUrlAirNow,
+} from '../../scripts/ingest/sources/airnow';
 import { parseGdacs, parseGdacsDate } from '../../scripts/ingest/sources/gdacs';
 import { ensoState, parseEnso, parseOni } from '../../scripts/ingest/sources/enso';
 import { parseGdelt, parseSeenDate, queryUrl } from '../../scripts/ingest/sources/gdelt';
@@ -514,5 +521,109 @@ describe('ENSO', () => {
     for (const junk of ['', 'SEAS YR TOTAL ANOM', 'total nonsense']) {
       expect(parseEnso(junk, NOW_ENSO).posture).toBeUndefined();
     }
+  });
+});
+
+describe('AirNow', () => {
+  const obs = (over: Record<string, unknown> = {}) => ({
+    DateObserved: '2026-10-29',
+    HourObserved: 14,
+    ReportingArea: 'San Francisco',
+    StateCode: 'CA',
+    ParameterName: 'PM2.5',
+    AQI: 42,
+    Category: { Number: 1, Name: 'Good' },
+    ...over,
+  });
+
+  it('reads the reading and names the publisher and the number', () => {
+    const { signal } = parseAirNow([obs()], 'San Francisco County, CA');
+    expect(signal?.source).toBe('wildfire-air');
+    expect(signal?.level).toBe('quiet');
+    expect(signal?.headline).toContain('San Francisco');
+    expect(signal?.headline).toContain('AQI 42');
+    expect(signalSchema.safeParse(signal).success).toBe(true);
+  });
+
+  it('breaks at category 3, where official guidance starts changing behaviour', () => {
+    // Category 3 is "Unhealthy for Sensitive Groups" — the point at which
+    // guidance addresses asthma, heart conditions and children. That is the
+    // threshold a household cares about, not the one a healthy adult does.
+    expect(levelFor(1)).toBe('quiet');
+    expect(levelFor(2)).toBe('quiet');
+    expect(levelFor(3)).toBe('elevated');
+    expect(levelFor(4)).toBe('active');
+    expect(levelFor(6)).toBe('active');
+  });
+
+  it('reports the worst parameter, not the first one listed', () => {
+    // Ozone, PM2.5 and PM10 all come back for one place. The worst is the one
+    // that governs what a household should do.
+    const { signal } = parseAirNow(
+      [
+        obs({ ParameterName: 'O3', AQI: 30, Category: { Number: 1, Name: 'Good' } }),
+        obs({ ParameterName: 'PM2.5', AQI: 160, Category: { Number: 4, Name: 'Unhealthy' } }),
+        obs({ ParameterName: 'PM10', AQI: 55, Category: { Number: 2, Name: 'Moderate' } }),
+      ],
+      'San Francisco County, CA',
+    );
+    expect(signal?.level).toBe('active');
+    expect(signal?.headline).toContain('PM2.5');
+    expect(signal?.headline).toContain('Unhealthy');
+  });
+
+  it('reports nothing at all from an empty response, rather than reporting quiet', () => {
+    // No reading is not a quiet reading. Publishing "quiet" from an empty
+    // response would invent an observation the source never made.
+    for (const raw of [[], null, undefined, {}, 'nope', [{}], [{ Category: {} }]]) {
+      expect(parseAirNow(raw, 'anywhere').signal).toBeUndefined();
+    }
+  });
+
+  it('builds an observation time from the local date and hour', () => {
+    expect(observedAt('2026-10-29', 14)).toBe('2026-10-29T14:00:00.000Z');
+    // Hour missing or nonsensical falls back to midnight rather than NaN.
+    expect(observedAt('2026-10-29', null)).toBe('2026-10-29T00:00:00.000Z');
+    expect(observedAt('2026-10-29', 99)).toBe('2026-10-29T00:00:00.000Z');
+    for (const bad of ['', null, undefined, 'yesterday', '10/29/2026']) {
+      expect(observedAt(bad, 12)).toBeUndefined();
+    }
+  });
+
+  it('drops a reading it cannot date', () => {
+    expect(parseAirNow([obs({ DateObserved: 'nonsense' })], 'anywhere').signal).toBeUndefined();
+  });
+
+  it('sends the key as a parameter and asks for the nearest reporting area', () => {
+    const url = new URL(queryUrlAirNow('94102', 'test-key'));
+    expect(url.origin + url.pathname).toBe(
+      'https://www.airnowapi.org/aq/observation/zipCode/current/',
+    );
+    expect(url.searchParams.get('zipCode')).toBe('94102');
+    expect(url.searchParams.get('API_KEY')).toBe('test-key');
+    expect(url.searchParams.get('distance')).toBe('25');
+    expect(url.searchParams.get('format')).toBe('application/json');
+  });
+
+  it('treats a blank key as no key', () => {
+    // An empty secret in CI is the normal shape of "not configured", and
+    // sending it would spend a request to be told no.
+    const saved = process.env['AIRNOW_API_KEY'];
+    try {
+      process.env['AIRNOW_API_KEY'] = '   ';
+      expect(apiKey()).toBeUndefined();
+      process.env['AIRNOW_API_KEY'] = 'real-key';
+      expect(apiKey()).toBe('real-key');
+      delete process.env['AIRNOW_API_KEY'];
+      expect(apiKey()).toBeUndefined();
+    } finally {
+      if (saved === undefined) delete process.env['AIRNOW_API_KEY'];
+      else process.env['AIRNOW_API_KEY'] = saved;
+    }
+  });
+
+  it('produces no brief items', () => {
+    // Air quality is a county signal, not a world event.
+    expect(parseAirNow([obs()], 'anywhere').brief).toBeUndefined();
   });
 });

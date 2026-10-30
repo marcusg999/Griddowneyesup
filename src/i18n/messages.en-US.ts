@@ -108,6 +108,10 @@ export const messages = {
   'band.confidence':
     '{reporting} of {total} {total, plural, one {signal} other {signals}} reporting',
   'band.stale': '{n, plural, one {# source is} other {# sources are}} past their freshness window',
+  // Named, not counted. "1 source unreachable" tells a reader the picture is
+  // incomplete; "NWS unreachable" tells them which part of it is missing, and
+  // whether that is the part they cared about.
+  'band.missing': '{names} could not be reached',
   'band.sample':
     'Sample digest. The live feed is not connected yet, so these are illustrative values in the real shape. Nothing here is a claim about the world, and it cannot change your readiness state.',
 

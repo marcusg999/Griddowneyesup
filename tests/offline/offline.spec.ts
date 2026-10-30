@@ -450,7 +450,12 @@ test.describe('offline release gate', () => {
 
     // The band is the Threat Index (D11). It is a word, never a score.
     await expect(page.locator('.band__label')).toBeVisible();
-    await expect(page.locator('.band__confidence')).toContainText(/of 6 signals reporting/);
+    // The denominator is what the publisher tried, not a constant. It used to
+    // read "of 6", and one of those six was the FEMA National Risk Index — a
+    // standing county baseline that never reports a signal, so the total was
+    // unreachable by construction and the numerator was padded by one to
+    // compensate.
+    await expect(page.locator('.band__confidence')).toContainText(/of 5 signals reporting/);
 
     // The default region is a normal day, and §5 makes that the designed
     // first-class screen rather than a fallback.
@@ -494,6 +499,29 @@ test.describe('offline release gate', () => {
 
     await page.locator('.band__why summary').click();
     await expect(page.locator('.band__why li').first()).toContainText(/:/);
+  });
+
+  test('an unreachable source is named, not quietly subtracted', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByLabel(/County FIPS/).fill('06075');
+    await page.locator('#county ~ button', { hasText: 'Save' }).first().click();
+    await page.goto('/');
+
+    // The publisher has always written `unreachable` into the digest and
+    // nothing read it, so a reader whose county lost its FEMA declarations saw
+    // a smaller fraction and no reason for it.
+    // Three separate honesty mechanisms, all visible in one line: four
+    // signals arrived, one of them is past its freshness window so it does not
+    // count toward the band, five sources were tried, and the one that failed
+    // is named.
+    const confidence = page.locator('.band__confidence');
+    await expect(confidence).toContainText('3 of 5 signals reporting');
+    await expect(confidence).toContainText(/past their freshness window/);
+    await expect(confidence).toContainText(/FEMA declarations could not be reached/);
+
+    // Named with the publisher's name, not the internal id.
+    await expect(confidence).not.toContainText('openfema');
   });
 
   test('a stale signal does not raise the band but keeps its card', async ({ page }) => {

@@ -147,7 +147,26 @@ export interface ThreatSnapshot {
    * confidence line can be specific rather than rounding a gap down to zero.
    */
   readonly unreachable?: readonly IngestSourceId[];
+  /**
+   * The signal sources the publisher ACTUALLY TRIED for this region, which is
+   * the only honest denominator for "n of m reporting".
+   *
+   * It used to be the constant below, and that was wrong twice over. The
+   * constant counts six, but one of the six is the FEMA National Risk Index,
+   * which is a standing county baseline and by design never reports a signal
+   * — so "of 6" named a total that could not be reached. And a source with no
+   * collector, or one skipped for want of a key, inflated the gap further
+   * while nothing on the surface said which source was missing or why.
+   *
+   * Optional, so a digest cut before this existed still renders: the band
+   * falls back to the constant rather than claiming a denominator of zero.
+   */
+  readonly attempted?: readonly SignalSourceId[];
 }
 
-/** The six of D10, for the confidence denominator. */
+/**
+ * D10's six, kept only as the fallback for a digest published before
+ * `attempted` existed. New digests carry their own denominator; see above for
+ * why a constant was the wrong thing to divide by.
+ */
 export const SIGNAL_SOURCE_COUNT = 6;
