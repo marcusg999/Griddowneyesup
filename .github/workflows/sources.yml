@@ -1,0 +1,60 @@
+# Checks the live data sources without publishing anything.
+#
+# The app's digest comes from five external APIs that can change shape, move,
+# or be retired without telling anyone — and the first time ReliefWeb's v1
+# started answering `410 Gone`, the only place it showed up was a deploy log.
+# A source can be dead for weeks that way, and the digest keeps publishing
+# around it: a gap is honest, but a gap nobody notices is not.
+#
+# So this runs the real ingester against the real APIs on a schedule, and on
+# demand against any branch, and throws the result away. It deploys nothing and
+# signs nothing. The log is the whole product.
+name: Sources
+
+on:
+  workflow_dispatch:
+  # Weekly. The sources are checked on every deploy anyway; this is the net for
+  # the weeks when nothing ships.
+  schedule:
+    - cron: '41 7 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # The pack build mints the signing key the ingester needs. Nothing is
+      # published, but a digest is still signed before it is validated, and
+      # signing something malformed is the one failure the client cannot catch.
+      - name: Build content pack
+        run: npm run content:build
+
+      - name: Fetch every source and report
+        run: npm run content:ingest
+
+      # Which sources answered, as a summary rather than buried in the log.
+      - name: Summarise
+        if: always()
+        run: |
+          {
+            echo '## Source check'
+            echo
+            for f in public/snapshot/*.json; do
+              [ -e "$f" ] || continue
+              node -e '
+                const s = require("fs").readFileSync(process.argv[1], "utf8");
+                const d = JSON.parse(s);
+                const gaps = (d.unreachable ?? []).join(", ") || "none";
+                console.log(`- **${d.region}** — \`${d.provenance}\`, ${d.signals.length} signals, ${(d.brief ?? []).length} brief items. Unreachable: ${gaps}`);
+              ' "$f"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
