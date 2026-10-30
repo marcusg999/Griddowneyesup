@@ -115,13 +115,26 @@ function describe(error: unknown): string {
  */
 const SECRET_PARAMS = new Set(['api_key', 'apikey', 'key', 'token', 'access_token']);
 
+/**
+ * Long enough to identify the request, short enough to read. ReliefWeb's
+ * query string alone is five hundred characters of URL-encoded filters, and a
+ * failure line nobody can read is a failure line nobody reads — the diagnosis
+ * is in the response body, not in the forty-third filter parameter.
+ */
+const URL_BUDGET = 140;
+
 export function redact(url: string): string {
   try {
     const parsed = new URL(url);
     for (const name of [...parsed.searchParams.keys()]) {
       if (SECRET_PARAMS.has(name.toLowerCase())) parsed.searchParams.set(name, 'REDACTED');
     }
-    return parsed.toString();
+    const full = parsed.toString();
+    if (full.length <= URL_BUDGET) return full;
+    // Keep the host and path whole; the query is what runs long.
+    const head = `${parsed.origin}${parsed.pathname}`;
+    const query = full.slice(head.length);
+    return `${head}${query.slice(0, Math.max(0, URL_BUDGET - head.length))}…`;
   } catch {
     // Not a parseable URL. Returning it unchanged risks printing a secret, so
     // say nothing useful rather than something dangerous.

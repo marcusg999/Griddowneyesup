@@ -255,3 +255,26 @@ describe('error bodies', () => {
     await expect(getJson('https://e.gov/x')).rejects.toThrow(/HTTP 502/);
   });
 });
+
+describe('url length', () => {
+  it('keeps a long query readable without losing the host and path', () => {
+    // ReliefWeb's query string is five hundred characters of URL-encoded
+    // filters. A failure line nobody can read is a failure line nobody reads.
+    const long = `https://api.reliefweb.int/v2/reports?appname=x${'&filter[]=y'.repeat(60)}`;
+    const short = redact(long);
+    expect(short.length).toBeLessThan(160);
+    expect(short).toContain('api.reliefweb.int/v2/reports');
+    expect(short).toContain('appname=x');
+    expect(short.endsWith('…')).toBe(true);
+  });
+
+  it('leaves a short url exactly as it is', () => {
+    const url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson';
+    expect(redact(url)).toBe(url);
+  });
+
+  it('still redacts a key in a url that also needs truncating', () => {
+    const long = `https://e.gov/x?API_KEY=secret123${'&a=bbbbbbbbbb'.repeat(30)}`;
+    expect(redact(long)).not.toContain('secret123');
+  });
+});
