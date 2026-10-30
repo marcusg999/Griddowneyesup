@@ -1,4 +1,4 @@
-import { getJson } from '../fetch';
+import { getJson, sleep } from '../fetch';
 import type { SourceResult } from '../types';
 import type { Brief } from '../schema';
 
@@ -207,15 +207,24 @@ export function parseGdelt(
   return { brief };
 }
 
+/**
+ * GDELT rate-limits per IP, and CI runners share their IPs with every other
+ * project's CI — the first real run came back 429 on the opening query. So the
+ * queries are spaced, and a 429 is retried with backoff rather than recorded
+ * as a dead source: being throttled behind a stranger is not the same thing as
+ * being unreachable.
+ */
+const SPACING_MS = 6_000;
+
 export async function collectGdelt(): Promise<SourceResult> {
   const brief: Brief[] = [];
 
-  for (const { category, query } of QUERIES) {
-    // Sequentially rather than in parallel: GDELT is a free public endpoint
-    // with no published rate limit, and two requests a day from one runner
-    // should look like two requests a day.
-    const result = parseGdelt(await getJson(queryUrl(query)), category);
-    brief.push(...(result.brief ?? []));
+  for (const [index, { category, query }] of QUERIES.entries()) {
+    // Sequentially and spaced, rather than in parallel: two polite requests
+    // beat two simultaneous ones against a free public endpoint.
+    if (index > 0) await sleep(SPACING_MS);
+    const raw = await getJson(queryUrl(query), { retries: 2, backoffMs: 6_000 });
+    brief.push(...(parseGdelt(raw, category).brief ?? []));
   }
 
   return { brief };
