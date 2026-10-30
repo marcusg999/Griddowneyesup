@@ -55,6 +55,8 @@ jobs:
                 const d = JSON.parse(s);
                 const gaps = (d.unreachable ?? []).join(", ") || "none";
                 console.log(`- **${d.region}** — \`${d.provenance}\`, ${d.signals.length} signals, ${(d.brief ?? []).length} brief items. Unreachable: ${gaps}`);
+                for (const b of d.brief ?? []) console.log(`  - [${b.category}] ${b.source}: ${b.headline}`);
+                for (const n of d.posture ?? []) console.log(`  - [posture] ${n.title}`);
               ' "$f"
             done
           } >> "$GITHUB_STEP_SUMMARY"
