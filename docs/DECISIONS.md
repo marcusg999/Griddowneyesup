@@ -539,6 +539,95 @@ early would be forecasting.
 
 ---
 
+### D31 — The confidence denominator is what the publisher tried **[DEFAULT]**
+
+"4 of 6 signals reporting" was wrong in both numbers, and the two errors hid
+each other.
+
+The denominator was a constant, `SIGNAL_SOURCE_COUNT = 6`, taken from D10's
+six sources. But one of the six is the FEMA National Risk Index, which this
+codebase's own type comment describes as a standing county baseline that is
+"deliberately NOT a signal". So six was a total that could never be reached.
+The numerator then added one — with a comment explaining that the NRI "is
+always available: it ships in the content pack" — to compensate. A padded
+numerator over an unreachable denominator produced a plausible-looking
+fraction that described nothing.
+
+Worse, a source with no collector at all was indistinguishable from one that
+was down. AirNow had been in the signal union and the fixtures since step 7
+with nothing fetching it, so every live digest silently reported one fewer
+source than it claimed, and the surface gave no hint which one or why.
+
+Three changes, which are one idea:
+
+- The digest carries `attempted`: the signal sources the publisher actually
+  tried for that region. That is the denominator. Optional, so a digest cut
+  before this field falls back to the constant rather than claiming zero.
+- The numerator is signals present and fresh. No baseline padding.
+- `unreachable` is finally read. The confidence line names the sources that
+  failed, by publisher name rather than internal id: "FEMA declarations could
+  not be reached", not a quietly smaller fraction. Brief and posture sources
+  are excluded from that list — ReliefWeb, GDELT, GDACS and ENSO can be down
+  too, but they were never part of "signals reporting" and listing them would
+  make the county's own picture look worse than it is.
+
+A source not attempted is not a gap. AirNow needs a key, which is read from
+the environment and never committed; without one the source is skipped, so it
+leaves the denominator rather than appearing as a failure the reader can do
+nothing about.
+
+---
+
+### D32 — The game is the binding constraint, priced in days **[CONFIRMED]**
+
+Asked whether the app could be truly gamified, since gathering supplies was
+neither clear nor engaging. D16 rules out the obvious answers: no mechanic may
+reward app usage, and a score that rises because somebody opened a screen
+measures the wrong thing. So no points, no streaks, no levels, nothing to
+collect, and no leaderboard (G01, G03).
+
+What was left turned out to be better, and it was already in the data.
+Coverage is measured in days. Every catalogue item states what it provides per
+unit and what it typically costs. Divide one by the other and you get the only
+sentence that has ever made anybody buy a water container:
+
+> **$25 and two kilograms takes you from four days to eleven.**
+
+That is a complete loop. A score nobody can fake, because it is a physical
+quantity in a cupboard. One clear move, because the binding constraint picks
+it. A visible payoff in the same units as the score. And a named goal, because
+the tiers are real doctrine — 72 hours, two weeks, a month, a season — rather
+than invented levels.
+
+Three deliberate properties:
+
+- **One item, not a list.** The acquisition tiers already answer "what should I
+  buy in total". This answers "what do I do now", and its whole value is that
+  the answer is one thing a person can act on today.
+- **The household figure is stated separately from the resource figure**, and
+  the card names what becomes the limit next. "You fixed water and now food
+  binds" is the single most useful idea in household preparedness, and watching
+  it happen teaches it better than being told would.
+- **The payoff is computed, not asserted.** The coverage is recalculated with
+  the new stock in place, so when the household number does not move as far as
+  the resource does, the card says so instead of flattering the purchase.
+
+Where the catalogue cannot serve the binding resource, the card renders
+nothing rather than offering the next-best resource: pointing a household away
+from its actual constraint is worse than an empty space.
+
+Achievements stay what they were — acknowledgements of things that already
+happened, not goals. The goal is the next milestone, which is stated as a
+countdown in days.
+
+Instructions are four steps in a `details` element, open while the shelf is
+empty and collapsed once it is not. Deliberately not a dismissible tour: a
+tour needs a "seen it" flag, that flag is exactly the state that does not
+survive clearing site data, and the moment a person most needs instructions is
+the moment after they have lost everything.
+
+---
+
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**
 
 Decided after the first release. §14 said to decide it up front precisely

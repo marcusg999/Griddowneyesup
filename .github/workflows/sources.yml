@@ -40,6 +40,8 @@ jobs:
 
       - name: Fetch every source and report
         run: npm run content:ingest
+        env:
+          AIRNOW_API_KEY: ${{ secrets.AIRNOW_API_KEY }}
 
       # Which sources answered, as a summary rather than buried in the log.
       - name: Summarise

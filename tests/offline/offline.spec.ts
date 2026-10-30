@@ -343,6 +343,70 @@ test.describe('offline release gate', () => {
     await expect(page.getByText(/Do these first/)).toHaveCount(0);
   });
 
+  test('instructions are open on an empty shelf and collapsed once it is not', async ({
+    page,
+  }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+
+    // Open while there is nothing logged. No "seen it" flag, because the one
+    // moment someone most needs instructions is after they lost everything.
+    const how = page.locator('details.how');
+    await expect(how).toHaveAttribute('open', '');
+    await expect(how.getByText(/Write down what you already have/)).toBeVisible();
+
+    await page.goto('/supplies');
+    await page.getByLabel('Which kit').selectOption('home');
+    await page.getByLabel('What').selectOption('water-stored-gal');
+    await page.getByRole('button', { name: /^Add to/ }).click();
+    await page.goto('/');
+
+    // Collapsed, not gone: still reachable, just out of the way.
+    await expect(page.locator('details.how')).not.toHaveAttribute('open', '');
+    await expect(page.locator('details.how > summary')).toBeVisible();
+  });
+
+  test('the next move names what runs out first and what fixing it buys', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/supplies');
+    await page.getByLabel('Which kit').selectOption('home');
+    await page.getByLabel('What').selectOption('water-stored-gal');
+    await page.getByRole('button', { name: /^Add to/ }).click();
+    await page.goto('/');
+
+    const move = page.locator('.next-move');
+    await expect(move).toBeVisible();
+
+    // The binding constraint is the move, and the card says which it is.
+    await expect(move.locator('.next-move__kicker')).toContainText(/runs out first/);
+    // A payoff in days, and the household figure stated separately because
+    // the two are often different — which is the lesson.
+    await expect(move.locator('.next-move__payoff')).toContainText(/days of/);
+    await expect(move.locator('.next-move__household')).toContainText(/days/);
+    // A named doctrine milestone, either crossed or counted down to.
+    await expect(move.locator('.next-move__milestone')).toBeVisible();
+
+    // §7.5 is not in force here (Today is commerce-forbidden), so the card
+    // states what to do and never where to buy it.
+    await expect(move.locator('a[href^="http"]')).toHaveCount(0);
+    await expect(move.getByText(/buy now|shop|add to cart/i)).toHaveCount(0);
+  });
+
+  test('Grey Sky shows no next move', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/supplies');
+    await page.getByLabel('Which kit').selectOption('home');
+    await page.getByLabel('What').selectOption('water-stored-gal');
+    await page.getByRole('button', { name: /^Add to/ }).click();
+
+    await page.goto('/settings');
+    await page.getByTestId('state-grey-sky').click();
+    await page.goto('/');
+
+    // During an event the question is what you have, not what to buy next.
+    await expect(page.locator('.next-move')).toHaveCount(0);
+  });
+
   test('logging stock is the first thing on the page, above the ladder', async ({ page }) => {
     await installThenGoOffline(page);
     await page.goto('/supplies');
@@ -450,7 +514,12 @@ test.describe('offline release gate', () => {
 
     // The band is the Threat Index (D11). It is a word, never a score.
     await expect(page.locator('.band__label')).toBeVisible();
-    await expect(page.locator('.band__confidence')).toContainText(/of 6 signals reporting/);
+    // The denominator is what the publisher tried, not a constant. It used to
+    // read "of 6", and one of those six was the FEMA National Risk Index — a
+    // standing county baseline that never reports a signal, so the total was
+    // unreachable by construction and the numerator was padded by one to
+    // compensate.
+    await expect(page.locator('.band__confidence')).toContainText(/of 5 signals reporting/);
 
     // The default region is a normal day, and §5 makes that the designed
     // first-class screen rather than a fallback.
@@ -494,6 +563,29 @@ test.describe('offline release gate', () => {
 
     await page.locator('.band__why summary').click();
     await expect(page.locator('.band__why li').first()).toContainText(/:/);
+  });
+
+  test('an unreachable source is named, not quietly subtracted', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByLabel(/County FIPS/).fill('06075');
+    await page.locator('#county ~ button', { hasText: 'Save' }).first().click();
+    await page.goto('/');
+
+    // The publisher has always written `unreachable` into the digest and
+    // nothing read it, so a reader whose county lost its FEMA declarations saw
+    // a smaller fraction and no reason for it.
+    // Three separate honesty mechanisms, all visible in one line: four
+    // signals arrived, one of them is past its freshness window so it does not
+    // count toward the band, five sources were tried, and the one that failed
+    // is named.
+    const confidence = page.locator('.band__confidence');
+    await expect(confidence).toContainText('3 of 5 signals reporting');
+    await expect(confidence).toContainText(/past their freshness window/);
+    await expect(confidence).toContainText(/FEMA declarations could not be reached/);
+
+    // Named with the publisher's name, not the internal id.
+    await expect(confidence).not.toContainText('openfema');
   });
 
   test('a stale signal does not raise the band but keeps its card', async ({ page }) => {

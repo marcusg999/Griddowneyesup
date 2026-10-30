@@ -14,6 +14,8 @@ import { Posture } from '@/ui/Posture';
 import { Brief } from '@/ui/Brief';
 import { Exposure } from '@/ui/Exposure';
 import { NearYou } from '@/ui/NearYou';
+import { NextMove } from '@/ui/NextMove';
+import { HowItWorks } from '@/ui/HowItWorks';
 import { useThreat } from '@/features/threat/useThreat';
 import { threatIndex } from '@/features/threat/band';
 import { worldContext } from '@/features/threat/worldContext';
@@ -87,6 +89,12 @@ export function Today() {
         {state === 'watch' ? t('state.watch.summary') : t('state.blueSky.summary')}
       </p>
 
+      {/* Open while the shelf is empty, collapsed once it is not. No "seen
+          it" flag: the one moment someone most needs instructions is the
+          moment after they have lost everything, and a dismissal flag is
+          exactly the state that does not survive that. */}
+      {!loading && <HowItWorks empty={empty} />}
+
       <h2>
         <span className="margin-note" aria-hidden="true">
           soundings
@@ -132,10 +140,26 @@ export function Today() {
           </div>
 
           {!suppressGamification && (
-            <p className="pullquote">
-              {TIER_LABEL[tierFor(days)]}. The binding constraint is whatever runs out
-              first, which is why this is the smallest number and not the average.
-            </p>
+            <>
+              <p className="pullquote">
+                {TIER_LABEL[tierFor(days)]}. The binding constraint is whatever runs out
+                first, which is why this is the smallest number and not the average.
+              </p>
+
+              {/* The loop. Days of coverage is the score, the binding
+                  constraint is the move, and the catalogue already knows what
+                  a dollar buys in days — so the three of them together make a
+                  game whose every claim is physically checkable. Suppressed in
+                  Grey Sky with everything else: during an event the question
+                  is what you have, not what to buy next. */}
+              {pack && (
+                <NextMove
+                  coverage={coverage}
+                  catalog={pack.items}
+                  hazards={profile.hazards}
+                />
+              )}
+            </>
           )}
         </>
       )}

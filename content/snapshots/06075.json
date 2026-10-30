@@ -42,5 +42,12 @@
   ],
   "unreachable": [
     "openfema"
+  ],
+  "attempted": [
+    "nws",
+    "wildfire-air",
+    "usgs",
+    "openfema",
+    "swpc"
   ]
 }

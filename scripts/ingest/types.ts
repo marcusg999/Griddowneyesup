@@ -26,4 +26,10 @@ export interface RegionSpec {
   readonly label: string;
   /** Two-letter state, for the sources that slice by state. */
   readonly state?: string;
+  /**
+   * A ZIP in the region, for AirNow, which reports by reporting area rather
+   * than by county. A region without one gets no air-quality signal, and does
+   * not count it in the denominator either.
+   */
+  readonly zip?: string;
 }

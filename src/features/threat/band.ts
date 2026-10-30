@@ -59,9 +59,20 @@ export interface ThreatIndex {
   /** Signals worth a card, most severe first. Quiet signals get no card. */
   readonly notable: readonly ThreatSignal[];
   readonly staleFor: readonly SignalSourceId[];
-  /** Of D10's six. Drives "4 of 6 signals reporting". */
+  /** Drives "4 of 5 signals reporting". */
   readonly reportingCount: number;
+  /**
+   * How many signal sources the publisher tried. Taken from the digest rather
+   * than from a constant, because a denominator nobody could reach is not a
+   * confidence statement — see ThreatSnapshot.attempted.
+   */
   readonly sourceCount: number;
+  /**
+   * Sources the publisher tried and could not reach, named. A gap the reader
+   * can see is a gap they can judge; a gap folded into a smaller numerator is
+   * one they cannot.
+   */
+  readonly missing: readonly string[];
   /**
    * The readiness state these signals support. A suggestion the user accepts
    * or ignores — never applied on its own. See the note on GREY SKY above.
@@ -88,8 +99,6 @@ export function threatIndex(
   snapshot: ThreatSnapshot | undefined,
   now: Date = new Date(),
 ): ThreatIndex {
-  const sourceCount = SIGNAL_SOURCE_COUNT;
-
   if (!snapshot) {
     return {
       band: 'quiet',
@@ -98,10 +107,27 @@ export function threatIndex(
       notable: [],
       staleFor: [],
       reportingCount: 0,
-      sourceCount,
+      sourceCount: SIGNAL_SOURCE_COUNT,
+      missing: [],
       suggests: 'blue-sky',
     };
   }
+
+  // What the publisher tried, falling back to the old constant for a digest
+  // cut before `attempted` existed. Never zero: a denominator of nothing turns
+  // the confidence line into "0 of 0", which reads as broken rather than as
+  // honest, so the signals present are the floor.
+  const sourceCount = Math.max(
+    snapshot.attempted?.length ?? SIGNAL_SOURCE_COUNT,
+    snapshot.signals.length,
+  );
+
+  // Only signal sources belong in this list. The brief and posture sources —
+  // ReliefWeb, GDELT, GDACS, ENSO — can be unreachable too, but they were
+  // never part of "signals reporting" and padding the list with them would
+  // make the county's own picture look worse than it is.
+  const SIGNAL_SOURCES = new Set(['nws', 'usgs', 'wildfire-air', 'openfema', 'swpc']);
+  const missing = (snapshot.unreachable ?? []).filter((id) => SIGNAL_SOURCES.has(id));
 
   const signals = snapshot.signals;
   const stale = signals.filter((s) => isStale(s, now));
@@ -154,10 +180,16 @@ export function threatIndex(
     reasons,
     notable,
     staleFor,
-    // The NRI baseline is one of the six and is always available: it ships in
-    // the content pack rather than arriving over a network.
-    reportingCount: Math.min(sourceCount, current.length + 1),
+    // Signals that are present AND fresh. The `+ 1` that used to be here
+    // counted the FEMA National Risk Index as a reporting source on the
+    // grounds that it ships in the pack and is therefore always available —
+    // but the NRI is a standing county baseline that never reports a signal,
+    // so that was padding the numerator to flatter a denominator that was
+    // itself wrong. Both are now the same thing: signal sources, tried and
+    // reached.
+    reportingCount: Math.min(sourceCount, current.length),
     sourceCount,
+    missing,
     // "Something is forming" is the definition of WATCH (§3), which is exactly
     // what elevated means.
     //

@@ -10,6 +10,7 @@ import {
   type Signal,
   type Snapshot,
 } from './ingest/schema';
+import { apiKey as airNowKey, collectAirNow } from './ingest/sources/airnow';
 import { collectEnso } from './ingest/sources/enso';
 import { collectGdacs } from './ingest/sources/gdacs';
 import { collectGdelt } from './ingest/sources/gdelt';
@@ -56,7 +57,7 @@ const OUT_DIR = join(ROOT, 'public', 'snapshot');
  */
 const REGIONS: readonly RegionSpec[] = [
   { region: 'default', label: 'your area' },
-  { region: '06075', label: 'San Francisco County, CA', state: 'CA' },
+  { region: '06075', label: 'San Francisco County, CA', state: 'CA', zip: '94102' },
 ];
 
 /** Run a source, and turn any failure into a named gap rather than a crash. */
@@ -71,25 +72,46 @@ async function attempt(
   }
 }
 
+const SIGNAL_SOURCES = new Set(['nws', 'usgs', 'wildfire-air', 'openfema', 'swpc']);
+
 async function buildRegion(
   spec: RegionSpec,
   globalBrief: readonly Brief[],
   globalPosture: readonly Posture[],
   globalSignals: readonly Signal[],
   globalUnreachable: readonly string[],
+  globalAttempted: readonly string[],
   now: Date,
 ): Promise<Snapshot | undefined> {
   const signals: Signal[] = [...globalSignals];
   const unreachable: string[] = [...globalUnreachable];
+  // Every signal source TRIED for this region, which is the denominator the
+  // confidence line divides by. A source we never attempted — AirNow with no
+  // key, a state-sliced source for a region with no state — is not a gap, and
+  // counting it as one made the county's picture look worse than it was.
+  const attempted = new Set<string>(globalAttempted);
 
   // State-sliced sources. A region with no state gets the national picture
   // only, rather than a guess at which state it meant.
+  const local: Array<{ id: string; run: () => Promise<SourceResult> }> = [];
   if (spec.state) {
-    const outcomes = await Promise.all([
-      attempt('nws', () => collectNws(spec.state as string, now)),
-      attempt('openfema', () => collectOpenFema(spec.state as string, now)),
-    ]);
+    const state = spec.state;
+    local.push({ id: 'nws', run: () => collectNws(state, now) });
+    local.push({ id: 'openfema', run: () => collectOpenFema(state, now) });
+  }
+  // AirNow needs both a ZIP and a key. Without either it is not attempted, so
+  // it never appears as an unreachable source the reader cannot act on.
+  if (spec.zip && airNowKey()) {
+    const zip = spec.zip;
+    local.push({ id: 'wildfire-air', run: () => collectAirNow(zip, spec.label) });
+  } else if (spec.zip) {
+    console.warn(`  ${spec.region}: AIRNOW_API_KEY not set, air quality not attempted`);
+  }
+
+  if (local.length > 0) {
+    const outcomes = await Promise.all(local.map(({ id, run }) => attempt(id, run)));
     for (const outcome of outcomes) {
+      attempted.add(outcome.id);
       if (outcome.result?.signal) signals.push(outcome.result.signal);
       else {
         unreachable.push(outcome.id);
@@ -113,6 +135,7 @@ async function buildRegion(
     ...(globalBrief.length > 0 ? { brief: [...globalBrief] } : {}),
     ...(globalPosture.length > 0 ? { posture: [...globalPosture] } : {}),
     ...(unreachable.length > 0 ? { unreachable } : {}),
+    attempted: [...attempted].filter((id) => SIGNAL_SOURCES.has(id)) as Snapshot['attempted'],
   };
 
   const checked = snapshotSchema.safeParse(snapshot);
@@ -158,8 +181,12 @@ async function main(): Promise<void> {
   const globalBrief: Brief[] = [];
   const globalPosture: Posture[] = [];
   const globalUnreachable: string[] = [];
+  // Signal sources tried everywhere, so each region's denominator starts from
+  // the same base. USGS and SWPC are global; the rest are per region.
+  const globalAttempted: string[] = [];
 
   for (const outcome of globals) {
+    if (SIGNAL_SOURCES.has(outcome.id)) globalAttempted.push(outcome.id);
     if (!outcome.result) {
       globalUnreachable.push(outcome.id);
       console.warn(`  ${outcome.id} unreachable — ${outcome.error ?? 'no data'}`);
@@ -193,6 +220,7 @@ async function main(): Promise<void> {
       globalPosture,
       globalSignals,
       globalUnreachable,
+      globalAttempted,
       now,
     );
     if (!snapshot) continue;
@@ -204,8 +232,8 @@ async function main(): Promise<void> {
       createSign('SHA256').update(body).end().sign(privateKey).toString('base64'),
     );
     published.push(
-      `${spec.region} (${snapshot.signals.length} signals, ${snapshot.brief?.length ?? 0} brief, ` +
-        `${snapshot.posture?.length ?? 0} posture)`,
+      `${spec.region} (${snapshot.signals.length}/${snapshot.attempted?.length ?? 0} signals, ` +
+        `${snapshot.brief?.length ?? 0} brief, ${snapshot.posture?.length ?? 0} posture)`,
     );
   }
 

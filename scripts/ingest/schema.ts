@@ -62,6 +62,8 @@ export const snapshotSchema = z.object({
    */
   posture: z.array(postureSchema).optional(),
   unreachable: z.array(z.string()).optional(),
+  /** The signal sources actually tried, which is the confidence denominator. */
+  attempted: z.array(z.enum(['nws', 'usgs', 'wildfire-air', 'openfema', 'swpc'])).optional(),
 });
 
 export type Signal = z.infer<typeof signalSchema>;

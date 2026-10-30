@@ -26,6 +26,19 @@ const BAND_LABEL: Record<ThreatBand, string> = {
   active: t('band.active'),
 };
 
+/**
+ * Publisher names for the signal sources, for the unreachable line. Short
+ * enough to sit in a status line, and the name the reader would recognise if
+ * they went looking — "NWS", not "nws".
+ */
+const SOURCE_LABEL: Readonly<Record<string, string>> = {
+  nws: 'NWS alerts',
+  usgs: 'USGS earthquakes',
+  'wildfire-air': 'AirNow air quality',
+  openfema: 'FEMA declarations',
+  swpc: 'NOAA space weather',
+};
+
 function Signal({ signal, now }: { signal: ThreatSignal; now: Date }) {
   const stale = isStale(signal, now);
 
@@ -71,7 +84,7 @@ export function NearYou({
     <>
       <h2>
         <span className="margin-note" aria-hidden="true">
-          six signals
+          what reported
         </span>
         Near you
       </h2>
@@ -89,6 +102,15 @@ export function NearYou({
               })}
               {index.staleFor.length > 0
                 ? ` · ${t('band.stale', { n: index.staleFor.length })}`
+                : ''}
+              {/* Named rather than subtracted. The publisher has always
+                  written `unreachable` into the digest and nothing read it, so
+                  a reader whose county lost its weather alerts saw only a
+                  smaller fraction and no reason for it. */}
+              {index.missing.length > 0
+                ? ` · ${t('band.missing', {
+                    names: index.missing.map((id) => SOURCE_LABEL[id] ?? id).join(', '),
+                  })}`
                 : ''}
             </span>
           </div>
