@@ -13,11 +13,13 @@
     "test": "vitest run",
     "test:unit": "vitest run",
     "content:keygen": "tsx scripts/keygen.ts",
-    "content:build": "tsx scripts/build-content-pack.ts && tsx scripts/build-snapshots.ts",
+    "content:build": "tsx scripts/build-content-pack.ts",
     "content:validate": "tsx scripts/validate-content.ts",
     "test:offline": "playwright test",
     "check:budget": "tsx scripts/check-budget.ts",
-    "verify": "npm run content:build && npm run lint && npm run typecheck && npm run content:validate && npm run test:unit && npm run build && npm run check:budget && npm run test:offline"
+    "verify": "npm run content:build && npm run content:samples && npm run lint && npm run typecheck && npm run content:validate && npm run test:unit && npm run build && npm run check:budget && npm run test:offline",
+    "content:ingest": "tsx scripts/ingest-snapshots.ts",
+    "content:samples": "tsx scripts/build-snapshots.ts"
   },
   "dependencies": {
     "idb": "8.0.0",
