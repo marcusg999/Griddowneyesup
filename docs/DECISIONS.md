@@ -401,6 +401,29 @@ finding nothing new is still a successful sync.
 
 ---
 
+### D27 — The release gate runs on bytes we control, and the live ingest happens after it **[DEFAULT]**
+
+The ingester was wired into the Pages pipeline before the gate, so by the time
+the offline suite ran, the sample digests it asserts against had been replaced
+with whatever the real world was doing. The suite checks that the digest is
+marked `sample`, that the 06075 fixture's band reads ACTIVE, and that a
+30-hour-old reading is reported as outside its freshness window. Live data
+satisfies none of those on a quiet day and some of them on a loud one, so the
+gate's verdict tracked the weather in California. That is not a gate.
+
+The order is now: build the samples, prove the client against them, then fetch
+the live sources and publish those over the top, then rebuild and deploy. The
+live bytes are different bytes signed after the gate ran, and they are the ones
+users fetch, so the signature test runs again against them before deploy.
+
+The same mistake in a second form: the suite's allow-list of source hosts was
+anchored on `weather.` and the real NWS link is `alerts.weather.gov`, so a
+pattern that claimed to permit NWS rejected it. It now matches by domain, and
+the fixtures cite the URLs the collectors actually emit — a fixture that cannot
+occur in production tests a shape production never produces.
+
+---
+
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**
 
 Decided after the first release. §14 said to decide it up front precisely
