@@ -188,11 +188,19 @@ function Shell() {
           <a className="skip-link" href="#main">
             Skip to content
           </a>
-          <StatusBar />
+          {/* Menu first, then the readiness line, both sticking as one
+              block. The nav used to be fixed to the bottom edge — the phone
+              convention — but it is the thing a reader reaches for most and
+              putting it where the page starts means it is in the same place
+              whatever the page is doing. The status line sits under it because
+              it describes the page below, not the menu above. */}
+          <header className="topbar">
+            <TabBar />
+            <StatusBar />
+          </header>
           <main className="main" id="main">
             <Routes />
           </main>
-          <TabBar />
         </div>
       </ContentProvider>
     </ReadinessProvider>
