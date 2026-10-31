@@ -63,4 +63,9 @@ jobs:
                 console.log(`- **${d.region}** — \`${d.provenance}\`, ${d.signals.length} of ${tried} signals, ${(d.brief ?? []).length} brief items. Unreachable: ${gaps}`);
               ' "$f"
             done
+            echo
+            # The part worth reading. The ingester writes it to a file because
+            # a job log is retrieved from the end, the successful output is
+            # long, and so the failure reasons are exactly what falls off.
+            if [ -f ingest-report.txt ]; then cat ingest-report.txt; fi
           } | tee -a "$GITHUB_STEP_SUMMARY"

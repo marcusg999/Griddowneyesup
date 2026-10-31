@@ -11,3 +11,4 @@ playwright-report
 .env
 .env.local
 .audit
+ingest-report.txt
