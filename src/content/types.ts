@@ -248,8 +248,25 @@ export interface Offer {
   readonly url: string;
   /** True when the link earns the publisher a commission. Always disclosed. */
   readonly affiliate: boolean;
-  readonly priceCents?: number;
-  /** ISO date the offer was checked. Stale offers stop linking. */
+  /**
+   * ISO date the offer was checked. Stale offers stop linking.
+   *
+   * Note what is NOT here: a price.
+   *
+   * It used to be, and it was a compliance trap waiting to be stepped in.
+   * Offers ship inside the signed content pack, which means a figure written
+   * here sits on a phone for as long as that phone goes unopened — and
+   * Amazon's Associates agreement requires any price shown to come from their
+   * Product Advertising API and be under 24 hours old. An offline-first app
+   * with a signed pack cannot satisfy that, ever, so the field could only
+   * ever have been filled in wrongly.
+   *
+   * The app already has the honest number: `CatalogItem.typicalCostCents` is
+   * a specification of what a thing costs, not a quote from a merchant, and
+   * it is what the horizon planner does its arithmetic with. A link says
+   * where to buy; the catalogue says roughly what it costs. Those are
+   * different claims and keeping them apart is the point.
+   */
   readonly asOf: string;
 }
 

@@ -24,13 +24,18 @@ import type { Brief } from '../schema';
 // the version is decommissioned, not having a bad afternoon. v2 is documented
 // as compatible with v1, so the query below is unchanged.
 //
-// `appname` identifies the caller and must be one ReliefWeb has registered —
-// an unregistered value is refused with a 403, which is what the earlier
-// `ballast-preparedness` got. It is not a credential: it travels in the query
-// string and appears in every log, so it belongs in the source rather than in
-// a secret store. Overridable by environment variable all the same, so it can
-// be changed without a release.
-const APPNAME = (process.env['RELIEFWEB_APPNAME'] ?? '').trim() || 'awareness';
+// `appname` identifies the caller and must be one ReliefWeb has APPROVED —
+// required of every caller since 1 November 2025. Their own refusal body spells
+// out the rule: an unapproved name gets a 403 reading "You are not using an
+// approved appname", and a missing one gets a 400. Their documented format is
+// "a combination of your (organization) name, purpose and random characters",
+// which is why a bare word like `awareness` was never going to pass.
+//
+// Not a credential: it travels in the query string and appears in every log,
+// so it belongs in the source rather than a secret store. Overridable by
+// environment variable so it can change without a release — and note they
+// rate-limit per appname, so this one is ours and should not be shared.
+const APPNAME = (process.env['RELIEFWEB_APPNAME'] ?? '').trim() || 'ballast-preparedness-7f3k2a';
 
 const API =
   'https://api.reliefweb.int/v2/reports' +

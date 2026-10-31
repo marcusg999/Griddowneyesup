@@ -1,0 +1,105 @@
+# Netlify deployment, for https://ballastprep.netlify.app/
+#
+# The GitHub Pages workflow is the reference pipeline; this file exists to make
+# a Netlify build produce the same site. Three things differ and all three
+# would be silent failures:
+#
+#   NO DIGESTS. `npm run build` does not produce them — the Pages workflow runs
+#   content:samples and content:ingest around it. Netlify's default detected
+#   command would have shipped an app whose Near-you surface had nothing to
+#   read and no way to say why.
+#
+#   NO SUBPATH. Pages serves a project site from /Griddowneyesup/, so that
+#   build sets PUBLIC_BASE_PATH. Netlify serves a domain root, which is already
+#   the default, so it must stay unset here.
+#
+#   NO HISTORY FALLBACK BY DEFAULT. The build writes 404.html, which Netlify
+#   will serve, but with a 404 status — wrong for a deep link into an SPA. The
+#   rewrite below answers 200 instead.
+#
+# The release gate is not run here. Every route into main is a pull request
+# that runs `verify` (lint, typecheck, unit, build, budget, and the full
+# offline Playwright suite), so main is gated before Netlify ever sees it.
+# Re-running it on deploy would double the build for no new information.
+
+[build]
+  # Samples first, then live digests over the top — the order D27 settled.
+  # Samples guarantee the surface has something signed to read; the ingester
+  # replaces them when it can reach its sources, and leaves them alone when it
+  # cannot. Either way the app ships with a verifiable digest.
+  command = "npm run content:build && npm run content:samples && npm run content:ingest && npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Matches CI. Netlify's default floats, and a floating major on a project
+  # that pins its toolchain exactly is a build that breaks on someone else's
+  # schedule.
+  NODE_VERSION = "22"
+
+# --- Service worker ----------------------------------------------------------
+# sw.js and registerSW.js are NOT content-hashed, so a long cache on them is a
+# cache on the thing whose whole job is to notice a new version. An app that
+# cannot update is worse than an app that revalidates one small file per visit.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/registerSW.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# --- Content-hashed assets ---------------------------------------------------
+# Their names change when their bytes change, so they can be cached forever.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# --- The content pack --------------------------------------------------------
+# Its payloads carry a hash in the filename; its index does not, and the index
+# is what tells the app a new pack exists. Caching the index would pin the app
+# to whatever pack it first saw.
+[[headers]]
+  for = "/content/*/index.json"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/content/*/index.json.sig"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# --- The threat digest -------------------------------------------------------
+# Cut once a day and read from IndexedDB first, so the network copy only
+# matters when the app is checking for a newer one. Caching it would make that
+# check answer with the copy the app already has.
+[[headers]]
+  for = "/snapshot/*"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# --- SPA history fallback ----------------------------------------------------
+# Netlify checks for a real file before applying a rewrite, so this only
+# catches paths that do not exist on disk — a deep link like /skills/boil-water
+# gets the shell with a 200 instead of 404.html with a 404.
+#
+# A missing digest would also land here and be answered with HTML. That is
+# survivable rather than ignored: refreshSnapshot verifies a detached signature
+# and then checks the parsed shape, so an HTML body is rejected and the stored
+# digest is kept. There is a test for the shape check.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

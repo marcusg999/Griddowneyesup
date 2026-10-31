@@ -222,7 +222,6 @@ describe('offer schema gate', () => {
     merchant: 'Example Merchant',
     url: 'https://example.com/offers/filter',
     affiliate: true,
-    priceCents: 2499,
     asOf: '2026-10-29',
   };
 
@@ -250,8 +249,37 @@ describe('offer schema gate', () => {
     expect(parsed.success).toBe(true);
     if (parsed.success) {
       expect(Object.keys(parsed.data).sort()).toEqual(
-        ['affiliate', 'asOf', 'id', 'itemId', 'merchant', 'priceCents', 'url'].sort(),
+        ['affiliate', 'asOf', 'id', 'itemId', 'merchant', 'url'].sort(),
       );
     }
+  });
+
+  it('refuses a merchant price rather than quietly dropping it', async () => {
+    // Offers ride inside the signed pack and sit on a phone for months.
+    // Amazon's Associates agreement requires a displayed price to come from
+    // their API and be under 24 hours old, which a signed offline artifact can
+    // never be — so the field could only ever have been filled in wrongly.
+    // Refused, not stripped: the mistake is worth an error message.
+    const { offerSchema } = await import('../../scripts/schema');
+    for (const priced of [
+      { ...validOffer, priceCents: 2499 },
+      { ...validOffer, priceCents: 0 },
+      { ...validOffer, price: '24.99' },
+    ]) {
+      const parsed = offerSchema.safeParse(priced);
+      expect(parsed.success).toBe(false);
+      if (!parsed.success) {
+        expect(parsed.error.issues[0]?.message).toMatch(/carry no price/);
+      }
+    }
+  });
+
+  it('still keeps asOf, which gates the link rather than a price', async () => {
+    // asOf earns its place on its own: freshOffers drops an offer whose link
+    // has not been checked in 45 days, and a dead link on a preparedness list
+    // is worse than no link.
+    const { offerSchema } = await import('../../scripts/schema');
+    const { asOf: _omitted, ...undated } = validOffer;
+    expect(offerSchema.safeParse(undated).success).toBe(false);
   });
 });
