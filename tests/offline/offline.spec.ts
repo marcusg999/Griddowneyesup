@@ -343,6 +343,62 @@ test.describe('offline release gate', () => {
     await expect(page.getByText(/Do these first/)).toHaveCount(0);
   });
 
+  test('the menu is at the top, above the content and the readiness line', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+
+    const menu = page.getByRole('navigation', { name: 'Primary' });
+    const status = page.locator('.statusbar');
+    const heading = page.locator('h1').first();
+
+    const [menuBox, statusBox, headingBox] = await Promise.all([
+      menu.boundingBox(),
+      status.boundingBox(),
+      heading.boundingBox(),
+    ]);
+
+    // Flush to the top, the readiness line under it, the page under that. It
+    // used to be fixed to the bottom edge, so the assertion is about order
+    // and not merely about the menu existing.
+    expect(menuBox?.y).toBe(0);
+    expect(statusBox?.y ?? 0).toBeGreaterThanOrEqual(menuBox?.height ?? 0);
+    expect(headingBox?.y ?? 0).toBeGreaterThan(statusBox?.y ?? 0);
+  });
+
+  test('the menu stays put when the page scrolls', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/skills');
+    await page.mouse.wheel(0, 2000);
+    await page.waitForTimeout(250);
+
+    // Sticky, not just placed at the top: a menu that scrolls away is a menu
+    // you have to scroll back for, which is what moving it fixed.
+    const menu = page.getByRole('navigation', { name: 'Primary' });
+    await expect(menu).toBeVisible();
+    expect((await menu.boundingBox())?.y).toBe(0);
+  });
+
+  test('every page is one tap away, still offline', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+
+    const menu = page.getByRole('navigation', { name: 'Primary' });
+    for (const [label, heading] of [
+      ['Supplies', /Supplies/i],
+      ['Plan', /Plan/i],
+      ['Skills', /Skills/i],
+      ['Settings', /Settings/i],
+    ] as const) {
+      await menu.getByRole('link', { name: label, exact: true }).click();
+      await expect(page.locator('h1').first()).toContainText(heading);
+      // The tab the reader is on says so, which is the only state the menu has.
+      await expect(menu.getByRole('link', { name: label, exact: true })).toHaveAttribute(
+        'aria-current',
+        'page',
+      );
+    }
+  });
+
   test('instructions are open on an empty shelf and collapsed once it is not', async ({
     page,
   }) => {
