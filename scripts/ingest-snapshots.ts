@@ -49,6 +49,12 @@ import type { RegionSpec, SourceResult } from './ingest/types';
  */
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+/**
+ * Where the per-source failure report is written, for the workflow to print
+ * into its step summary. Gitignored: it is a record of one run, not content.
+ */
+const FAILURE_REPORT = 'ingest-report.txt';
 const OUT_DIR = join(ROOT, 'public', 'snapshot');
 
 /**
@@ -260,16 +266,26 @@ async function main(): Promise<void> {
     console.log(`  [posture] ${note.title}`);
   }
 
-  // Last, deliberately.
-  if (failures.length === 0) {
-    console.log('Every source reported.');
-    return;
-  }
-  // stdout, not stderr. Node flushes the two independently, so a warn lands
-  // at an unpredictable point in a captured log — which is why these lines
-  // kept appearing in a different place in every CI run.
-  console.log(`\n${failures.length} source(s) did not report:`);
-  for (const line of failures) console.log(`  ${line}`);
+  // Last, deliberately — and also written to a file.
+  //
+  // stdout, not stderr: Node flushes the two independently, so a warn lands at
+  // an unpredictable point in a captured log, which is why these lines kept
+  // appearing somewhere different in every CI run.
+  //
+  // And a file as well as the log, because the log is not where this gets
+  // read. A job's log is retrieved from the end and the successful output is
+  // long, so the one part worth reading — why a source failed — is the part
+  // that falls off. The workflow prints this file into the step summary, which
+  // is the artifact meant to be read.
+  const report =
+    failures.length === 0
+      ? 'Every source reported.'
+      : [`${failures.length} source(s) did not report:`, ...failures.map((l) => `- ${l}`)].join(
+          '\n',
+        );
+
+  console.log(`\n${report}`);
+  writeFileSync(join(ROOT, FAILURE_REPORT), `${report}\n`);
 }
 
 await main();

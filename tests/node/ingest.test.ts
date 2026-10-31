@@ -645,13 +645,36 @@ describe('the GDELT query', () => {
     // wraps whatever string it is handed — the first version of this test
     // passed `'x'` in and checked the result for domains it could not contain.
     expect(QUERIES.length).toBeGreaterThan(0);
-    for (const { query } of QUERIES) {
-      expect(query).toContain('domain:reuters.com');
-      expect(query).toContain('domain:apnews.com');
-      expect(query).toContain(' OR ');
-      expect(query).toContain('theme:');
-    }
     expect(QUERIES.map((q) => q.category)).toEqual(['unrest', 'conflict']);
+
+    for (const { query } of QUERIES) {
+      expect(query).toContain('theme:');
+      expect(query).toContain('sourcelang:english');
+      // Exactly ONE parenthesised OR group. Two is what GDELT rejected with
+      // `Your query ...` as plain text and an HTTP 200, after the single-group
+      // version had demonstrably worked.
+      expect((query.match(/\(/g) ?? []).length).toBe(1);
+    }
+  });
+
+  it('asks for protest, riot and civil unrest, not protest alone', () => {
+    const unrest = QUERIES.find((q) => q.category === 'unrest')?.query ?? '';
+    // GDELT's own theme names. PROTEST alone misses what a household would
+    // recognise as unrest, and MOLOTOVCOCKTAIL is where rioting is indexed.
+    for (const theme of [
+      'theme:PROTEST',
+      'theme:UNREST_POLICEBRUTALITY',
+      'theme:UNREST_STRIKE',
+      'theme:UNREST_MOLOTOVCOCKTAIL',
+    ]) {
+      expect(unrest).toContain(theme);
+    }
+  });
+
+  it('asks for GDELT maximum page, since the allow-list is the only filter', () => {
+    // The first live run discarded all 75 articles. More candidates is the
+    // only lever left once the publisher filter cannot move into the query.
+    expect(new URL(queryUrl('x')).searchParams.get('maxrecords')).toBe('250');
   });
 
   it('puts the query into the request unchanged', () => {
