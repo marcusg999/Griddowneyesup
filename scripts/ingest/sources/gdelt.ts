@@ -237,22 +237,30 @@ export function parseGdelt(
 }
 
 /**
- * GDELT rate-limits per IP, and CI runners share their IPs with every other
- * project's CI. Four consecutive live runs came back 429, 429, and twice a
- * TCP connect timeout — we are queueing behind strangers, not being refused.
+ * GDELT's own stated limit, in their own words from a 429 body:
  *
- * So the backoff is patient rather than brisk: 20s, 40s, 80s, and the two
- * queries are spaced fifteen seconds apart. That is slow for a web request
- * and free for a job that runs once a day, and the alternative is recording a
- * working source as dead because we were in a hurry.
+ *   "Please limit requests to one every 5 seconds or contact [...] for larger
+ *   queries. All high-traffic users should switch to our ngrams dataset"
+ *
+ * Five seconds is the floor, so the spacing below clears it threefold and the
+ * backoff starts well above it. That our requests still get 429'd says the
+ * limit is counted per IP and CI runners share their egress with every other
+ * project's CI — we are queueing behind strangers rather than being refused,
+ * and no amount of politeness on our side buys down someone else's traffic.
+ *
+ * Patient rather than brisk, because this runs once a day and four minutes of
+ * waiting is free where a wrongly-recorded dead source is not. Worst case is
+ * 15 + 30 + 60 + 120 seconds on the first query, which still leaves room
+ * inside both hosts' build timeouts.
  *
  * It may still fail, and that is survivable: the digest publishes with a named
- * gap. The durable fix is a registered ReliefWeb appname, which is a human
- * errand rather than a code change.
+ * gap and the report says which source and why. The durable fixes are outside
+ * this file — a different egress (the Netlify build is on one), or the contact
+ * address GDELT offers for larger queries.
  */
 const SPACING_MS = 15_000;
-const RETRIES = 3;
-const BACKOFF_MS = 20_000;
+const RETRIES = 4;
+const BACKOFF_MS = 15_000;
 
 /**
  * GDELT reports a bad query as plain text with an HTTP 200, so a JSON parser
