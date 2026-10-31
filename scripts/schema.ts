@@ -291,12 +291,49 @@ export const indicatorSchema = z
  * schema cannot express "put this first", so commerce data has no vocabulary
  * for influencing recommendation order.
  */
-export const offerSchema = z.object({
+const offerFields = {
   id: z.string().regex(/^[a-z0-9-]+$/),
   itemId: z.string().regex(/^[a-z0-9-]+$/),
   merchant: z.string().min(1),
   url: z.string().url(),
   affiliate: z.boolean(),
-  priceCents: z.number().int().nonnegative().optional(),
   asOf: isoDate,
-});
+};
+
+/** Keys that would be a merchant quote. See the refusal below. */
+const PRICE_KEYS = ['priceCents', 'price', 'priceUsd', 'amountCents'] as const;
+
+export const offerSchema = z
+  // Passthrough first, so the check below can SEE an unwanted key. A plain
+  // object strips unknown keys before any refinement runs, which made the
+  // first version of this refusal unable to find the field it was refusing.
+  .object(offerFields)
+  .passthrough()
+  .superRefine((offer, ctx) => {
+    // A merchant price is REFUSED rather than quietly dropped, unlike `rank`
+    // and friends below. The difference is who makes the mistake: `rank` is
+    // commerce data trying to influence order, and silently ignoring it is
+    // the correct answer. A price is US filling in a field we meant to use,
+    // and silently dropping it would leave somebody believing it worked.
+    //
+    // Offers ride inside the signed pack and sit on a phone for as long as
+    // that phone goes unopened. Amazon's Associates agreement requires any
+    // displayed price to come from their API and be under 24 hours old, which
+    // an offline-first signed artifact can never be. CatalogItem's
+    // typicalCostCents is the honest figure — a specification of what a thing
+    // costs rather than a quote from a shop — and the horizon planner already
+    // does its arithmetic with it.
+    for (const key of PRICE_KEYS) {
+      if (key in offer) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [key],
+          message:
+            'offers carry no price: a signed pack cannot hold a price that is under 24 hours old, and CatalogItem.typicalCostCents is the figure to use',
+        });
+      }
+    }
+  })
+  // Then strip, so everything else unknown is ignored exactly as before and
+  // the parsed shape stays the declared fields and nothing more.
+  .transform((offer) => z.object(offerFields).parse(offer));

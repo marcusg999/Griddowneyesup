@@ -628,6 +628,74 @@ the moment after they have lost everything.
 
 ---
 
+### D33 — Offers carry a link and a date, never a price **[CONFIRMED]**
+
+`Offer.priceCents` existed from the start and was a compliance trap waiting to
+be stepped in.
+
+Offers ship inside the signed content pack. A price written there sits on a
+phone for as long as that phone goes unopened, and Amazon's Associates
+agreement requires any displayed price to come from their Product Advertising
+API and be under 24 hours old. An offline-first app with a signed pack cannot
+satisfy that, ever — so the field could only ever have been filled in wrongly.
+Every other likely affiliate network has a comparable rule.
+
+The honest number was already there. `CatalogItem.typicalCostCents` is a
+specification of what a thing costs, not a quote from a shop, and it is what
+the horizon planner does its arithmetic with. A link says where to buy; the
+catalogue says roughly what it costs. Keeping those apart is the point, and
+the planner already says "typical prices, not quotes" on screen.
+
+`asOf` stays, because it earns its place independently of any price:
+`freshOffers` drops an offer whose link has not been checked in 45 days, and a
+dead link on a preparedness list is worse than no link.
+
+The schema REFUSES a price rather than stripping it, which is the opposite of
+how it treats `rank`, `priority` and `sponsoredPlacement`. The difference is
+whose mistake it is. A ranking field is commerce data trying to influence
+order, and ignoring it silently is the correct answer. A price is us filling in
+a field we meant to use, and dropping it silently would leave somebody
+believing it worked.
+
+---
+
+### D34 — Netlify is a second host of the same pipeline, not a second pipeline **[DEFAULT]**
+
+The app is served from Netlify as well as GitHub Pages. Three differences
+between the hosts would each have been a silent failure:
+
+- **No digests.** `npm run build` does not produce them; the Pages workflow
+  runs `content:samples` and `content:ingest` around it. Netlify's own detected
+  build command would have shipped an app whose Near-you surface had nothing to
+  read and no way to say why.
+- **No subpath.** Pages serves a project site from a prefix and sets
+  `PUBLIC_BASE_PATH`; Netlify serves a domain root, which is the default, so it
+  must stay unset.
+- **No history fallback.** The build writes `404.html`, which Netlify serves —
+  with a 404 status, which is wrong for a deep link into an SPA. A rewrite
+  answers 200 instead.
+
+Caching is set per artifact class rather than left to the host. `sw.js` and
+`registerSW.js` are not content-hashed, so a long cache on them is a cache on
+the thing whose job is to notice a new version; the pack's index is likewise
+unhashed and is what tells the app a newer pack exists. Both revalidate. Hashed
+assets are immutable for a year.
+
+The release gate is not re-run on deploy. Every route into main is a pull
+request that runs `verify`, including the full offline suite, so main is gated
+before either host sees it. The offline suite already runs against a
+domain-root preview, which is Netlify's shape rather than Pages', so the
+Netlify arrangement is the one the gate has always tested.
+
+Freshness is the part that does not come for free: Pages redeploys on a daily
+schedule to re-cut the digest, and Netlify rebuilds on push. A scheduled
+workflow pokes a Netlify build hook instead of deploying anything itself, so
+Netlify remains the only thing that builds the Netlify site. With no hook
+configured it exits cleanly rather than failing — the site then updates on
+push, which is a reduced guarantee and not a broken one.
+
+---
+
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**
 
 Decided after the first release. §14 said to decide it up front precisely

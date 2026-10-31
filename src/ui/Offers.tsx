@@ -26,16 +26,13 @@ export function Offers({
     <ul className="offers">
       {offers.map((offer) => (
         <li key={offer.id} data-affiliate={offer.affiliate}>
+          {/* The merchant and nothing else. A price here would be a quote
+              from a shop, cached inside a signed pack and read weeks later —
+              see the note on Offer.asOf. The catalogue's typical cost is the
+              number the planner uses and the only one this app stands
+              behind. */}
           <a href={offer.url} rel="noreferrer noopener sponsored" target="_blank">
             {offer.merchant}
-            {offer.priceCents !== undefined && (
-              <span className="offers__price tnum">
-                {new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'USD',
-                }).format(offer.priceCents / 100)}
-              </span>
-            )}
           </a>
           {offer.affiliate && (
             <span className="offers__badge" title="We earn a commission on this link">

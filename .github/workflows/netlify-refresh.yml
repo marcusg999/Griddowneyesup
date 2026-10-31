@@ -1,0 +1,49 @@
+# Keeps the Netlify deploy's digest as fresh as the Pages one.
+#
+# The threat digest is cut once a day, and it is only as current as the last
+# build that ran the ingester. The Pages workflow handles that with its own
+# daily schedule; Netlify rebuilds on push, so without this the digest would
+# freeze at whatever the last commit produced and quietly go stale — which is
+# the one failure the whole "last synced" line exists to make visible.
+#
+# This pokes a Netlify build hook instead of deploying anything itself, so
+# Netlify stays the only thing that builds the Netlify site and there is no
+# second pipeline to keep in step.
+#
+# Needs one secret: NETLIFY_BUILD_HOOK, the URL from
+# Netlify → Site configuration → Build & deploy → Build hooks.
+# Without it this job exits without doing anything rather than failing: a
+# missing optional hook is a site that updates on push, not a broken workflow.
+name: Netlify refresh
+
+on:
+  workflow_dispatch:
+  # Half an hour after the Pages schedule, so both sites pick up the same day's
+  # sources without the two builds racing for the same rate limits.
+  schedule:
+    - cron: '47 9 * * *'
+
+permissions: {}
+
+jobs:
+  poke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger a Netlify rebuild
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "NETLIFY_BUILD_HOOK is not set — nothing to poke."
+            echo "The Netlify site will keep updating on push; it just will not"
+            echo "pick up a fresh digest on days with no commits."
+            exit 0
+          fi
+          # -f so a non-2xx is a failure rather than a silent success, and the
+          # status code is printed either way.
+          code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -d '{}' "$HOOK")
+          echo "Netlify build hook responded $code"
+          case "$code" in
+            2*) echo "Rebuild queued." ;;
+            *) echo "::error::Netlify build hook returned $code"; exit 1 ;;
+          esac
