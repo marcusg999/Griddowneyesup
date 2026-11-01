@@ -19,8 +19,9 @@ export type SignalSourceId = 'nws' | 'usgs' | 'wildfire-air' | 'openfema' | 'swp
 /**
  * Everything the publisher fetches, which is more than the signal sources.
  *
- * ReliefWeb, GDELT and GDACS feed the Worth-knowing brief, and ENSO corrects
- * a standing posture note; none of them produces a signal, so none is a
+ * ReliefWeb, GDELT, GDACS and the publisher feeds feed the Worth-knowing
+ * brief, and ENSO corrects a standing posture note; none of them produces a
+ * signal, so none is a
  * `SignalSourceId`. Any of them can still be the thing that was down when the
  * digest was cut, and `unreachable` has to be able to name it. Declaring that
  * field as signal sources only was a type that disagreed with the bytes the
@@ -30,6 +31,7 @@ export type IngestSourceId =
   | SignalSourceId
   | 'reliefweb'
   | 'gdelt'
+  | 'press'
   | 'gdacs'
   | 'enso';
 

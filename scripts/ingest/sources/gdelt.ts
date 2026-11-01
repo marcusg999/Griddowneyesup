@@ -1,4 +1,5 @@
 import { getText, sleep, SourceError } from '../fetch';
+import { publisherFor } from '../publishers';
 import type { SourceResult } from '../types';
 import type { Brief } from '../schema';
 
@@ -23,8 +24,9 @@ import type { Brief } from '../schema';
  *   and it is the only reason this source is admissible at all.
  *
  *   The allow-list is wire services and outlets with published corrections
- *   policies and foreign desks. It names each one, which is what turns a
- *   `domain` field into the attribution §4.4 asks for.
+ *   policies and foreign desks, and it lives in ../publishers because the
+ *   publisher-feed source consults the same one. It names each outlet, which
+ *   is what turns a `domain` field into the attribution §4.4 asks for.
  *
  *   Everything is `press-reported`. Never `official`. These are news reports
  *   about events, not primary documents, and the one thing this surface must
@@ -35,45 +37,6 @@ import type { Brief } from '../schema';
  * running a regex over a headline.
  */
 
-/**
- * Publishers whose reporting may appear on a readiness surface.
- *
- * Deliberately short and deliberately boring. Wire services first, because a
- * wire report is the closest thing to a primary source that journalism has.
- * The rest are outlets with a standing foreign desk and a published
- * corrections policy. The value of the list is what it leaves out.
- */
-const PUBLISHERS: Readonly<Record<string, string>> = {
-  'reuters.com': 'Reuters',
-  'apnews.com': 'Associated Press',
-  'afp.com': 'Agence France-Presse',
-  'bbc.com': 'BBC News',
-  'bbc.co.uk': 'BBC News',
-  'aljazeera.com': 'Al Jazeera',
-  'theguardian.com': 'The Guardian',
-  'npr.org': 'NPR',
-  'pbs.org': 'PBS NewsHour',
-  'dw.com': 'Deutsche Welle',
-  'france24.com': 'France 24',
-  'cbc.ca': 'CBC News',
-  'abc.net.au': 'ABC News (Australia)',
-  'nytimes.com': 'The New York Times',
-  'washingtonpost.com': 'The Washington Post',
-  'wsj.com': 'The Wall Street Journal',
-  'ft.com': 'Financial Times',
-  'economist.com': 'The Economist',
-  'bloomberg.com': 'Bloomberg',
-  'cnn.com': 'CNN',
-  'nbcnews.com': 'NBC News',
-  'cbsnews.com': 'CBS News',
-  'abcnews.go.com': 'ABC News',
-  'scmp.com': 'South China Morning Post',
-  'thehindu.com': 'The Hindu',
-  'timesofindia.indiatimes.com': 'The Times of India',
-  'japantimes.co.jp': 'The Japan Times',
-  'haaretz.com': 'Haaretz',
-  'kyivindependent.com': 'The Kyiv Independent',
-};
 
 /**
  * Two queries, one per category. `theme:` filters on GDELT's own GKG themes,
@@ -98,7 +61,7 @@ const PUBLISHERS: Readonly<Record<string, string>> = {
  * throttles hard enough that ten requests a day is a worse bet than two.
  *
  * So the request is wide, `maxrecords` goes to GDELT's documented maximum,
- * and PUBLISHERS above stays the only filter on who gets republished. That
+ * and the publisher allow-list stays the only filter on who gets republished. That
  * gives it 250 candidates per category to find a wire report among rather
  * than 75.
  */
@@ -163,19 +126,6 @@ export function parseSeenDate(raw: string | null | undefined): string | undefine
   if (!m) return undefined;
   const iso = `${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}.000Z`;
   return Number.isNaN(Date.parse(iso)) ? undefined : iso;
-}
-
-/** `www.` and other leading labels are stripped so the list stays readable. */
-export function publisherFor(domain: string | null | undefined): string | undefined {
-  const host = (domain ?? '').trim().toLowerCase().replace(/^www\./, '');
-  if (!host) return undefined;
-  if (PUBLISHERS[host]) return PUBLISHERS[host];
-  // A subdomain of an allow-listed publisher is that publisher. Matched on a
-  // label boundary so `reuters.com.example.net` is not Reuters.
-  for (const [allowed, name] of Object.entries(PUBLISHERS)) {
-    if (host.endsWith(`.${allowed}`)) return name;
-  }
-  return undefined;
 }
 
 const MEANS_FOR_YOU: Readonly<Record<string, string>> = {
