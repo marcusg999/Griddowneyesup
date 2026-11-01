@@ -731,6 +731,49 @@ middle of one.
 
 ---
 
+### D36 — Two routes to a category, and a URL earns its place by answering **[CONFIRMED]**
+
+Unrest and conflict were dark from the day they were built. GDELT was the one
+route to them, and GDELT cannot be reached: its rate limit is counted per IP,
+CI runners share egress with every other project's CI, and politeness on our
+side does not buy down a stranger's traffic. One route to a category is one
+outage away from the category not existing.
+
+So there are now two, over hosts that do not fail together: GDELT, and the
+publishers' own topic feeds. Both stay wired in. GDELT indexed the whole press
+and we filtered it down to an allow-list; a tag feed is one named outlet's own
+topic page, so its selection is that outlet's editorial judgement rather than a
+sweep of the wires. That is narrower, and it is the reason GDELT is kept rather
+than replaced — the moment it answers from either host's egress, breadth comes
+back on its own.
+
+The editorial floor did not move. The publisher allow-list is now in
+`ingest/publishers.ts` because two sources consult it, and in the feed source
+it does a second job: an item's link has to point back at the publisher whose
+feed it is, so a hijacked or syndicated feed cannot put an arbitrary
+destination on this surface. Everything is `press-reported`, never `official`,
+UN News included — a news service run by an institution is still reporting.
+
+**A URL earns its place in the list by answering, not by being plausible.** Of
+nine candidates, five 404'd: `world/civil-unrest`, `world/riots`,
+`world/conflict`, `world/armed-forces` and `world/war` are all Page Not Found,
+because the Guardian's tag vocabulary is narrower than its section names
+suggest. Nothing outbound is reachable from the machine this was written on, so
+the parser tests cannot show which tags exist — only a run can, and the list
+was pruned to the four that answered before any of it went near main. A
+publisher's tag feed is not an API and carries no stability promise; this list
+is expected to need pruning again.
+
+One distinction cost a run to notice and is worth keeping. A feed that yields
+no item has either been retired — the publisher answers with a search page —
+or is simply quiet, with nothing newer than the window. They look identical
+from outside and are not the same thing. Counting entries separates them, and
+only the retired one is reported as a gap. Reporting a quiet desk as a fault
+would train a reader to ignore the gap line, which is the one line that has to
+stay trustworthy.
+
+---
+
 ---
 
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**

@@ -18,6 +18,7 @@ import {
   queryUrl,
 } from '../../scripts/ingest/sources/gdelt';
 import {
+  blocks,
   decodeXml,
   FEEDS,
   parseFeed,
@@ -875,6 +876,23 @@ describe('publisher topic feeds', () => {
     // A publisher that retires a tag may answer 200 with HTML. Nothing in it
     // parses as an item, which is what the caller reports as a dead feed.
     expect(parseFeed('<!doctype html><html><body>Not found</body></html>', FEED, NOW)).toEqual([]);
+  });
+
+  it('tells a quiet desk apart from a retired tag', () => {
+    // These look identical from the outside — both yield no brief item — and
+    // conflating them cost a run to notice. A feed with entries in it is
+    // working and simply has nothing new; a feed with none has been retired
+    // and the publisher is answering with a search page. Only the second is a
+    // gap worth reporting, and `blocks` is what separates them.
+    const quiet = rss(
+      item('Last month', 'https://www.theguardian.com/world/2026/may/01/g', 'Fri, 01 May 2026 09:00:00 GMT'),
+    );
+    expect(parseFeed(quiet, FEED, NOW)).toHaveLength(0);
+    expect(blocks(quiet, 'item')).toHaveLength(1);
+
+    const retired = '<!doctype html><html><body>Page Not Found</body></html>';
+    expect(parseFeed(retired, FEED, NOW)).toHaveLength(0);
+    expect(blocks(retired, 'item')).toHaveLength(0);
   });
 
   it('names every feed with a category the brief schema accepts', () => {

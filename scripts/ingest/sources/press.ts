@@ -52,20 +52,23 @@ export interface FeedSpec {
  * above is expected to need pruning over time rather than to stay correct.
  */
 export const FEEDS: readonly FeedSpec[] = [
-  // Confirmed against the live endpoint: this one answers and its items parse.
+  // All four confirmed against the live endpoint: each answers, and items
+  // from each are in a published digest. Six guesses were tried to get here —
+  // world/civil-unrest, world/riots, world/conflict, world/armed-forces and
+  // world/war all 404 with the Guardian's own Page Not Found, because their
+  // tag vocabulary is narrower than their section names suggest. A URL only
+  // belongs in this list once a run has shown it answering.
   { category: 'unrest', topic: 'Protest', url: 'https://www.theguardian.com/world/protest/rss' },
-  // Candidates. `world/civil-unrest`, `world/riots`, `world/conflict` and
-  // `world/armed-forces` were tried and every one 404s — the Guardian's tag
-  // vocabulary is narrower than its section names suggest, so these are the
-  // next guesses rather than known-good URLs. A run of the Sources check says
-  // which survive, and the dead ones get deleted the same way those four were.
   { category: 'unrest', topic: 'Activism', url: 'https://www.theguardian.com/world/activism/rss' },
   {
     category: 'conflict',
     topic: 'Peace and security',
     url: 'https://news.un.org/feed/subscribe/en/news/topic/peace-and-security/feed/rss.xml',
   },
-  { category: 'conflict', topic: 'War', url: 'https://www.theguardian.com/world/war/rss' },
+  // Alive, and usually quiet: it answers with a full feed whose newest item
+  // is often older than the window. Kept anyway, as the second route to
+  // conflict — one route to a category is one outage away from the category
+  // not existing, which is the whole reason this source exists.
   {
     category: 'conflict',
     topic: 'War crimes',
@@ -265,14 +268,29 @@ export async function collectPress(
       continue;
     }
 
-    const parsed = parseFeed(xml, feed, now, PER_CATEGORY);
-    if (parsed.length === 0) {
-      // A feed that answers with no usable item is as much of a problem as one
-      // that 404s, and far easier to miss.
-      onNote(`press/${feed.topic}: answered with no usable item (${xml.length} bytes)`);
+    // Two different things look identical from the outside, and calling both
+    // a gap cost a run to notice. A feed with entries in it is working — it
+    // may simply have nothing newer than the window, which is a quiet desk
+    // and not a fault. A feed with no entries at all is not a feed: the tag
+    // has been retired and the publisher is answering with a search page.
+    // Only the second belongs in the report a reader's gaps are counted from.
+    const entries = blocks(xml, 'item').length + blocks(xml, 'entry').length;
+    if (entries === 0) {
+      onNote(
+        `press/${feed.topic}: answered with no feed entries at all ` +
+          `(${xml.length} bytes) — the tag has probably been retired`,
+      );
       continue;
     }
+
     answered += 1;
+    const parsed = parseFeed(xml, feed, now, PER_CATEGORY);
+    if (parsed.length === 0) {
+      console.log(
+        `  press/${feed.topic}: ${entries} entries, none inside the ${MAX_AGE_HOURS}h window`,
+      );
+      continue;
+    }
 
     for (const item of parsed) {
       const taken = perCategory.get(item.category) ?? 0;
@@ -287,9 +305,10 @@ export async function collectPress(
   }
 
   if (answered === 0) {
-    // Every feed failed. Thrown rather than returned empty, so the runner
-    // records the source as unreachable and the reader is told the category
-    // is missing instead of being shown a quiet day that was not one.
+    // Every feed is broken — not every feed is quiet. Thrown rather than
+    // returned empty, so the runner records the source as unreachable and the
+    // reader is told the category is missing instead of being shown a quiet
+    // day that was not one.
     throw new Error(`no publisher feed answered (${FEEDS.length} tried)`);
   }
 
