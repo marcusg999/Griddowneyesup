@@ -1,4 +1,6 @@
+import { useId, useState } from 'react';
 import type { PostureNote } from '@/content/types';
+import { HorizonDial } from './HorizonDial';
 
 const STATUS_LABEL: Record<PostureNote['epistemicStatus'], string> = {
   official: 'Official source',
@@ -18,7 +20,23 @@ const STATUS_LABEL: Record<PostureNote['epistemicStatus'], string> = {
  * different kinds of claim, and an app that renders them identically is
  * lying by layout.
  */
-export function Posture({ note, targetDays }: { note: PostureNote; targetDays: number }) {
+export function Posture({
+  note,
+  targetDays,
+  onChangeTarget,
+}: {
+  readonly note: PostureNote;
+  readonly targetDays: number;
+  /**
+   * Omit to render the number as plain text. Passed in, rather than this
+   * component reaching for the store itself, so a printed sheet and any
+   * future read-only surface stay read-only by construction.
+   */
+  readonly onChangeTarget?: (days: number) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const dialId = useId();
+
   return (
     <article className="posture">
       <p className="posture__status">
@@ -36,24 +54,62 @@ export function Posture({ note, targetDays }: { note: PostureNote; targetDays: n
       )}
 
       {note.horizonSignalDays !== undefined && (
-        <div className="horizon">
-          <div className="horizon__pair">
-            <span className="horizon__n tnum">{targetDays}</span>
-            <span className="horizon__label">
-              days
-              <small>your target</small>
-            </span>
+        <>
+          <div className="horizon">
+            {/* Your number is the one you can do something about, so it is
+                the one that is a control. Theirs is a reported fact and stays
+                plain text — making it look pressable would imply this app can
+                change what somebody else is planning for. */}
+            <div className="horizon__pair">
+              {onChangeTarget ? (
+                <button
+                  type="button"
+                  className="horizon__n horizon__n--editable tnum"
+                  aria-expanded={editing}
+                  aria-controls={dialId}
+                  onClick={() => setEditing((open) => !open)}
+                >
+                  {targetDays}
+                </button>
+              ) : (
+                <span className="horizon__n tnum">{targetDays}</span>
+              )}
+              <span className="horizon__label">
+                days
+                <small>{onChangeTarget ? 'your target — tap to change' : 'your target'}</small>
+              </span>
+            </div>
+            <div className="horizon__pair">
+              <span className="horizon__n tnum" data-them="true">
+                {note.horizonSignalDays}
+              </span>
+              <span className="horizon__label">
+                days
+                <small>theirs, reported</small>
+              </span>
+            </div>
           </div>
-          <div className="horizon__pair">
-            <span className="horizon__n tnum" data-them="true">
-              {note.horizonSignalDays}
-            </span>
-            <span className="horizon__label">
-              days
-              <small>theirs, reported</small>
-            </span>
-          </div>
-        </div>
+
+          {onChangeTarget && editing && (
+            <div className="horizon__edit">
+              <HorizonDial
+                id={dialId}
+                targetDays={targetDays}
+                onChange={(days) => {
+                  onChangeTarget(days);
+                  // Left open on purpose. Changing the number is the point of
+                  // this comparison, and closing on the first tap would make
+                  // trying 30 against 90 and then 60 a three-tap job each
+                  // time.
+                }}
+              />
+              <p className="meta">
+                The supply maths runs again on Supplies, where it says what the
+                new horizon costs in things, weight and money.
+              </p>
+            </div>
+          )}
+        </>
       )}
 
       <p>{note.whatItMeansForYou}</p>
