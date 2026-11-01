@@ -92,8 +92,19 @@ export const messages = {
 
   // --- Threat feed (§4.1) ---------------------------------------------------
   'threat.nothingNotable': 'Nothing notable near you',
+  // The count is interpolated, not written in. This said "Six signals
+  // checked" while the confidence line beside it reported the number actually
+  // reached — which after the denominator was made honest (D31) could be
+  // four, or two, or none. Two numbers on one screen disagreeing is worse
+  // than either being absent.
+  //
+  // Two keys rather than an ICU `=0` branch: the interpolator supports one
+  // plural form on purpose (§8 budget), and "nothing reported" is a different
+  // sentence rather than a different number anyway.
   'threat.nothingNotable.body':
-    'Six signals checked, none of them interesting. This is what most days look like, and it is the correct result.',
+    '{n, plural, one {One signal checked, and it is not interesting.} other {# signals checked, none of them interesting.}} This is what most days look like, and it is the correct result.',
+  'threat.nothingNotable.none':
+    'No source reported, so nothing has been assessed. The band is held at quiet rather than guessed.',
   'threat.whatThisMeans': 'What this means for you',
   'threat.source': 'Source',
   'threat.digestEnds': 'That is everything. There is no more to scroll.',
@@ -107,7 +118,8 @@ export const messages = {
   'band.why': 'Why this band',
   'band.confidence':
     '{reporting} of {total} {total, plural, one {signal} other {signals}} reporting',
-  'band.stale': '{n, plural, one {# source is} other {# sources are}} past their freshness window',
+  'band.stale':
+    '{n, plural, one {# source is past its} other {# sources are past their}} freshness window',
   // Named, not counted. "1 source unreachable" tells a reader the picture is
   // incomplete; "NWS unreachable" tells them which part of it is missing, and
   // whether that is the part they cared about.

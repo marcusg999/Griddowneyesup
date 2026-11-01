@@ -22,15 +22,10 @@ import { timeAgo } from './relativeTime';
  *   No urgency styling. This surface is explicitly not an alert: it is the
  *   thing you read with coffee, and if it ever starts shouting it has become
  *   the doomscroll §5 forbids.
+ *
+ * Rendered only inside a BriefGroups section, which supplies the subject
+ * heading this card deliberately no longer repeats.
  */
-
-const CATEGORY_LABEL: Record<BriefItem['category'], string> = {
-  unrest: 'Unrest',
-  conflict: 'Conflict',
-  disaster: 'Disaster',
-  weather: 'Weather',
-  infrastructure: 'Infrastructure',
-};
 
 const STATUS_LABEL: Record<BriefItem['epistemicStatus'], string> = {
   official: 'Official source',
@@ -41,10 +36,12 @@ const STATUS_LABEL: Record<BriefItem['epistemicStatus'], string> = {
 export function Brief({ item, now }: { item: BriefItem; now: Date }) {
   return (
     <article className="brief reveal" data-category={item.category}>
+      {/* No category tag. The card sits inside a section named for its
+          subject, so repeating it on every card is noise — and a second copy
+          of the label would be a second place for it to be worded
+          differently. groupBrief owns the names. */}
       <p className="brief__meta meta">
-        <span className="brief__tag">{CATEGORY_LABEL[item.category]}</span>
-        {item.where ? ` · ${item.where}` : ''}
-        {' · '}
+        {item.where ? `${item.where} · ` : ''}
         {timeAgo(item.published, now)}
       </p>
 

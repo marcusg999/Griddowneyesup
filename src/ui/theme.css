@@ -628,8 +628,36 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
 /* --- Worth knowing: the brief feed (§9, §5) ------------------------------
    Deliberately quiet. No colour coding by category, no urgency, no badge that
    pulses. This is the surface you read with coffee; the moment it starts
-   shouting it has become the thing §5 forbids. The category tag is a label,
-   not a warning light. */
+   shouting it has become the thing §5 forbids. */
+
+/* --- Worth knowing, grouped by subject -----------------------------------
+   Collapsible sections, open by default. Folding is for a reader who wants
+   the weather out of the way, not a default that hides the one item that
+   mattered behind a heading nobody expanded. */
+.brief-groups { margin: 0 0 4px; }
+
+.brief-group { margin: 0 0 18px; }
+
+.brief-group__summary {
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--rule-major);
+  font-family: var(--hand);
+  font-size: 12.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.brief-group[open] > .brief-group__summary { color: var(--ink); }
+.brief-group__summary:hover { color: var(--ink); }
+
+/* Pushed to the end, so a folded section still states how much is inside. */
+.brief-group__count { margin-left: auto; color: var(--ink-faint); }
+
 .brief {
   max-width: calc(var(--measure) + 6ch);
   border-top: 1px solid var(--edge);
@@ -637,13 +665,6 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
 }
 
 .brief__meta { margin: 0 0 5px; }
-
-.brief__tag {
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 11px;
-  color: var(--ink-dim);
-}
 
 .brief__headline {
   font-family: var(--display);
