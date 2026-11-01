@@ -42,6 +42,14 @@ export const PUBLISHERS: Readonly<Record<string, string>> = {
   'japantimes.co.jp': 'The Japan Times',
   'haaretz.com': 'Haaretz',
   'kyivindependent.com': 'The Kyiv Independent',
+  // The UN's own news service, for the conflict category no wire feed covers
+  // without a key. It is not a wire service and does not belong with them: it
+  // reports on the UN system's own operations, which is the same kind of
+  // institutional source as GDACS, already admissible here. It is still
+  // republished as `press-reported` rather than `official` — a news service
+  // run by an institution is reporting, and this surface must never dress
+  // reporting as a primary document.
+  'news.un.org': 'UN News',
 };
 
 /**

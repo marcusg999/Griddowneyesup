@@ -52,18 +52,24 @@ export interface FeedSpec {
  * above is expected to need pruning over time rather than to stay correct.
  */
 export const FEEDS: readonly FeedSpec[] = [
+  // Confirmed against the live endpoint: this one answers and its items parse.
   { category: 'unrest', topic: 'Protest', url: 'https://www.theguardian.com/world/protest/rss' },
-  {
-    category: 'unrest',
-    topic: 'Civil unrest',
-    url: 'https://www.theguardian.com/world/civil-unrest/rss',
-  },
-  { category: 'unrest', topic: 'Riots', url: 'https://www.theguardian.com/world/riots/rss' },
-  { category: 'conflict', topic: 'Conflict', url: 'https://www.theguardian.com/world/conflict/rss' },
+  // Candidates. `world/civil-unrest`, `world/riots`, `world/conflict` and
+  // `world/armed-forces` were tried and every one 404s — the Guardian's tag
+  // vocabulary is narrower than its section names suggest, so these are the
+  // next guesses rather than known-good URLs. A run of the Sources check says
+  // which survive, and the dead ones get deleted the same way those four were.
+  { category: 'unrest', topic: 'Activism', url: 'https://www.theguardian.com/world/activism/rss' },
   {
     category: 'conflict',
-    topic: 'Armed forces',
-    url: 'https://www.theguardian.com/world/armed-forces/rss',
+    topic: 'Peace and security',
+    url: 'https://news.un.org/feed/subscribe/en/news/topic/peace-and-security/feed/rss.xml',
+  },
+  { category: 'conflict', topic: 'War', url: 'https://www.theguardian.com/world/war/rss' },
+  {
+    category: 'conflict',
+    topic: 'War crimes',
+    url: 'https://www.theguardian.com/world/warcrimes/rss',
   },
 ];
 
