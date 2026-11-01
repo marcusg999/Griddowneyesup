@@ -16,6 +16,7 @@ import { collectGdacs } from './ingest/sources/gdacs';
 import { collectGdelt } from './ingest/sources/gdelt';
 import { collectNws } from './ingest/sources/nws';
 import { collectOpenFema } from './ingest/sources/openfema';
+import { collectPress } from './ingest/sources/press';
 import { collectReliefWeb } from './ingest/sources/reliefweb';
 import { collectSwpc } from './ingest/sources/swpc';
 import { collectUsgs } from './ingest/sources/usgs';
@@ -162,6 +163,11 @@ async function main(): Promise<void> {
   const now = new Date();
   mkdirSync(OUT_DIR, { recursive: true });
 
+  // Why each source failed, not just that it did. Declared before the fetches
+  // because a source made of several feeds reports which of them died, and
+  // that line is worth more than the one-line summary wrapping it.
+  const failures: string[] = [];
+
   // Sources that are the same everywhere, fetched once.
   console.log('Fetching global sources…');
   const globals = await Promise.all([
@@ -174,6 +180,10 @@ async function main(): Promise<void> {
     // ever registered it comes back on its own, and the two overlapping is
     // better than the category going dark again.
     attempt('gdelt', () => collectGdelt()),
+    // The same two categories over a different host, because GDELT's rate
+    // limit is counted per IP and CI shares its egress with every other
+    // project's CI. One route failing should not take the category with it.
+    attempt('press', () => collectPress((line) => failures.push(line))),
     // Disasters and severe weather worldwide. Until this, every disaster
     // source here stopped at the US border except USGS, which left the feed
     // claiming to be about the world while reporting one country's weather.
@@ -191,10 +201,6 @@ async function main(): Promise<void> {
   // Signal sources tried everywhere, so each region's denominator starts from
   // the same base. USGS and SWPC are global; the rest are per region.
   const globalAttempted: string[] = [];
-  // Why each source failed, not just that it did. Printed last, because a
-  // source check that buries its failures above its successes is a source
-  // check you have to scroll to use — and the reason is the whole point.
-  const failures: string[] = [];
 
   for (const outcome of globals) {
     if (SIGNAL_SOURCES.has(outcome.id)) globalAttempted.push(outcome.id);
@@ -280,7 +286,10 @@ async function main(): Promise<void> {
   const report =
     failures.length === 0
       ? 'Every source reported.'
-      : [`${failures.length} source(s) did not report:`, ...failures.map((l) => `- ${l}`)].join(
+      : // "gap" rather than "source": a source made of several feeds reports
+        // each dead feed on its own line, and counting those as whole sources
+        // would overstate how much of the digest is missing.
+        [`${failures.length} gap(s):`, ...failures.map((l) => `- ${l}`)].join(
           '\n',
         );
 
