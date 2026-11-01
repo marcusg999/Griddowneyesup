@@ -687,6 +687,61 @@ test.describe('offline release gate', () => {
     ).toHaveAttribute('aria-pressed', 'true');
   });
 
+  test('the target number on Today changes the target, and Supplies agrees', async ({
+    page,
+  }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+
+    // The comparison figure in a posture note: your target next to the
+    // horizon some institution is planning to. Yours is the pressable one.
+    const mine = page.locator('.horizon__n--editable').first();
+    await expect(mine).toBeVisible();
+    await expect(mine).toHaveAttribute('aria-expanded', 'false');
+
+    // Theirs stays plain text. A reported fact must not look like something
+    // this app can change.
+    await expect(page.locator('.horizon__n[data-them="true"]').first()).toBeVisible();
+    await expect(
+      page.locator('.horizon__n[data-them="true"].horizon__n--editable'),
+    ).toHaveCount(0);
+
+    await mine.click();
+    await expect(mine).toHaveAttribute('aria-expanded', 'true');
+
+    // The disclosed control is the same dial as the planner's, by the same
+    // accessible name, so there is one control to learn rather than two.
+    const dial = page.getByRole('group', { name: 'Target horizon' }).first();
+    await expect(dial).toBeVisible();
+    await dial.getByRole('button', { name: /^60/ }).click();
+
+    // The figure itself is what changed — the number is the readout as well
+    // as the control.
+    await expect(mine).toHaveText('60');
+
+    // Left open on purpose: comparing 30 against 90 should not cost a tap
+    // each way.
+    await expect(mine).toHaveAttribute('aria-expanded', 'true');
+
+    // And it is the same stored setting the planner reads, not a second copy
+    // of it. Still offline.
+    await page.goto('/supplies');
+    await expect(
+      page.getByRole('group', { name: 'Target horizon' }).getByRole('button', { name: /^60/ }),
+    ).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('Grey Sky shows no target control on Today', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/settings');
+    await page.getByTestId('state-grey-sky').click();
+    await page.goto('/');
+
+    // Grey Sky is four links. Re-planning a horizon is not an activity for
+    // the middle of an event (G08), and absence rather than hiding.
+    await expect(page.locator('.horizon__n--editable')).toHaveCount(0);
+  });
+
   test('the horizon plan carries no purchase links', async ({ page }) => {
     await installThenGoOffline(page);
     await page.goto('/supplies');

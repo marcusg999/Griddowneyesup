@@ -1,5 +1,7 @@
+import { useCallback } from 'react';
 import { Link } from 'wouter';
 import { t } from '@/i18n';
+import { store } from '@/db';
 import { useReadiness } from '@/state/readiness';
 import { useSupply } from '@/features/supply/useSupply';
 import { usePlan } from '@/features/plan/usePlan';
@@ -53,10 +55,21 @@ const TIER_LABEL: Record<string, string> = {
 
 export function Today() {
   const { state, suppressGamification } = useReadiness();
-  const { coverage, inventory, loading, profile } = useSupply();
+  const { coverage, inventory, loading, profile, reload } = useSupply();
   const { plan, contacts } = usePlan();
   const { pack } = useContent();
   const { snapshot, loading: digestLoading } = useThreat(profile.countyFips ?? 'default');
+
+  // Same write as the planner on Supplies — straight to IndexedDB, then
+  // reload. The horizon is one setting with one home, so changing it here and
+  // changing it there have to be the same act, not two that agree by
+  // coincidence.
+  const setHorizon = useCallback(
+    (targetHorizonDays: number) => {
+      void store.profile.put({ ...profile, targetHorizonDays }).then(reload);
+    },
+    [profile, reload],
+  );
 
   // GREY SKY: four things only. No feed, no coverage, no tiers, no badges.
   if (state === 'grey-sky') return <GreySky />;
@@ -193,7 +206,12 @@ export function Today() {
           <BriefGroups items={world.brief} now={now} />
 
           {world.posture.map((note) => (
-            <Posture key={note.id} note={note} targetDays={profile.targetHorizonDays} />
+            <Posture
+              key={note.id}
+              note={note}
+              targetDays={profile.targetHorizonDays}
+              onChangeTarget={setHorizon}
+            />
           ))}
 
           {/* §5: the feed is finite and says so. */}

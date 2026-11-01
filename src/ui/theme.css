@@ -1176,6 +1176,42 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
 }
 .horizon__n[data-them='true'] { color: var(--acid); }
 
+/* Your own number is a control, theirs is a reported fact.
+   A button that looks exactly like the figure beside it, with a dotted rule
+   under it to say it can be pressed — the number stays the number, which is
+   what the comparison is made of, and the hint is small enough not to turn
+   a flat statement into a call to action. */
+.horizon__n--editable {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0 1px 2px;
+  margin: 0;
+  cursor: pointer;
+  border-bottom: 2px dotted var(--ink-faint);
+  transition: border-color 120ms ease, color 120ms ease;
+}
+/* Deliberately NOT acid on hover or when open. Acid is what marks the other
+   number as theirs, and recolouring yours to match would erase the one
+   distinction the whole comparison is made of. The underline does the work
+   instead: dotted at rest, solid once it is open. */
+.horizon__n--editable:hover,
+.horizon__n--editable[aria-expanded='true'] {
+  border-bottom-style: solid;
+  border-bottom-color: var(--ink);
+}
+
+/* The dial, once disclosed. Indented under the pair it belongs to and given
+   a rule on the left so it reads as a consequence of the number above it
+   rather than a second, unrelated control. */
+.horizon__edit {
+  margin: -6px 0 18px;
+  padding-left: 14px;
+  border-left: 2px solid var(--rule-major);
+}
+.horizon__edit .browse { margin-bottom: 8px; }
+.horizon__edit .meta { margin: 0; max-width: var(--measure); }
+
 .horizon__label { font-size: 14px; color: var(--ink-dim); }
 .horizon__label small {
   display: block;
@@ -1187,6 +1223,7 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
 }
 
 :root[data-state='grey-sky'] .posture,
+:root[data-state='grey-sky'] .horizon__edit,
 :root[data-state='grey-sky'] .horizon { display: none; }
 
 

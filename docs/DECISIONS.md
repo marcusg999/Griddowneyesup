@@ -694,6 +694,43 @@ Netlify remains the only thing that builds the Netlify site. With no hook
 configured it exits cleanly rather than failing — the site then updates on
 push, which is a reduced guarantee and not a broken one.
 
+### D35 — The horizon is one setting, reachable wherever it is shown **[DEFAULT]**
+
+The target horizon appears in two places: the planner on Supplies, where it is
+obviously a control, and the posture comparison on Today, where it is a number
+sitting next to the horizon some institution is reported to be planning to.
+That comparison is the most persuasive argument the app makes for a longer
+horizon — and the reader was being shown it on a page with no way to act on it,
+two taps from the only control.
+
+So the number on Today is the control. Pressing it discloses the same dial the
+planner uses, from the same component (`ui/HorizonDial`), writing the same
+field of the same profile record. Not a copy of the chip row: two chip rows is
+two places for the offered values to drift apart, and a setting that can be
+changed in two places must be changed by one mechanism or the two surfaces will
+eventually disagree.
+
+Three smaller calls inside that:
+
+- **Only your number is pressable.** Theirs is a reported fact and stays plain
+  text, in the colour that marks it as theirs. Pressing it could not do
+  anything, and a control that looks like it changes someone else's planning
+  assumption would be a lie about what this app is.
+- **The open state is not acid.** Acid is what distinguishes their number from
+  yours; recolouring yours on hover would erase the distinction the comparison
+  is made of. The underline carries the affordance instead — dotted at rest,
+  solid when open.
+- **The dial stays open after a change.** Comparing 30 against 90 and then 60
+  is the actual use, and closing on the first tap would make it a three-tap job
+  each time.
+
+The cost of the longer horizon — things, weight, money — still only appears on
+Supplies. Today says where to find it rather than reproducing the table: this
+surface is a daily read, and a procurement bill is not a thing to put in the
+middle of one.
+
+---
+
 ---
 
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**

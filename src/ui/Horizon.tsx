@@ -1,6 +1,7 @@
 import type { CatalogItem, ResourceKind } from '@/content/types';
 import type { Coverage } from '@/features/supply/coverage';
-import { HORIZONS, horizonPlan, nearestHorizon } from '@/features/supply/horizon';
+import { horizonPlan, nearestHorizon } from '@/features/supply/horizon';
+import { HorizonDial } from './HorizonDial';
 
 /**
  * The horizon dial, and the bill that comes with it.
@@ -54,23 +55,7 @@ export function Horizon({
 
   return (
     <section className="horizon-plan">
-      {/* The same chip row the Skills browser uses. A control that behaves
-          like another control the reader has already met is one fewer thing
-          to learn. */}
-      <div className="browse" role="group" aria-label="Target horizon">
-        {HORIZONS.map((days) => (
-          <button
-            type="button"
-            key={days}
-            className="browse__chip"
-            aria-pressed={days === selected}
-            onClick={() => onChange(days)}
-          >
-            {days}
-            <span className="browse__n">{days === 1 ? 'day' : 'days'}</span>
-          </button>
-        ))}
-      </div>
+      <HorizonDial targetDays={targetDays} onChange={onChange} />
 
       {plan.met ? (
         <p className="horizon-plan__met">
