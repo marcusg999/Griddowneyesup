@@ -11,7 +11,7 @@ import type { Contact, Plan } from '@/features/plan/types';
 import type { Coverage } from '@/features/supply/coverage';
 import { CoverageStave } from '@/ui/CoverageStave';
 import { Posture } from '@/ui/Posture';
-import { Brief } from '@/ui/Brief';
+import { BriefGroups } from '@/ui/BriefGroups';
 import { Exposure } from '@/ui/Exposure';
 import { NearYou } from '@/ui/NearYou';
 import { NextMove } from '@/ui/NextMove';
@@ -181,13 +181,16 @@ export function Today() {
           <p className="meta" style={{ marginTop: -6, marginBottom: 14 }}>
             Background, not an alert. Nothing here needs doing today.
           </p>
-          {/* The feed first, newest at the top, then the standing posture
+          {/* The feed first, grouped by subject, then the standing posture
               notes underneath. Events change; baseline does not, and a reader
               who has already seen the baseline should not have to scroll past
-              it to find what moved. */}
-          {world.brief.map((item) => (
-            <Brief key={item.id} item={item} now={now} />
-          ))}
+              it to find what moved.
+              
+              Grouped rather than one newest-first list: an earthquake, three
+              droughts and a protest interleaved by timestamp is a list you
+              scan rather than read. Within a group the newest is still
+              first. */}
+          <BriefGroups items={world.brief} now={now} />
 
           {world.posture.map((note) => (
             <Posture key={note.id} note={note} targetDays={profile.targetHorizonDays} />

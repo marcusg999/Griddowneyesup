@@ -11,6 +11,74 @@ import { expect, test, type Page } from '@playwright/test';
  * claim is false.
  */
 
+/**
+ * Put a live digest into the store the app reads from.
+ *
+ * The sample digests ship with no brief items on purpose (D30: the pack
+ * cannot carry dated events, and a fabricated claim about a war is worse than
+ * none), and worldContext ignores a sample's brief even if one appeared. That
+ * double lock is correct and it left the Worth-knowing feed with no
+ * end-to-end coverage at all, because the gate only ever sees samples.
+ *
+ * Serving one over the network does not work either: the service worker
+ * precaches /snapshot/, so it answers from cache and a route never fires —
+ * which is itself the offline guarantee working as designed.
+ *
+ * So the digest goes straight into IndexedDB, the same store and key the app
+ * writes after it verifies. That deliberately skips the signature path, which
+ * is not this test's subject and is covered thoroughly on its own in
+ * snapshot-signature.test.ts: valid accepted, tampered rejected, foreign key
+ * rejected, malformed rejected. What is under test here is whether a stored
+ * digest renders grouped, offline.
+ */
+async function storeLiveDigest(page: Page, brief: unknown[]): Promise<void> {
+  const snapshot = {
+    version: 1,
+    provenance: 'live',
+    region: '06075',
+    regionLabel: 'San Francisco County, CA',
+    // Ahead of whatever the sample build stamped, so a refresh that somehow
+    // reaches the precached sample still leaves this one in place.
+    publishedAt: new Date(Date.now() + 3_600_000).toISOString(),
+    signals: [],
+    attempted: [],
+    brief,
+  };
+
+  await page.evaluate(async (snap) => {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open('ballast');
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction('threatSnapshots', 'readwrite');
+      tx.objectStore('threatSnapshots').put(snap, (snap as { region: string }).region);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  }, snapshot);
+}
+
+const briefItem = (id: string, category: string, published: string) => ({
+  id,
+  category,
+  headline: `Headline for ${id}`,
+  whatItMeansForYou: 'Context rather than an instruction.',
+  url: `https://example.gov/${id}`,
+  source: 'Test Source',
+  published,
+  epistemicStatus: 'official',
+});
+
+/** Put the app on a region whose digest the test controls. */
+async function useTestRegion(page: Page): Promise<void> {
+  await page.goto('/settings');
+  await page.getByLabel(/County FIPS/).fill('06075');
+  await page.locator('#county ~ button', { hasText: 'Save' }).first().click();
+}
+
 /** Warm the service worker and content pack, then cut the network for good. */
 async function installThenGoOffline(page: Page): Promise<void> {
   await page.goto('/');
@@ -343,6 +411,82 @@ test.describe('offline release gate', () => {
     await expect(page.getByText(/Do these first/)).toHaveCount(0);
   });
 
+  test('the quiet state counts the same signals the band does', async ({ page }) => {
+    await installThenGoOffline(page);
+    await page.goto('/');
+
+    // This copy used to say "Six signals checked" in fixed text, beside a
+    // confidence line reporting the number actually reached. After the
+    // denominator was made honest those could differ, and two numbers on one
+    // screen disagreeing is worse than either being absent.
+    const confidence = await page.locator('.band__confidence').textContent();
+    const reporting = /^(\d+) of/.exec(confidence ?? '')?.[1];
+    expect(reporting).toBeTruthy();
+
+    const quiet = page.locator('.empty', { hasText: 'Nothing notable' });
+    await expect(quiet).toBeVisible();
+    await expect(quiet).toContainText(`${reporting} signals checked`);
+    await expect(quiet).not.toContainText('Six signals');
+  });
+
+  test('Worth knowing is grouped by subject, in a fixed order', async ({ page }) => {
+    await installThenGoOffline(page);
+    await useTestRegion(page);
+    await storeLiveDigest(page, [
+      briefItem('c1', 'conflict', '2026-06-01T00:00:00.000Z'),
+      briefItem('d1', 'disaster', '2026-06-02T00:00:00.000Z'),
+      briefItem('d2', 'disaster', '2026-06-03T00:00:00.000Z'),
+      briefItem('u1', 'unrest', '2026-06-04T00:00:00.000Z'),
+      briefItem('w1', 'weather', '2026-06-05T00:00:00.000Z'),
+    ]);
+    await page.goto('/');
+
+    // Fixed order, not the order they arrived in: a section list that
+    // reshuffles as the world changes is one the reader re-learns daily.
+    await expect(page.locator('.brief-group__label')).toHaveText([
+      'Disasters',
+      'Weather',
+      'Protest and civil unrest',
+      'Conflict',
+    ]);
+
+    // Counts on the summary, so a folded section still says what is inside.
+    await expect(page.locator('.brief-group__count')).toHaveText(['2', '1', '1', '1']);
+
+    // Infrastructure had nothing, so it is absent rather than empty.
+    await expect(page.locator('.brief-group__label').filter({ hasText: 'Infrastructure' })).toHaveCount(0);
+  });
+
+  test('every subject is open by default and can be folded away', async ({ page }) => {
+    await installThenGoOffline(page);
+    await useTestRegion(page);
+    await storeLiveDigest(page, [
+      briefItem('d1', 'disaster', '2026-06-02T00:00:00.000Z'),
+      briefItem('w1', 'weather', '2026-06-05T00:00:00.000Z'),
+    ]);
+    await page.goto('/');
+
+    // Open by default, all of them: folding is an affordance, not a default
+    // that hides the one item that mattered behind a heading nobody expanded.
+    const groups = page.locator('.brief-group');
+    await expect(groups).toHaveCount(2);
+    await expect(groups.nth(0)).toHaveAttribute('open', '');
+    await expect(groups.nth(1)).toHaveAttribute('open', '');
+    await expect(groups.nth(0).locator('.brief__headline')).toBeVisible();
+    await expect(groups.nth(1).locator('.brief__headline')).toBeVisible();
+
+    // And it folds with the radio off and no JavaScript of ours involved.
+    //
+    // Asserted on visibility, not on element count: a closed `details` keeps
+    // its children in the DOM and merely stops painting them, so counting
+    // would pass whether or not the fold did anything.
+    await page.locator('.brief-group__summary').first().click();
+    await expect(groups.nth(0)).not.toHaveAttribute('open', '');
+    await expect(groups.nth(0).locator('.brief__headline')).toBeHidden();
+    // The other section is untouched, which is the point of folding one.
+    await expect(groups.nth(1).locator('.brief__headline')).toBeVisible();
+  });
+
   test('the menu is at the top, above the content and the readiness line', async ({ page }) => {
     await installThenGoOffline(page);
     await page.goto('/');
@@ -637,7 +781,9 @@ test.describe('offline release gate', () => {
     // is named.
     const confidence = page.locator('.band__confidence');
     await expect(confidence).toContainText('3 of 5 signals reporting');
-    await expect(confidence).toContainText(/past their freshness window/);
+    // "its" for one source, "their" for several — the singular used to read
+    // "1 source is past their freshness window".
+    await expect(confidence).toContainText(/past (its|their) freshness window/);
     await expect(confidence).toContainText(/FEMA declarations could not be reached/);
 
     // Named with the publisher's name, not the internal id.

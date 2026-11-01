@@ -132,7 +132,9 @@ export function NearYou({
           {index.notable.length === 0 ? (
             <div className="empty reveal">
               <strong>{t('threat.nothingNotable')}</strong>
-              {t('threat.nothingNotable.body')}
+              {index.reportingCount === 0
+                ? t('threat.nothingNotable.none')
+                : t('threat.nothingNotable.body', { n: index.reportingCount })}
             </div>
           ) : (
             index.notable.map((signal) => (
