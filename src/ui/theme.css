@@ -187,7 +187,7 @@ body {
 }
 
 @media (max-width: 640px) {
-  :root { --gutter-w: 20px; --gutter: 16px; --measure: 100%; }
+  :root { --gutter-w: 20px; --gutter: 16px; --measure: 100%; --step-gap: 12px; }
   .main { padding-left: calc(var(--gutter) + var(--gutter-w)); }
   .coverage__label small { font-size: 12px; }
   .limits { margin-left: calc(-1 * var(--gutter-w) + 4px); }
@@ -460,13 +460,35 @@ label.meta { display: block; font-family: var(--hand); color: var(--acid-deep); 
   margin: 0;
 }
 
+/*
+ * The number hangs in the gutter, ending a fixed distance before the text.
+ *
+ * It used to be positioned from the gutter's left edge and given a width of
+ * `--gutter-w - 24px` to leave the gap. That is fine at 72px and breaks at
+ * the 640px breakpoint, where the gutter narrows to 20px: the width computes
+ * to -4px, a negative width is invalid, the whole declaration is dropped, and
+ * the box falls back to `auto` — which left-aligns the number against the
+ * gutter edge and butts it up against the first word. Every skill page read
+ * "03Agree channels" on a phone.
+ *
+ * Anchoring the RIGHT edge instead removes the arithmetic that could go
+ * negative. `right: calc(100% + var(--step-gap))` puts the number's right
+ * edge a fixed distance to the left of the text at any gutter width, and a
+ * shrink-to-fit box grows leftward from there, so a three-digit step would
+ * push further out rather than collide.
+ *
+ * The gap narrows with the gutter. 24px keeps the wide layout exactly as it
+ * was; at the 640px breakpoint there is only 36px to the left of the text and
+ * a two-digit number needs 18 of it, so 12px is what fits while leaving the
+ * number clear of the screen edge.
+ */
 .steps > li::before {
   content: counter(step, decimal-leading-zero);
   position: absolute;
-  left: calc(-1 * var(--gutter-w));
+  right: calc(100% + var(--step-gap, 24px));
   top: -2px;
-  width: calc(var(--gutter-w) - 24px);
   text-align: right;
+  white-space: nowrap;
   font-family: var(--display);
   font-size: 19px;
   color: var(--acid);

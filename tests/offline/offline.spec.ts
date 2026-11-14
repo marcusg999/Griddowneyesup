@@ -150,13 +150,22 @@ test.describe('offline release gate', () => {
     await expect(chips.first()).toContainText('Everything');
     expect(await chips.count()).toBeGreaterThan(5);
 
+    // The whole library first, so the filter below is measured against what
+    // is actually there. Hard-coding the total made this test fail the day a
+    // skill was added, which tested the library's size rather than the thing
+    // this test is about.
+    const cards = page.locator('.skill-card');
+    await expect(cards.first()).toBeVisible();
+    const everything = await cards.count();
+    expect(everything).toBeGreaterThan(5);
+
     await page.getByRole('button', { name: /^water/ }).click();
     await expect(page.locator('p.meta[role="status"]')).toContainText('water');
-    const cards = page.locator('.skill-card');
     await expect(cards.first()).toBeVisible();
     const filtered = await cards.count();
     expect(filtered).toBeGreaterThan(0);
-    expect(filtered).toBeLessThan(50);
+    // A category has to be a strict subset, or it is not narrowing anything.
+    expect(filtered).toBeLessThan(everything);
 
     // The category narrows the search rather than replacing it.
     await page.getByLabel('Search the library').fill('filter');
@@ -165,7 +174,9 @@ test.describe('offline release gate', () => {
     // And the active category clears itself, so the filter is never a trap.
     await page.getByLabel('Search the library').fill('');
     await page.getByRole('button', { name: /^water/ }).click();
-    await expect(page.locator('p.meta[role="status"]')).toContainText('50 of 50');
+    // "N of N" — everything showing, whatever N is today. The point is that
+    // clearing the category is not a trap, not how many skills exist.
+    await expect(page.locator('p.meta[role="status"]')).toContainText(/(\d+) of \1/);
   });
 
   test('searches the full-text library with the network disabled', async ({ page }) => {
@@ -242,6 +253,45 @@ test.describe('offline release gate', () => {
       .boundingBox()
       .then((b) => b?.y ?? -Infinity);
     expect(limitsY).toBeLessThan(stepsY);
+  });
+
+  test('a step number sits clear of its text, including two-digit ones', async ({ page }) => {
+    await installThenGoOffline(page);
+    // Twelve steps, so the number is two digits down most of the page, which
+    // is where this broke. The number is a CSS counter hung in the gutter. It
+    // used to be positioned from the gutter's left edge with a width of
+    // `--gutter-w - 24px`; at the phone breakpoint the gutter is 20px, so
+    // that width computed to -4px, Chrome clamped it to ZERO, and the glyphs
+    // spilled out of the collapsed box straight into the first word —
+    // "03Agree channels". It shipped on every skill page because nothing
+    // measured it.
+    await page.goto('/skills/comms-mesh-network');
+
+    const boxes = await page.locator('.steps > li').evaluateAll((items) =>
+      items.map((li) => {
+        const before = getComputedStyle(li, '::before');
+        const text = li.querySelector('div');
+        return {
+          width: parseFloat(before.width),
+          // `right` on an absolutely positioned pseudo-element is the inset
+          // from the containing block's right edge, so this is where the
+          // number's box actually ends.
+          endsAt: li.getBoundingClientRect().right - parseFloat(before.right),
+          textAt: text ? text.getBoundingClientRect().left : NaN,
+        };
+      }),
+    );
+
+    expect(boxes.length).toBeGreaterThan(9);
+    for (const box of boxes) {
+      // The box must be able to hold the number. A collapsed box is the bug
+      // itself: the digits do not vanish, they spill out of it and land on
+      // the text, so a geometry check against the box alone would report a
+      // gap that is not on the screen.
+      expect(box.width).toBeGreaterThan(10);
+      // And the box, once it has a width, has to end clear of the text.
+      expect(box.textAt - box.endsAt).toBeGreaterThanOrEqual(8);
+    }
   });
 
   test('mutates inventory offline and the mutation survives a reload', async ({ page }) => {
