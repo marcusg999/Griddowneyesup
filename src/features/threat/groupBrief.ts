@@ -16,20 +16,40 @@ import type { BriefCategory, BriefItem } from './types';
  */
 
 /**
- * Editorial order, nearest-to-a-household first.
+ * Editorial order, most-actionable-today first.
  *
- * Disasters and weather are physical events that reach a house directly.
- * Conflict and unrest reach it through prices and supply, on a longer lag.
- * Infrastructure sits last because it is the rarest, not the least important
- * — when it has something, that something is usually already visible in the
- * categories above it.
+ * This used to run nearest-to-a-household-physically, which put disasters at
+ * the top and infrastructure at the bottom as the rarest. A day in November
+ * 2026 showed what that ordering actually produces: the FAA halted departures
+ * from every airport in the United States, and the top of this feed was an
+ * M6.4 earthquake in the sea off Easter Island. Both were true. Only one of
+ * them was a thing anybody reading could do something about.
+ *
+ * So the question the order answers is no longer "what is nearest?" but "what
+ * can this household still act on today?".
+ *
+ * Infrastructure leads because it is the category that strands people: grid,
+ * fuel, shipping, aviation, telecoms. It is rare, and when it has something
+ * that something is almost always both nationwide and immediately useful —
+ * do not drive to the airport, charge what needs charging, fill the car.
+ *
+ * Disasters and weather come next: physical, close, and the reason most of
+ * this app exists — but most entries are somewhere else, and a distant quake
+ * is background rather than instruction.
+ *
+ * Unrest and conflict sit last. They reach a household through prices and
+ * supply on a lag of weeks, which is real and is not today.
+ *
+ * The order is still fixed, and that has not changed: a section list that
+ * reorders itself as the world changes is one the reader has to re-learn
+ * every morning.
  */
 export const CATEGORY_ORDER: readonly BriefCategory[] = [
+  'infrastructure',
   'disaster',
   'weather',
   'unrest',
   'conflict',
-  'infrastructure',
 ];
 
 /**

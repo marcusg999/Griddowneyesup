@@ -309,6 +309,18 @@ test.describe('offline release gate', () => {
       await page.getByRole('button', { name: /^Add to/ }).click();
     }
 
+    // Wait for the write to land before navigating. `addItem` goes to
+    // IndexedDB and then reloads; Today renders once from what it finds, and
+    // does not re-render when a later write arrives. Navigating straight off
+    // the click is a race that shows an empty shelf, and a Playwright retry
+    // cannot rescue it because the page is not going to change. This is the
+    // same class of bug as the one the gate hit when a test read before the
+    // store had settled.
+    // Four clicks make one row holding four, not four rows, so the row's own
+    // quantity is what says the LAST write landed. Counting rows would only
+    // prove the first one did, which is the race this is here to close.
+    await expect(page.getByTestId('inventory-row')).toContainText(/×\s*4/);
+
     await page.goto('/');
     await expect(page.getByText(/days of water/)).toBeVisible();
     await expect(page.getByText(/4 days of water/)).toBeVisible();
@@ -381,6 +393,15 @@ test.describe('offline release gate', () => {
     await page.getByLabel('Which kit').selectOption('home');
     await page.getByLabel('What').selectOption('water-container-7gal');
     await page.getByRole('button', { name: /^Add to/ }).click();
+    // Wait for the write to land before navigating. `addItem` goes to
+    // IndexedDB and then reloads; Today renders once from what it finds, and
+    // does not re-render when a later write arrives. Navigating straight off
+    // the click is a race that shows an empty shelf, and a Playwright retry
+    // cannot rescue it because the page is not going to change. This is the
+    // same class of bug as the one the gate hit when a test read before the
+    // store had settled.
+    await expect(page.getByTestId('inventory-row')).toHaveCount(1);
+
 
     await page.goto('/');
     await expect(page.getByText('Fill the 1 container you already own')).toBeVisible();
@@ -455,6 +476,28 @@ test.describe('offline release gate', () => {
 
     // Infrastructure had nothing, so it is absent rather than empty.
     await expect(page.locator('.brief-group__label').filter({ hasText: 'Infrastructure' })).toHaveCount(0);
+  });
+
+  test('a news alert leads the feed, above a distant natural disaster', async ({ page }) => {
+    await installThenGoOffline(page);
+    await useTestRegion(page);
+    await storeLiveDigest(page, [
+      // The 13 November 2026 shape, with the quake arriving LATER so that an
+      // order driven by timestamp would put it first. The FAA held departures
+      // at every airport in the country that day and this feed led with an
+      // M6.4 in the sea off Easter Island. Both were true; only one was a
+      // thing the reader could act on.
+      briefItem('groundstop', 'infrastructure', '2026-11-13T23:00:00.000Z'),
+      briefItem('quake', 'disaster', '2026-11-14T06:00:00.000Z'),
+      briefItem('storm', 'weather', '2026-11-14T07:00:00.000Z'),
+    ]);
+    await page.goto('/');
+
+    await expect(page.locator('.brief-group__label')).toHaveText([
+      'Infrastructure',
+      'Disasters',
+      'Weather',
+    ]);
   });
 
   test('every subject is open by default and can be folded away', async ({ page }) => {
@@ -559,6 +602,15 @@ test.describe('offline release gate', () => {
     await page.getByLabel('Which kit').selectOption('home');
     await page.getByLabel('What').selectOption('water-stored-gal');
     await page.getByRole('button', { name: /^Add to/ }).click();
+    // Wait for the write to land before navigating. `addItem` goes to
+    // IndexedDB and then reloads; Today renders once from what it finds, and
+    // does not re-render when a later write arrives. Navigating straight off
+    // the click is a race that shows an empty shelf, and a Playwright retry
+    // cannot rescue it because the page is not going to change. This is the
+    // same class of bug as the one the gate hit when a test read before the
+    // store had settled.
+    await expect(page.getByTestId('inventory-row')).toHaveCount(1);
+
     await page.goto('/');
 
     // Collapsed, not gone: still reachable, just out of the way.
@@ -572,6 +624,15 @@ test.describe('offline release gate', () => {
     await page.getByLabel('Which kit').selectOption('home');
     await page.getByLabel('What').selectOption('water-stored-gal');
     await page.getByRole('button', { name: /^Add to/ }).click();
+    // Wait for the write to land before navigating. `addItem` goes to
+    // IndexedDB and then reloads; Today renders once from what it finds, and
+    // does not re-render when a later write arrives. Navigating straight off
+    // the click is a race that shows an empty shelf, and a Playwright retry
+    // cannot rescue it because the page is not going to change. This is the
+    // same class of bug as the one the gate hit when a test read before the
+    // store had settled.
+    await expect(page.getByTestId('inventory-row')).toHaveCount(1);
+
     await page.goto('/');
 
     const move = page.locator('.next-move');

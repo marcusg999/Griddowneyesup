@@ -17,6 +17,15 @@ import {
   QUERIES,
   queryUrl,
 } from '../../scripts/ingest/sources/gdelt';
+import { blocks, decodeXml } from '../../scripts/ingest/xml';
+import { FEEDS, parseFeed, type FeedSpec } from '../../scripts/ingest/sources/press';
+import {
+  cleanNotam,
+  entriesIn,
+  isFullClosure,
+  parseNasStatus,
+  sections,
+} from '../../scripts/ingest/sources/faa';
 import { parseNws } from '../../scripts/ingest/sources/nws';
 import { parseOpenFema } from '../../scripts/ingest/sources/openfema';
 import { parseReliefWeb } from '../../scripts/ingest/sources/reliefweb';
@@ -721,5 +730,307 @@ describe('GDELT error responses', () => {
 
   it('does not mistake broken JSON for a refusal', () => {
     expect(() => parseResponse('{"articles":', URL_)).toThrow(/looked like JSON and was not/);
+  });
+});
+
+/**
+ * Publisher topic feeds.
+ *
+ * The fixtures are written to the RSS 2.0 and Atom shapes rather than captured
+ * from a live call — the feeds are not reachable from the machine this was
+ * written on. So these prove the parser handles the dialects, the entities and
+ * the allow-list; they do not prove any particular feed URL exists, which only
+ * a real run can show.
+ */
+describe('publisher topic feeds', () => {
+  const FEED: FeedSpec = {
+    category: 'unrest',
+    topic: 'Protest',
+    url: 'https://www.theguardian.com/world/protest/rss',
+  };
+  const NOW = new Date('2026-06-02T12:00:00.000Z');
+
+  const rss = (items: string): string =>
+    `<?xml version="1.0"?><rss version="2.0"><channel><title>Protest</title>${items}</channel></rss>`;
+
+  const item = (
+    title: string,
+    link: string,
+    date = 'Mon, 01 Jun 2026 09:00:00 GMT',
+  ): string => `<item><title>${title}</title><link>${link}</link><pubDate>${date}</pubDate></item>`;
+
+  it('reads an RSS item into a brief entry', () => {
+    const [entry] = parseFeed(
+      rss(item('Thousands march in the capital', 'https://www.theguardian.com/world/2026/jun/01/x')),
+      FEED,
+      NOW,
+    );
+    expect(entry?.category).toBe('unrest');
+    expect(entry?.headline).toBe('Thousands march in the capital');
+    expect(entry?.source).toBe('The Guardian');
+    // Never official. These are reports about events, not primary documents.
+    expect(entry?.epistemicStatus).toBe('press-reported');
+    expect(briefSchema.safeParse(entry).success).toBe(true);
+  });
+
+  it('reads Atom, where the link is an attribute rather than text', () => {
+    const atom =
+      `<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom">` +
+      `<entry><title>Strike shuts the port</title>` +
+      `<link rel="alternate" href="https://www.theguardian.com/world/2026/jun/01/y"/>` +
+      `<updated>2026-06-01T09:00:00Z</updated></entry></feed>`;
+    const [entry] = parseFeed(atom, FEED, NOW);
+    expect(entry?.headline).toBe('Strike shuts the port');
+    expect(entry?.url).toBe('https://www.theguardian.com/world/2026/jun/01/y');
+  });
+
+  it('ignores an Atom link that is not the article page', () => {
+    // `rel="self"` is the feed's own address and `rel="replies"` is a comment
+    // thread. Publishing either as the canonical link would send a reader
+    // somewhere that is not the story.
+    const atom =
+      `<feed><entry><title>Clashes reported</title>` +
+      `<link rel="self" href="https://www.theguardian.com/world/protest/rss"/>` +
+      `<link rel="alternate" href="https://www.theguardian.com/world/2026/jun/01/z"/>` +
+      `<updated>2026-06-01T09:00:00Z</updated></entry></feed>`;
+    expect(parseFeed(atom, FEED, NOW)[0]?.url).toBe(
+      'https://www.theguardian.com/world/2026/jun/01/z',
+    );
+  });
+
+  it('unwraps CDATA and decodes entities in a headline', () => {
+    const [entry] = parseFeed(
+      rss(
+        `<item><title><![CDATA[Police & protesters clash]]></title>` +
+          `<link>https://www.theguardian.com/world/2026/jun/01/a</link>` +
+          `<pubDate>Mon, 01 Jun 2026 09:00:00 GMT</pubDate></item>`,
+      ),
+      FEED,
+      NOW,
+    );
+    expect(entry?.headline).toBe('Police & protesters clash');
+
+    const [decoded] = parseFeed(
+      rss(item('Miners&#39; union calls &quot;general strike&quot;', 'https://www.theguardian.com/world/2026/jun/01/b')),
+      FEED,
+      NOW,
+    );
+    expect(decoded?.headline).toBe('Miners\' union calls "general strike"');
+  });
+
+  it('does not let an encoded entity decode into a tag bracket', () => {
+    // `&amp;lt;` is the TEXT `&lt;`, not a `<`. Decoding the ampersand first
+    // would turn feed text into markup.
+    expect(decodeXml('a &amp;lt;b&amp;gt; c')).toBe('a &lt;b&gt; c');
+  });
+
+  it('drops an item whose link leaves the allow-list', () => {
+    // The feed's second job: a hijacked or syndicated feed must not be able
+    // to put an arbitrary destination on this surface.
+    expect(
+      parseFeed(rss(item('Sponsored', 'https://content-farm.example/x')), FEED, NOW),
+    ).toHaveLength(0);
+    // Nor a lookalike host that merely ends in the right letters.
+    expect(
+      parseFeed(rss(item('Lookalike', 'https://theguardian.com.evil.example/x')), FEED, NOW),
+    ).toHaveLength(0);
+  });
+
+  it('drops a plain-http link', () => {
+    expect(
+      parseFeed(rss(item('Insecure', 'http://www.theguardian.com/world/2026/jun/01/c')), FEED, NOW),
+    ).toHaveLength(0);
+  });
+
+  it('drops an item older than the window, and one dated in the future', () => {
+    expect(
+      parseFeed(
+        rss(item('Last month', 'https://www.theguardian.com/world/2026/may/01/d', 'Fri, 01 May 2026 09:00:00 GMT')),
+        FEED,
+        NOW,
+      ),
+    ).toHaveLength(0);
+    expect(
+      parseFeed(
+        rss(item('Tomorrow', 'https://www.theguardian.com/world/2026/jun/09/e', 'Tue, 09 Jun 2026 09:00:00 GMT')),
+        FEED,
+        NOW,
+      ),
+    ).toHaveLength(0);
+  });
+
+  it('drops an item missing a date rather than stamping it with now', () => {
+    // An undated item stamped with the fetch time would claim a freshness it
+    // has not got, and the card states its own age.
+    const undated =
+      `<item><title>No date</title><link>https://www.theguardian.com/world/2026/jun/01/f</link></item>`;
+    expect(parseFeed(rss(undated), FEED, NOW)).toHaveLength(0);
+  });
+
+  it('keeps the feed finite', () => {
+    const many = Array.from({ length: 20 }, (_, i) =>
+      item(`Story ${i}`, `https://www.theguardian.com/world/2026/jun/01/s${i}`),
+    ).join('');
+    expect(parseFeed(rss(many), FEED, NOW, 3)).toHaveLength(3);
+  });
+
+  it('returns nothing for a search page served in place of a retired feed', () => {
+    // A publisher that retires a tag may answer 200 with HTML. Nothing in it
+    // parses as an item, which is what the caller reports as a dead feed.
+    expect(parseFeed('<!doctype html><html><body>Not found</body></html>', FEED, NOW)).toEqual([]);
+  });
+
+  it('tells a quiet desk apart from a retired tag', () => {
+    // These look identical from the outside — both yield no brief item — and
+    // conflating them cost a run to notice. A feed with entries in it is
+    // working and simply has nothing new; a feed with none has been retired
+    // and the publisher is answering with a search page. Only the second is a
+    // gap worth reporting, and `blocks` is what separates them.
+    const quiet = rss(
+      item('Last month', 'https://www.theguardian.com/world/2026/may/01/g', 'Fri, 01 May 2026 09:00:00 GMT'),
+    );
+    expect(parseFeed(quiet, FEED, NOW)).toHaveLength(0);
+    expect(blocks(quiet, 'item')).toHaveLength(1);
+
+    const retired = '<!doctype html><html><body>Page Not Found</body></html>';
+    expect(parseFeed(retired, FEED, NOW)).toHaveLength(0);
+    expect(blocks(retired, 'item')).toHaveLength(0);
+  });
+
+  it('names every feed with a category the brief schema accepts', () => {
+    for (const feed of FEEDS) {
+      expect(['unrest', 'conflict']).toContain(feed.category);
+      expect(feed.url.startsWith('https://')).toBe(true);
+    }
+  });
+});
+
+/**
+ * FAA airspace status.
+ *
+ * Written to the documented shape rather than captured from a live call —
+ * faa.gov does not resolve from the machine this was written on. These prove
+ * the parser reads the document and applies the editorial floor; whether the
+ * endpoint answers, and whether its element names are these, only a real run
+ * can show.
+ */
+describe('FAA airspace status', () => {
+  const NOW = new Date('2026-11-14T12:00:00.000Z');
+
+  const doc = (...sections: string[]): string =>
+    `<?xml version="1.0"?><AIRPORT_STATUS_INFORMATION>${sections.join('')}</AIRPORT_STATUS_INFORMATION>`;
+
+  const stops = (...airports: Array<[string, string]>): string =>
+    `<Delay_type><Name>Ground Stop Programs</Name><Ground_Stop_List>` +
+    airports
+      .map(([arpt, reason]) => `<Program><ARPT>${arpt}</ARPT><Reason>${reason}</Reason></Program>`)
+      .join('') +
+    `</Ground_Stop_List></Delay_type>`;
+
+  it('reports a single ground stop as the airport it is', () => {
+    const [item] = parseNasStatus(doc(stops(['EWR', 'weather / thunderstorms'])), NOW);
+    expect(item?.category).toBe('infrastructure');
+    expect(item?.headline).toBe('Departures held for EWR: Weather / thunderstorms');
+    expect(item?.source).toBe('Federal Aviation Administration');
+    // The FAA publishes the state of a system it runs, so this may say a
+    // ground stop exists rather than that one is reported.
+    expect(item?.epistemicStatus).toBe('official');
+    expect(briefSchema.safeParse(item).success).toBe(true);
+  });
+
+  it('collapses a systemic stop into one line instead of flooding a finite feed', () => {
+    // This is the 13 November 2026 case. Fourteen separate items would push
+    // everything else off a feed that is finite by design (§5), and the
+    // airports are not the story once the whole system is holding.
+    const many = Array.from({ length: 14 }, (_, i) => [`AP${i}`, 'telecommunications'] as [string, string]);
+    const items = parseNasStatus(doc(stops(...many)), NOW);
+    expect(items).toHaveLength(1);
+    expect(items[0]?.headline).toBe('Departures held at 14 US airports');
+  });
+
+  // The two NOTAMs the first live run actually returned, verbatim. The run
+  // reported both as "<airport> airport is closed", which was false for each
+  // of them, so they are the fixtures for the rule that replaced it.
+  const FLL =
+    '!FLL 11/142 FLL AD AP CLSD TO DIVERSION ACFT DUE TO CAPACITY 2611140038-2611140900';
+  const BDL =
+    '!BDL 11/082 BDL AD AP CLSD TO NON SKED INTL AIR CARRIERS EXC 6HR PPR 860-627-3001. 2611132139-2611140500';
+
+  it('does not call a field closed when it is closed to one kind of traffic', () => {
+    // The whole reason this rule exists. Both of these are open airports with
+    // a restriction on who may use them, and the FAA lists them in the same
+    // section as a field that has actually shut.
+    expect(isFullClosure(FLL)).toBe(false);
+    expect(isFullClosure(BDL)).toBe(false);
+    expect(isFullClosure('!XYZ 11/001 XYZ AD AP CLSD 2611140000-2611150000')).toBe(true);
+  });
+
+  it('drops a restriction entirely rather than reporting it as news', () => {
+    const closure = (notam: string): string =>
+      `<Delay_type><Name>Airport Closures</Name><Airport_Closure_List>` +
+      `<Airport><ARPT>FLL</ARPT><Reason>${notam}</Reason></Airport>` +
+      `</Airport_Closure_List></Delay_type>`;
+    expect(parseNasStatus(doc(closure(FLL)), NOW)).toEqual([]);
+    expect(parseNasStatus(doc(closure(BDL)), NOW)).toEqual([]);
+  });
+
+  it('turns a NOTAM into something a household can read', () => {
+    // The identifier and the validity stamp are addressed to operations. The
+    // sentence between them is the part a reader could use.
+    expect(cleanNotam(FLL)).toBe('Airport closed to diversion aircraft due to capacity');
+    expect(cleanNotam('!XYZ 11/001 XYZ AD AP CLSD 2611140000-2611150000')).toBe('Airport closed');
+    expect(cleanNotam('  ')).toBeUndefined();
+    expect(cleanNotam(undefined)).toBeUndefined();
+  });
+
+  it('puts a closure above a ground stop, because it is a different fact', () => {
+    const closure =
+      `<Delay_type><Name>Airport Closures</Name><Airport_Closure_List>` +
+      `<Airport><ARPT>DCA</ARPT><Reason>AD AP CLSD DUE TO RWY DAMAGE</Reason></Airport>` +
+      `</Airport_Closure_List></Delay_type>`;
+    const items = parseNasStatus(doc(stops(['EWR', 'weather']), closure), NOW);
+    expect(items[0]?.headline).toBe('DCA airport is closed: Airport closed due to runway damage');
+  });
+
+  it('drops routine ground delay programmes, and counts a systemic one', () => {
+    const delays = (n: number): string =>
+      `<Delay_type><Name>Ground Delay Programs</Name><Ground_Delay_List>` +
+      Array.from({ length: n }, (_, i) => `<Ground_Delay><ARPT>D${i}</ARPT><Reason>weather</Reason></Ground_Delay>`).join('') +
+      `</Ground_Delay_List></Delay_type>`;
+
+    // There is always a delay somewhere. A feed that reports the routine is a
+    // feed people stop reading, which costs them the item that mattered.
+    expect(parseNasStatus(doc(delays(2)), NOW)).toHaveLength(0);
+    const [item] = parseNasStatus(doc(delays(9)), NOW);
+    expect(item?.headline).toBe('Ground delay programmes running at 9 US airports');
+  });
+
+  it('finds the records even if the wrapper elements are named something else', () => {
+    // The shape was written without being able to fetch the document. A wrong
+    // guess about a wrapper name must not cost the whole source.
+    const odd =
+      `<Delay_type><Name>Ground Stop Programs</Name><Whatever>` +
+      `<Thing><ARPT>JFK</ARPT><Reason>volcano</Reason></Thing>` +
+      `</Whatever></Delay_type>`;
+    expect(entriesIn(odd)).toEqual([{ airport: 'JFK', reason: 'volcano' }]);
+    expect(parseNasStatus(odd.replace(/^/, '<x>') + '</x>', NOW)[0]?.headline).toBe(
+      'Departures held for JFK: Volcano',
+    );
+  });
+
+  it('reports nothing at all on a quiet day', () => {
+    // An empty document is a working feed saying the airspace is fine, which
+    // is not an item. It is also not a gap — the source answered.
+    expect(parseNasStatus(doc(`<Delay_type><Name>Ground Stop Programs</Name></Delay_type>`), NOW)).toEqual(
+      [],
+    );
+    expect(sections(doc(`<Delay_type><Name>Ground Stop Programs</Name></Delay_type>`)).size).toBe(1);
+  });
+
+  it('treats a document with no sections as a changed shape, not a calm sky', () => {
+    // The one failure that must never pass silently: if the feed stops being
+    // this document, the reader has to be told the source is missing rather
+    // than shown an unusually quiet day in American aviation.
+    expect(sections('<!doctype html><html><body>Not found</body></html>').size).toBe(0);
   });
 });
