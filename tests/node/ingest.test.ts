@@ -19,7 +19,13 @@ import {
 } from '../../scripts/ingest/sources/gdelt';
 import { blocks, decodeXml } from '../../scripts/ingest/xml';
 import { FEEDS, parseFeed, type FeedSpec } from '../../scripts/ingest/sources/press';
-import { entriesIn, parseNasStatus, sections } from '../../scripts/ingest/sources/faa';
+import {
+  cleanNotam,
+  entriesIn,
+  isFullClosure,
+  parseNasStatus,
+  sections,
+} from '../../scripts/ingest/sources/faa';
 import { parseNws } from '../../scripts/ingest/sources/nws';
 import { parseOpenFema } from '../../scripts/ingest/sources/openfema';
 import { parseReliefWeb } from '../../scripts/ingest/sources/reliefweb';
@@ -924,7 +930,7 @@ describe('FAA airspace status', () => {
   it('reports a single ground stop as the airport it is', () => {
     const [item] = parseNasStatus(doc(stops(['EWR', 'weather / thunderstorms'])), NOW);
     expect(item?.category).toBe('infrastructure');
-    expect(item?.headline).toBe('Departures held for EWR: weather / thunderstorms');
+    expect(item?.headline).toBe('Departures held for EWR: Weather / thunderstorms');
     expect(item?.source).toBe('Federal Aviation Administration');
     // The FAA publishes the state of a system it runs, so this may say a
     // ground stop exists rather than that one is reported.
@@ -942,13 +948,48 @@ describe('FAA airspace status', () => {
     expect(items[0]?.headline).toBe('Departures held at 14 US airports');
   });
 
+  // The two NOTAMs the first live run actually returned, verbatim. The run
+  // reported both as "<airport> airport is closed", which was false for each
+  // of them, so they are the fixtures for the rule that replaced it.
+  const FLL =
+    '!FLL 11/142 FLL AD AP CLSD TO DIVERSION ACFT DUE TO CAPACITY 2611140038-2611140900';
+  const BDL =
+    '!BDL 11/082 BDL AD AP CLSD TO NON SKED INTL AIR CARRIERS EXC 6HR PPR 860-627-3001. 2611132139-2611140500';
+
+  it('does not call a field closed when it is closed to one kind of traffic', () => {
+    // The whole reason this rule exists. Both of these are open airports with
+    // a restriction on who may use them, and the FAA lists them in the same
+    // section as a field that has actually shut.
+    expect(isFullClosure(FLL)).toBe(false);
+    expect(isFullClosure(BDL)).toBe(false);
+    expect(isFullClosure('!XYZ 11/001 XYZ AD AP CLSD 2611140000-2611150000')).toBe(true);
+  });
+
+  it('drops a restriction entirely rather than reporting it as news', () => {
+    const closure = (notam: string): string =>
+      `<Delay_type><Name>Airport Closures</Name><Airport_Closure_List>` +
+      `<Airport><ARPT>FLL</ARPT><Reason>${notam}</Reason></Airport>` +
+      `</Airport_Closure_List></Delay_type>`;
+    expect(parseNasStatus(doc(closure(FLL)), NOW)).toEqual([]);
+    expect(parseNasStatus(doc(closure(BDL)), NOW)).toEqual([]);
+  });
+
+  it('turns a NOTAM into something a household can read', () => {
+    // The identifier and the validity stamp are addressed to operations. The
+    // sentence between them is the part a reader could use.
+    expect(cleanNotam(FLL)).toBe('Airport closed to diversion aircraft due to capacity');
+    expect(cleanNotam('!XYZ 11/001 XYZ AD AP CLSD 2611140000-2611150000')).toBe('Airport closed');
+    expect(cleanNotam('  ')).toBeUndefined();
+    expect(cleanNotam(undefined)).toBeUndefined();
+  });
+
   it('puts a closure above a ground stop, because it is a different fact', () => {
     const closure =
       `<Delay_type><Name>Airport Closures</Name><Airport_Closure_List>` +
-      `<Airport><ARPT>DCA</ARPT><Reason>runway damage</Reason></Airport>` +
+      `<Airport><ARPT>DCA</ARPT><Reason>AD AP CLSD DUE TO RWY DAMAGE</Reason></Airport>` +
       `</Airport_Closure_List></Delay_type>`;
     const items = parseNasStatus(doc(stops(['EWR', 'weather']), closure), NOW);
-    expect(items[0]?.headline).toBe('DCA airport is closed: runway damage');
+    expect(items[0]?.headline).toBe('DCA airport is closed: Airport closed due to runway damage');
   });
 
   it('drops routine ground delay programmes, and counts a systemic one', () => {
@@ -973,7 +1014,7 @@ describe('FAA airspace status', () => {
       `</Whatever></Delay_type>`;
     expect(entriesIn(odd)).toEqual([{ airport: 'JFK', reason: 'volcano' }]);
     expect(parseNasStatus(odd.replace(/^/, '<x>') + '</x>', NOW)[0]?.headline).toBe(
-      'Departures held for JFK: volcano',
+      'Departures held for JFK: Volcano',
     );
   });
 

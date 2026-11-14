@@ -126,6 +126,80 @@ export function sections(xml: string): Map<string, string> {
 
 const MEANS_CLOSURE =
   'A closed field strands the people who were flying through it, not only the ones flying to it. If someone in your plan is travelling, this is the day to agree where they wait and how they check in.';
+
+/**
+ * NOTAM shorthand, expanded.
+ *
+ * The first live run returned `!FLL 11/142 FLL AD AP CLSD TO DIVERSION ACFT
+ * DUE TO CAPACITY 2611140038-2611140900`, which is precise, correct, and
+ * unreadable by the person this app is for. The identifier and the timestamp
+ * pair are addressed to operations; the sentence in the middle is the part a
+ * household could use.
+ *
+ * Only unambiguous abbreviations are expanded. A guess here would put words
+ * in the FAA's mouth, which is worse than leaving an abbreviation in place.
+ */
+const NOTAM_WORDS: ReadonlyArray<readonly [RegExp, string]> = [
+  [/\bAD AP\b/g, 'airport'],
+  [/\bCLSD\b/g, 'closed'],
+  [/\bACFT\b/g, 'aircraft'],
+  [/\bSKED\b/g, 'scheduled'],
+  [/\bINTL\b/g, 'international'],
+  [/\bEXC\b/g, 'except'],
+  [/\bPPR\b/g, 'prior permission required'],
+  [/\bTWY\b/g, 'taxiway'],
+  [/\bRWY\b/g, 'runway'],
+  [/\bDEP\b/g, 'departures'],
+  [/\bARR\b/g, 'arrivals'],
+  [/\bWEF\b/g, 'with effect from'],
+];
+
+/**
+ * A NOTAM into something a reader can use, or undefined if nothing is left.
+ *
+ * Strips the leading `!FLL 11/142 FLL` identifier and the trailing
+ * `2611140038-2611140900` validity stamp, both of which are addressed to
+ * operations rather than to a reader, then expands the shorthand above.
+ */
+export function cleanNotam(raw: string | undefined): string | undefined {
+  if (!raw) return undefined;
+  let text = raw.trim();
+  text = text.replace(/^![A-Z0-9]{2,4}\s+\d{2}\/\d{3}\s*/, '');
+  text = text.replace(/^([A-Z]{3,4})\s+/, '');
+  text = text.replace(/\s*\d{10}-\d{10}\s*$/, '');
+  for (const [pattern, word] of NOTAM_WORDS) text = text.replace(pattern, word);
+  // A NOTAM is written in capitals throughout. Expanding the abbreviations
+  // alone left the rest shouting — `closed TO DIVERSION aircraft DUE TO
+  // CAPACITY` — so whole-word capitals come down to lower case. Anything with
+  // a digit in it is left alone: runway designators (09L) and phone numbers
+  // are not shouting, they are spelled that way.
+  text = text
+    .split(' ')
+    .map((word) => (/^[A-Z]{2,}$/.test(word) ? word.toLowerCase() : word))
+    .join(' ');
+  text = text.replace(/\s+/g, ' ').replace(/\s*\.\s*$/, '').trim();
+  if (text.length === 0) return undefined;
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/**
+ * Whether a closure NOTAM describes the whole airport shutting.
+ *
+ * `CLSD TO <someone>` is a restriction on a class of traffic, not a closure:
+ * the first live run returned a field closed to diversion aircraft and
+ * another closed to non-scheduled international carriers, and reporting
+ * either as "the airport is closed" would have been false. Both are also
+ * routine — an administrative scope on who may use a field is the ordinary
+ * business of running an airport, and routine is what this source drops.
+ */
+export function isFullClosure(notam: string | undefined): boolean {
+  if (!notam) return false;
+  const text = notam.toUpperCase();
+  if (!/\bCLSD\b/.test(text)) return false;
+  // A scope, an exception or a permission requirement all mean "still open,
+  // with conditions".
+  return !/\bCLSD\s+TO\b/.test(text) && !/\b(EXC|PPR)\b/.test(text);
+}
 const MEANS_STOP =
   'A ground stop holds departures for the named airports. Flights already airborne continue; anything on the ground waits, and the delay outlasts the stop because crews and aircraft end the day in the wrong places.';
 const MEANS_SYSTEMIC =
@@ -153,10 +227,15 @@ export function parseNasStatus(xml: string, now: Date, limit: number = LIMIT): B
   const closures = entriesIn(find('closure') ?? '');
   for (const entry of closures) {
     if (items.length >= limit) break;
+    // Only an actual closure. The FAA lists a field closed to one class of
+    // traffic in the same section as one that has shut, and calling the first
+    // of those "closed" is a false statement on a readiness surface.
+    if (!isFullClosure(entry.reason)) continue;
+    const why = cleanNotam(entry.reason);
     items.push({
       id: `faa-closure-${entry.airport}`,
       category: 'infrastructure',
-      headline: `${entry.airport} airport is closed${entry.reason ? `: ${entry.reason}` : ''}`,
+      headline: `${entry.airport} airport is closed${why ? `: ${why}` : ''}`,
       whatItMeansForYou: MEANS_CLOSURE,
       url: CANONICAL,
       source: 'Federal Aviation Administration',
@@ -184,7 +263,7 @@ export function parseNasStatus(xml: string, now: Date, limit: number = LIMIT): B
       items.push({
         id: `faa-ground-stop-${entry.airport}`,
         category: 'infrastructure',
-        headline: `Departures held for ${entry.airport}${entry.reason ? `: ${entry.reason}` : ''}`,
+        headline: `Departures held for ${entry.airport}${cleanNotam(entry.reason) ? `: ${cleanNotam(entry.reason)!}` : ''}`,
         whatItMeansForYou: MEANS_STOP,
         url: CANONICAL,
         source: 'Federal Aviation Administration',
