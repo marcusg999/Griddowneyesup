@@ -150,13 +150,22 @@ test.describe('offline release gate', () => {
     await expect(chips.first()).toContainText('Everything');
     expect(await chips.count()).toBeGreaterThan(5);
 
+    // The whole library first, so the filter below is measured against what
+    // is actually there. Hard-coding the total made this test fail the day a
+    // skill was added, which tested the library's size rather than the thing
+    // this test is about.
+    const cards = page.locator('.skill-card');
+    await expect(cards.first()).toBeVisible();
+    const everything = await cards.count();
+    expect(everything).toBeGreaterThan(5);
+
     await page.getByRole('button', { name: /^water/ }).click();
     await expect(page.locator('p.meta[role="status"]')).toContainText('water');
-    const cards = page.locator('.skill-card');
     await expect(cards.first()).toBeVisible();
     const filtered = await cards.count();
     expect(filtered).toBeGreaterThan(0);
-    expect(filtered).toBeLessThan(50);
+    // A category has to be a strict subset, or it is not narrowing anything.
+    expect(filtered).toBeLessThan(everything);
 
     // The category narrows the search rather than replacing it.
     await page.getByLabel('Search the library').fill('filter');
@@ -165,7 +174,9 @@ test.describe('offline release gate', () => {
     // And the active category clears itself, so the filter is never a trap.
     await page.getByLabel('Search the library').fill('');
     await page.getByRole('button', { name: /^water/ }).click();
-    await expect(page.locator('p.meta[role="status"]')).toContainText('50 of 50');
+    // "N of N" — everything showing, whatever N is today. The point is that
+    // clearing the category is not a trap, not how many skills exist.
+    await expect(page.locator('p.meta[role="status"]')).toContainText(/(\d+) of \1/);
   });
 
   test('searches the full-text library with the network disabled', async ({ page }) => {

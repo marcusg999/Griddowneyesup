@@ -10,7 +10,12 @@
     "typicalCostCents": 150,
     "costTier": "tier-50",
     "valuePerDollar": 98,
-    "provides": [{ "resource": "water-litres", "perUnit": 3.785 }],
+    "provides": [
+      {
+        "resource": "water-litres",
+        "perUnit": 3.785
+      }
+    ],
     "shelfLifeDays": 180,
     "notes": "One gallon per person per day is the federal planning figure. It covers drinking and minimal hygiene, not bathing or laundry."
   },
@@ -72,7 +77,12 @@
     "typicalCostCents": 600,
     "costTier": "tier-50",
     "valuePerDollar": 92,
-    "provides": [{ "resource": "calories-kcal", "perUnit": 2000 }],
+    "provides": [
+      {
+        "resource": "calories-kcal",
+        "perUnit": 2000
+      }
+    ],
     "shelfLifeDays": 730
   },
   {
@@ -85,7 +95,12 @@
     "typicalCostCents": 120,
     "costTier": "tier-200",
     "valuePerDollar": 88,
-    "provides": [{ "resource": "calories-kcal", "perUnit": 2000 }],
+    "provides": [
+      {
+        "resource": "calories-kcal",
+        "perUnit": 2000
+      }
+    ],
     "shelfLifeDays": 3650,
     "notes": "Cheapest calories per dollar by a wide margin, but requires water and heat to cook. Do not build a whole plan on food you cannot cook."
   },
@@ -110,7 +125,12 @@
     "typicalCostCents": 700,
     "costTier": "tier-200",
     "valuePerDollar": 78,
-    "provides": [{ "resource": "heat-hours", "perUnit": 1.5 }]
+    "provides": [
+      {
+        "resource": "heat-hours",
+        "perUnit": 1.5
+      }
+    ]
   },
   {
     "id": "headlamp-led",
@@ -134,7 +154,12 @@
     "typicalCostCents": 150,
     "costTier": "tier-50",
     "valuePerDollar": 86,
-    "provides": [{ "resource": "power-wh", "perUnit": 4.5 }],
+    "provides": [
+      {
+        "resource": "power-wh",
+        "perUnit": 4.5
+      }
+    ],
     "shelfLifeDays": 3650
   },
   {
@@ -147,7 +172,12 @@
     "typicalCostCents": 4000,
     "costTier": "tier-200",
     "valuePerDollar": 84,
-    "provides": [{ "resource": "power-wh", "perUnit": 74 }],
+    "provides": [
+      {
+        "resource": "power-wh",
+        "perUnit": 74
+      }
+    ],
     "notes": "Self-discharges. Top it up every three months or it will be flat when it matters."
   },
   {
@@ -160,6 +190,17 @@
     "typicalCostCents": 3000,
     "costTier": "tier-200",
     "valuePerDollar": 82
+  },
+  {
+    "id": "radio-mesh-node",
+    "name": "LoRa mesh node",
+    "spec": "915 MHz LoRa handheld or solar relay, short text only, unlicensed Part 15 operation on stock antenna and power",
+    "category": "comms",
+    "unit": "each",
+    "weightG": 120,
+    "typicalCostCents": 4000,
+    "costTier": "tier-200",
+    "valuePerDollar": 44
   },
   {
     "id": "firstaid-kit-household",
@@ -193,7 +234,12 @@
     "typicalCostCents": 3000,
     "costTier": "tier-50",
     "valuePerDollar": 96,
-    "provides": [{ "resource": "sanitation-uses", "perUnit": 60 }],
+    "provides": [
+      {
+        "resource": "sanitation-uses",
+        "perUnit": 60
+      }
+    ],
     "notes": "Sanitation failure is the leading cause of illness in prolonged outages. This is not an optional item."
   },
   {
@@ -206,7 +252,12 @@
     "typicalCostCents": 400,
     "costTier": "tier-50",
     "valuePerDollar": 91,
-    "provides": [{ "resource": "sanitation-uses", "perUnit": 25 }]
+    "provides": [
+      {
+        "resource": "sanitation-uses",
+        "perUnit": 25
+      }
+    ]
   },
   {
     "id": "hand-sanitiser",
@@ -310,7 +361,12 @@
     "typicalCostCents": 4000,
     "costTier": "tier-200",
     "valuePerDollar": 81,
-    "provides": [{ "resource": "heat-hours", "perUnit": 8 }]
+    "provides": [
+      {
+        "resource": "heat-hours",
+        "perUnit": 8
+      }
+    ]
   },
   {
     "id": "tarp-heavy",

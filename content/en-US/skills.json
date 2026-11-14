@@ -4164,6 +4164,136 @@
     ]
   },
   {
+    "id": "comms-mesh-network",
+    "title": "Mesh networks when the towers are down",
+    "category": "comms-navigation",
+    "difficulty": "practiced",
+    "riskTier": "medium",
+    "timeRequiredMin": 90,
+    "summary": "A mesh carries a message by passing it radio to radio instead of through a tower, so it survives a carrier outage. The catch is in that sentence: it only works if other people already have a node. You cannot build the network during the emergency.",
+    "materials": [
+      "radio-mesh-node",
+      "battery-aa"
+    ],
+    "stampLine": "Needs other nodes to exist",
+    "steps": [
+      {
+        "n": 1,
+        "text": "Understand what a mesh actually is. Every node both sends and relays. A message hops node to node until it reaches the one it is addressed to. There is no tower, no carrier account and no internet in the path, which is exactly why it survives an outage that takes phones down."
+      },
+      {
+        "n": 2,
+        "text": "Pick the kind that matches the distance you need. LoRa nodes on the 915 MHz band carry short text a long way per hop on very little power. Phone-to-phone mesh apps over Bluetooth hop only tens of metres and need a crowd to work at all. The first is the one worth owning; the second is a crowd effect you cannot rely on."
+      },
+      {
+        "n": 3,
+        "text": "Agree the network before anything happens. Decide who holds a node, settle on one channel name and key, and write them on a card in each go-bag. This is the step that decides whether the rest of this page is useful or decorative.",
+        "caution": "A single node is a paperweight. Nothing on this page works unless at least one other person you care about also has one, configured to match, before the day you need it."
+      },
+      {
+        "n": 4,
+        "text": "Set each node up and verify it side by side. Set the region so it transmits on the band your country allows, load the shared channel and key, and give it a short name that is not your own name or your address. Send a message between two nodes sitting on the same table before you trust them anywhere else."
+      },
+      {
+        "n": 5,
+        "text": "Height beats power, every time. A node in an upper window, on a roof or on a rise will do more for range than any change to settings. If your group can place one node high and leave it there on solar, that single relay is worth more than everything else you will do."
+      },
+      {
+        "n": 6,
+        "text": "IN A CITY: expect a few hundred metres to about a kilometre per hop at street level. Buildings absorb these frequencies and radio does not bend around them. What rescues a city is density and height — plenty of nodes, and at least one up high. The binding constraint is how many nodes exist and where they sit, never how much power yours puts out."
+      },
+      {
+        "n": 7,
+        "text": "OVER LONG DISTANCES: a mesh crosses distance in hops, not in one leap. Each hop adds delay and another chance of failure, and the software caps how many hops a message may take — commonly three by default and a handful at most. Without a chain of nodes or one high relay in between, distance simply fails. The hundred-kilometre links people post about are hilltop to hilltop with nothing in the way, not messages pushed through terrain."
+      },
+      {
+        "n": 8,
+        "text": "OUTSIDE A CITY: there are no strangers' nodes to relay for you, so a mesh degrades to a straight point-to-point link. That link can be long if the two ends can see each other across open ground or from ridge to ridge, and it is nothing at all if a hill sits between them. Rural use means placing your own relay on the high ground and accepting that it covers your own valley rather than the county."
+      },
+      {
+        "n": 9,
+        "text": "Keep traffic short and expect minutes rather than seconds. Ask for an explicit acknowledgement — 'received' — because a message that silently failed looks exactly like one nobody has answered yet."
+      },
+      {
+        "n": 10,
+        "text": "Plan the power. These nodes sip current but a node that transmits constantly still flattens itself in a day. Agree listening windows, and put the relay node on a small solar panel if it is going to live on a roof."
+      },
+      {
+        "n": 11,
+        "text": "Stay inside the unlicensed rules. Operating on the stock antenna and power an unlicensed device ships with keeps you within Part 15. Adding an amplifier does not.",
+        "caution": "Amateur radio frequencies need a licence, and on those frequencies encrypting a message to obscure its meaning is prohibited. The two rule sets are different; do not carry a habit from one into the other."
+      },
+      {
+        "n": 12,
+        "text": "Practise from the places you would really use it — your house to theirs, not your sofa to your kitchen. Range failures are specific to the buildings and ground between two points, so the only test that means anything is the real one."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "No messages pass at all, even close together",
+        "cause": "Nodes on a different region setting, channel or key",
+        "remedy": "Put both nodes on one table and fix the settings there. Write region, channel and key on a card taped inside each case."
+      },
+      {
+        "symptom": "Works across the room, fails across town",
+        "cause": "Per-hop range overestimated, and nothing in between to relay",
+        "remedy": "Place one node high between the two points. Height, not power."
+      },
+      {
+        "symptom": "Messages arrive very late, or never, on a long chain",
+        "cause": "The hop limit is reached, or the chain is congested",
+        "remedy": "Shorten the chain with a high relay and keep traffic down to short, necessary messages."
+      },
+      {
+        "symptom": "The node is dead on the day it is needed",
+        "cause": "Left transmitting continuously, or stored flat",
+        "remedy": "Scheduled listening windows, solar on any node left in place, and a charge check on the same day you rotate stored water."
+      },
+      {
+        "symptom": "One person can reach everyone, nobody else can",
+        "cause": "That person is the only one with height; the mesh is really a star",
+        "remedy": "Treat it as a single relay and plan around losing it, or add a second high node."
+      }
+    ],
+    "doesNotDo": [
+      "A mesh does NOT reach 911, dispatch or any emergency service. It reaches the people you set it up with and nobody else.",
+      "It does not work if nobody else has a node. The network cannot be built during the emergency, which is the single most important thing on this page.",
+      "LoRa mesh does not carry voice, photographs or files. Short text only, and slowly.",
+      "It does not give you internet access, and it does not relay to the internet unless someone in the group has a working connection to share.",
+      "Range figures on packaging assume a clear line of sight. They do not survive buildings, hills or wet trees.",
+      "Encryption on a channel keeps the contents from strangers. It does not make a transmission undetectable, and it does not hide that somebody nearby is transmitting.",
+      "This is not a replacement for a NOAA weather radio. That receives official alerts one way; this carries your own traffic. They do different jobs.",
+      "This page does not cover amateur-licence operation, antenna building or repeater work. Those are separate pursuits with their own training and rules."
+    ],
+    "citations": [
+      {
+        "source": "Federal Communications Commission",
+        "title": "Understanding the FCC Regulations for Low-Power, Non-Licensed Transmitters (OET Bulletin 63)",
+        "published": "1993",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "Federal Communications Commission",
+        "title": "Amateur Radio Service",
+        "published": "2024",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-11-14",
+    "hazards": [
+      "grid-down",
+      "earthquake",
+      "hurricane",
+      "wildfire"
+    ]
+  },
+  {
     "id": "nav-paper-map",
     "title": "Navigating on paper",
     "category": "comms-navigation",
