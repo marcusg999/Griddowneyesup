@@ -13,6 +13,7 @@ import {
 import { apiKey as airNowKey, collectAirNow } from './ingest/sources/airnow';
 import { collectEnso } from './ingest/sources/enso';
 import { collectGdacs } from './ingest/sources/gdacs';
+import { collectFaa } from './ingest/sources/faa';
 import { collectGdelt } from './ingest/sources/gdelt';
 import { collectNws } from './ingest/sources/nws';
 import { collectOpenFema } from './ingest/sources/openfema';
@@ -184,6 +185,11 @@ async function main(): Promise<void> {
     // limit is counted per IP and CI shares its egress with every other
     // project's CI. One route failing should not take the category with it.
     attempt('press', () => collectPress((line) => failures.push(line))),
+    // Aviation, and through it the whole travel system. Added after a
+    // nationwide ground stop went entirely unreported here while the feed led
+    // with a distant earthquake: `infrastructure` had existed as a category
+    // since the beginning with only space weather ever writing to it.
+    attempt('faa', () => collectFaa(now)),
     // Disasters and severe weather worldwide. Until this, every disaster
     // source here stopped at the US border except USGS, which left the feed
     // claiming to be about the world while reporting one country's weather.

@@ -17,13 +17,9 @@ import {
   QUERIES,
   queryUrl,
 } from '../../scripts/ingest/sources/gdelt';
-import {
-  blocks,
-  decodeXml,
-  FEEDS,
-  parseFeed,
-  type FeedSpec,
-} from '../../scripts/ingest/sources/press';
+import { blocks, decodeXml } from '../../scripts/ingest/xml';
+import { FEEDS, parseFeed, type FeedSpec } from '../../scripts/ingest/sources/press';
+import { entriesIn, parseNasStatus, sections } from '../../scripts/ingest/sources/faa';
 import { parseNws } from '../../scripts/ingest/sources/nws';
 import { parseOpenFema } from '../../scripts/ingest/sources/openfema';
 import { parseReliefWeb } from '../../scripts/ingest/sources/reliefweb';
@@ -900,5 +896,100 @@ describe('publisher topic feeds', () => {
       expect(['unrest', 'conflict']).toContain(feed.category);
       expect(feed.url.startsWith('https://')).toBe(true);
     }
+  });
+});
+
+/**
+ * FAA airspace status.
+ *
+ * Written to the documented shape rather than captured from a live call —
+ * faa.gov does not resolve from the machine this was written on. These prove
+ * the parser reads the document and applies the editorial floor; whether the
+ * endpoint answers, and whether its element names are these, only a real run
+ * can show.
+ */
+describe('FAA airspace status', () => {
+  const NOW = new Date('2026-11-14T12:00:00.000Z');
+
+  const doc = (...sections: string[]): string =>
+    `<?xml version="1.0"?><AIRPORT_STATUS_INFORMATION>${sections.join('')}</AIRPORT_STATUS_INFORMATION>`;
+
+  const stops = (...airports: Array<[string, string]>): string =>
+    `<Delay_type><Name>Ground Stop Programs</Name><Ground_Stop_List>` +
+    airports
+      .map(([arpt, reason]) => `<Program><ARPT>${arpt}</ARPT><Reason>${reason}</Reason></Program>`)
+      .join('') +
+    `</Ground_Stop_List></Delay_type>`;
+
+  it('reports a single ground stop as the airport it is', () => {
+    const [item] = parseNasStatus(doc(stops(['EWR', 'weather / thunderstorms'])), NOW);
+    expect(item?.category).toBe('infrastructure');
+    expect(item?.headline).toBe('Departures held for EWR: weather / thunderstorms');
+    expect(item?.source).toBe('Federal Aviation Administration');
+    // The FAA publishes the state of a system it runs, so this may say a
+    // ground stop exists rather than that one is reported.
+    expect(item?.epistemicStatus).toBe('official');
+    expect(briefSchema.safeParse(item).success).toBe(true);
+  });
+
+  it('collapses a systemic stop into one line instead of flooding a finite feed', () => {
+    // This is the 13 November 2026 case. Fourteen separate items would push
+    // everything else off a feed that is finite by design (§5), and the
+    // airports are not the story once the whole system is holding.
+    const many = Array.from({ length: 14 }, (_, i) => [`AP${i}`, 'telecommunications'] as [string, string]);
+    const items = parseNasStatus(doc(stops(...many)), NOW);
+    expect(items).toHaveLength(1);
+    expect(items[0]?.headline).toBe('Departures held at 14 US airports');
+  });
+
+  it('puts a closure above a ground stop, because it is a different fact', () => {
+    const closure =
+      `<Delay_type><Name>Airport Closures</Name><Airport_Closure_List>` +
+      `<Airport><ARPT>DCA</ARPT><Reason>runway damage</Reason></Airport>` +
+      `</Airport_Closure_List></Delay_type>`;
+    const items = parseNasStatus(doc(stops(['EWR', 'weather']), closure), NOW);
+    expect(items[0]?.headline).toBe('DCA airport is closed: runway damage');
+  });
+
+  it('drops routine ground delay programmes, and counts a systemic one', () => {
+    const delays = (n: number): string =>
+      `<Delay_type><Name>Ground Delay Programs</Name><Ground_Delay_List>` +
+      Array.from({ length: n }, (_, i) => `<Ground_Delay><ARPT>D${i}</ARPT><Reason>weather</Reason></Ground_Delay>`).join('') +
+      `</Ground_Delay_List></Delay_type>`;
+
+    // There is always a delay somewhere. A feed that reports the routine is a
+    // feed people stop reading, which costs them the item that mattered.
+    expect(parseNasStatus(doc(delays(2)), NOW)).toHaveLength(0);
+    const [item] = parseNasStatus(doc(delays(9)), NOW);
+    expect(item?.headline).toBe('Ground delay programmes running at 9 US airports');
+  });
+
+  it('finds the records even if the wrapper elements are named something else', () => {
+    // The shape was written without being able to fetch the document. A wrong
+    // guess about a wrapper name must not cost the whole source.
+    const odd =
+      `<Delay_type><Name>Ground Stop Programs</Name><Whatever>` +
+      `<Thing><ARPT>JFK</ARPT><Reason>volcano</Reason></Thing>` +
+      `</Whatever></Delay_type>`;
+    expect(entriesIn(odd)).toEqual([{ airport: 'JFK', reason: 'volcano' }]);
+    expect(parseNasStatus(odd.replace(/^/, '<x>') + '</x>', NOW)[0]?.headline).toBe(
+      'Departures held for JFK: volcano',
+    );
+  });
+
+  it('reports nothing at all on a quiet day', () => {
+    // An empty document is a working feed saying the airspace is fine, which
+    // is not an item. It is also not a gap — the source answered.
+    expect(parseNasStatus(doc(`<Delay_type><Name>Ground Stop Programs</Name></Delay_type>`), NOW)).toEqual(
+      [],
+    );
+    expect(sections(doc(`<Delay_type><Name>Ground Stop Programs</Name></Delay_type>`)).size).toBe(1);
+  });
+
+  it('treats a document with no sections as a changed shape, not a calm sky', () => {
+    // The one failure that must never pass silently: if the feed stops being
+    // this document, the reader has to be told the source is missing rather
+    // than shown an unusually quiet day in American aviation.
+    expect(sections('<!doctype html><html><body>Not found</body></html>').size).toBe(0);
   });
 });

@@ -25,12 +25,25 @@ describe('grouping Worth knowing by subject', () => {
       item('e', 'unrest'),
     ]);
     expect(groups.map((g) => g.category)).toEqual([
+      'infrastructure',
       'disaster',
       'weather',
       'unrest',
       'conflict',
-      'infrastructure',
     ]);
+  });
+
+  it('puts what a household can act on today above a distant natural disaster', () => {
+    // The ordering this replaced ran nearest-to-a-household-physically, and
+    // on 13 November 2026 it produced a feed led by an M6.4 earthquake in the
+    // sea off Easter Island while the FAA was holding departures at every
+    // airport in the country. Both were true; one was actionable.
+    const groups = groupBrief([
+      item('quake', 'disaster'),
+      item('groundstop', 'infrastructure'),
+    ]);
+    expect(groups[0]?.category).toBe('infrastructure');
+    expect(groups[0]?.label).toBe('Infrastructure');
   });
 
   it('drops a subject with nothing in it', () => {

@@ -774,6 +774,62 @@ stay trustworthy.
 
 ---
 
+### D37 — The feed leads with what can be acted on, not with what is nearest **[CONFIRMED]**
+
+On 13 November 2026 the FAA halted departures from every airport in the United
+States after a telecommunications outage at multiple Air Route Traffic Control
+Centres. Roughly 15,000 flights were delayed or cancelled, and several hundred
+more the next day. This app's feed said nothing about it, and led instead with
+an M6.4 earthquake in the sea off Easter Island.
+
+Both facts were true and the feed was working exactly as designed, which is
+what makes it worth a record. Two separate mistakes produced that morning.
+
+**The order was wrong.** D-era ordering ran nearest-to-a-household-physically:
+disasters, weather, unrest, conflict, infrastructure. It reads sensibly and it
+optimises for the wrong thing — proximity of the *event* rather than usefulness
+to the *reader*. A quake under the South Pacific is near nobody's house. A
+national ground stop is not a physical event at all and is the one on that
+morning that a household could act on: do not drive to the airport, expect
+whoever is travelling not to arrive, assume days rather than hours to clear.
+
+So the order now answers "what can this household still act on today?":
+infrastructure, disaster, weather, unrest, conflict. It remains fixed. A
+section list that reorders itself as the world changes is one the reader
+re-learns every morning, and that argument is untouched by this change — only
+the ranking criterion moved.
+
+**The category was empty.** `infrastructure` has existed since the schema was
+written, described as "grid, fuel, shipping, supply — the things that stop",
+and exactly one source ever wrote to it: space weather, for geomagnetic storms.
+Every other route by which a system stops — aviation, telecoms, rail, ports —
+had no collector at all. Leading with a category nothing fills would have been
+a worse feed, not a better one, so the ordering change is only half of this.
+
+The FAA's National Airspace System status is now a source: ground stops,
+ground delay programmes and airport closures, nationwide. It is `official` in
+the same sense GDACS is — the FAA publishes the operational state of a system
+it runs, rather than reporting on someone else's — and it contributes no
+signal, because a ground stop does not change whether this household has water
+(D11, D21).
+
+Two editorial rules come with it, both inherited rather than invented. Routine
+is dropped: there is always a delay somewhere, and a feed that reports the
+routine is one people stop reading, which costs them the item that mattered —
+the same rule space weather follows for G1 storms and GDACS for green alerts.
+And a systemic event is summarised rather than enumerated: at four or more
+airports the airports stop being the story and the feed gets one line naming
+the scale, because a finite feed (§5) flooded by one event shows nothing else.
+
+The endpoint is unverified against the live service, which D36's rule covers:
+faa.gov does not resolve from the machine this was written on, so the parser is
+written to the documented shape, exercised against fixtures, and deliberately
+tolerant about the wrapper element names — a wrong guess about a wrapper costs
+nothing, and a document it cannot read at all is reported as a gap rather than
+passed off as an unusually calm day in American aviation.
+
+---
+
 ---
 
 ### D14a — Affiliate commerce permitted **[CONFIRMED — reverses D14]**

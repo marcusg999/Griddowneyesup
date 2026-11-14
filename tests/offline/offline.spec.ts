@@ -457,6 +457,28 @@ test.describe('offline release gate', () => {
     await expect(page.locator('.brief-group__label').filter({ hasText: 'Infrastructure' })).toHaveCount(0);
   });
 
+  test('a news alert leads the feed, above a distant natural disaster', async ({ page }) => {
+    await installThenGoOffline(page);
+    await useTestRegion(page);
+    await storeLiveDigest(page, [
+      // The 13 November 2026 shape, with the quake arriving LATER so that an
+      // order driven by timestamp would put it first. The FAA held departures
+      // at every airport in the country that day and this feed led with an
+      // M6.4 in the sea off Easter Island. Both were true; only one was a
+      // thing the reader could act on.
+      briefItem('groundstop', 'infrastructure', '2026-11-13T23:00:00.000Z'),
+      briefItem('quake', 'disaster', '2026-11-14T06:00:00.000Z'),
+      briefItem('storm', 'weather', '2026-11-14T07:00:00.000Z'),
+    ]);
+    await page.goto('/');
+
+    await expect(page.locator('.brief-group__label')).toHaveText([
+      'Infrastructure',
+      'Disasters',
+      'Weather',
+    ]);
+  });
+
   test('every subject is open by default and can be folded away', async ({ page }) => {
     await installThenGoOffline(page);
     await useTestRegion(page);

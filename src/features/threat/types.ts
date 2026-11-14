@@ -33,6 +33,7 @@ export type IngestSourceId =
   | 'gdelt'
   | 'press'
   | 'gdacs'
+  | 'faa'
   | 'enso';
 
 /**
