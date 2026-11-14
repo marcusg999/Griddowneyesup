@@ -4133,7 +4133,7 @@
       "Privacy codes do not make a transmission private. Anyone scanning the channel hears everything you say.",
       "FRS radios do not reach emergency services. They are household-to-household, not a way to call for help.",
       "A radio does not work without a licensed operator on the frequencies that require one, and the rules are enforced.",
-      "This does not cover antenna building, repeater operation or anything requiring an amateur licence — that is a hobby with its own training path."
+      "This does not cover antenna building, repeater operation or anything requiring an amateur licence. Those have their own page in this library, under amateur radio."
     ],
     "citations": [
       {
@@ -4263,7 +4263,7 @@
       "Range figures on packaging assume a clear line of sight. They do not survive buildings, hills or wet trees.",
       "Encryption on a channel keeps the contents from strangers. It does not make a transmission undetectable, and it does not hide that somebody nearby is transmitting.",
       "This is not a replacement for a NOAA weather radio. That receives official alerts one way; this carries your own traffic. They do different jobs.",
-      "This page does not cover amateur-licence operation, antenna building or repeater work. Those are separate pursuits with their own training and rules."
+      "This page does not cover amateur-licence operation, antenna building or repeater work. Amateur radio has its own page in this library; the rest are separate pursuits with their own rules."
     ],
     "citations": [
       {
@@ -4291,6 +4291,144 @@
       "earthquake",
       "hurricane",
       "wildfire"
+    ]
+  },
+  {
+    "id": "comms-ham-radio",
+    "title": "Amateur radio, and what the licence actually buys",
+    "category": "comms-navigation",
+    "difficulty": "practiced",
+    "riskTier": "medium",
+    "timeRequiredMin": 120,
+    "summary": "The exam is easier than people expect, there has been no Morse code requirement since 2007, and the licence lasts ten years. What it buys is repeaters that cover a whole metro area and, one class up, HF that crosses a continent — neither of which any unlicensed radio can do.",
+    "materials": [
+      "radio-ham-handheld",
+      "battery-aa"
+    ],
+    "stampLine": "Listening needs no licence",
+    "steps": [
+      {
+        "n": 1,
+        "text": "Start by listening, today, with no licence at all. Receiving is unrestricted — only transmitting needs the ticket. A cheap handheld or an online receiver will let you hear your local repeaters and find out whether anyone is actually active near you, which is the thing worth knowing before you spend a weekend studying."
+      },
+      {
+        "n": 2,
+        "text": "Understand what the licence adds over an unlicensed radio. Three things: repeaters, which sit high up and relay a 5 W handheld across a whole metro area; HF, which reaches across a continent and beyond; and a population of other licensed operators who have practised passing traffic in an emergency. An FRS radio gives you none of those."
+      },
+      {
+        "n": 3,
+        "text": "Know the three classes and pick the one that matches what you want. Technician is the entry exam and covers everything above 30 MHz — local repeaters, simplex, the practical day-to-day. General opens most of the HF bands, which is what you want if the goal is distance. Amateur Extra adds the rest. All are multiple choice, drawn from a published question pool, and none has required Morse code since 2007."
+      },
+      {
+        "n": 4,
+        "text": "Sit the exam. Volunteer examiners run sessions in most areas and online; expect a small session fee plus a separate FCC application fee. The licence then runs ten years and renews without another exam. A callsign is issued to you and is public.",
+        "caution": "Transmitting on amateur frequencies without a licence is an FCC violation. Get the licence first — the entry exam is a weekend of study, not a course."
+      },
+      {
+        "n": 5,
+        "text": "IN A CITY, a repeater is the whole story. A 5 W handheld talking directly to another handheld behaves like any other UHF radio — a mile or two through buildings. The same handheld into a repeater sited on a tower or a hilltop will typically cover the metropolitan area around it. Programme the local repeaters in advance, with their offset and tone, from a current directory."
+      },
+      {
+        "n": 6,
+        "text": "OVER LONG DISTANCES, HF is the reason to go past Technician. For a few hundred kilometres, the regional technique is a low antenna on 80 or 40 m that throws signal almost straight up and back down over the surrounding region. For intercontinental distance, signal refracts off the ionosphere and the band that works changes with the hour and the season."
+      },
+      {
+        "n": 7,
+        "text": "OUTSIDE A CITY, assume no repeater and plan for HF or for height. Rural VHF is line of sight and nothing else, so a handheld covers what you can see. This is where HF stops being a hobby and starts being the only thing that reaches anybody."
+      },
+      {
+        "n": 8,
+        "text": "Expect space weather to take HF away exactly when the news is interesting. A solar flare can black out HF across the daylit side of the planet for minutes to hours, and a geomagnetic storm degrades paths for a day or more. This app already tracks that; the practical answer is to know your local VHF fallback rather than to rely on one band."
+      },
+      {
+        "n": 9,
+        "text": "Join a net and check in every week. A licence that has never been used is a licence you will fumble on the day. Nets are scheduled on-air roll calls, they take two minutes, and they are how you find out that your antenna is deaf before it matters."
+      },
+      {
+        "n": 10,
+        "text": "Put the effort into the antenna, not the wattage. Doubling power is barely perceptible at the far end; getting the antenna higher and clear of metal changes everything. The stock antenna on a cheap handheld is the first thing worth replacing."
+      },
+      {
+        "n": 11,
+        "text": "Learn the standing rules, because they are enforced and they are not arbitrary. Identify with your callsign at least every ten minutes and when you finish. No business traffic, no broadcasting, no music. And no encryption — amateur radio is deliberately in the clear, so assume anyone can hear you.",
+        "caution": "Never pass addresses, plans or anything about what you have stored. This is an open, published, monitored band, and that is by design."
+      },
+      {
+        "n": 12,
+        "text": "Know the emergency exception, and know how narrow it is. Federal rules let any station use any means of radio communication at its disposal when immediate safety of life or protection of property is at stake and normal channels are unavailable. That is a genuine exception for a genuine emergency; it is not a way around getting licensed, and it will not help you if you have never turned the radio on.",
+        "caution": "This exception covers the moment, not the practice. Operating unlicensed because you expect an emergency someday is simply operating unlicensed."
+      }
+    ],
+    "failureModes": [
+      {
+        "symptom": "You hear the repeater but nobody ever answers you",
+        "cause": "Wrong transmit offset or missing access tone, so your signal is not opening it",
+        "remedy": "Reprogramme from a current repeater directory and ask a club member to confirm they hear you."
+      },
+      {
+        "symptom": "Handheld will not reach across town",
+        "cause": "Simplex line-of-sight range through buildings, with no repeater in use",
+        "remedy": "Use the repeater, or get the antenna higher. Power will not fix it."
+      },
+      {
+        "symptom": "HF is silent on the band that worked yesterday",
+        "cause": "Wrong band for the hour, or a solar flare or geomagnetic storm in progress",
+        "remedy": "Change band for the time of day, check the space weather reading, and fall back to VHF."
+      },
+      {
+        "symptom": "Radio is unprogrammed or flat on the day it is needed",
+        "cause": "Bought, charged once, and left in a drawer",
+        "remedy": "Weekly net check-in keeps it programmed, charged and familiar. Store it with spare batteries."
+      },
+      {
+        "symptom": "Licensed, equipped, and nobody local to talk to",
+        "cause": "No active repeater or club within range",
+        "remedy": "Find that out by listening BEFORE studying. If the area is dead, HF or a mesh is the better spend."
+      }
+    ],
+    "doesNotDo": [
+      "Amateur radio does NOT let you encrypt or obscure a message. The band is deliberately in the clear and it is monitored.",
+      "A licence does not guarantee anyone is listening. That comes from nets, clubs and habit, not from the exam.",
+      "It is not a telephone and it has no privacy. Everything you say is public and may be recorded.",
+      "It does not dial 911. It can reach operators who can relay for you, which is a different and slower thing.",
+      "This page does not teach you to pass the exam. The question pool is published; a weekend with it is the actual path.",
+      "It does not cover building or modifying transmitters and amplifiers. That is a separate pursuit with its own rules.",
+      "The emergency exception is not a licence. It covers an immediate danger to life or property, not routine use and not practice.",
+      "Listening is unrestricted, but a scanner is not preparedness on its own — it tells you what is happening and gives you no way to answer."
+    ],
+    "citations": [
+      {
+        "source": "Federal Communications Commission",
+        "title": "Amateur Radio Service",
+        "published": "2024",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "Federal Communications Commission",
+        "title": "Title 47 CFR Part 97 — Amateur Radio Service",
+        "published": "2023",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "NOAA Space Weather Prediction Center",
+        "title": "Space Weather Impacts on Radio Communications",
+        "published": "2024",
+        "basis": "us-federal-work"
+      },
+      {
+        "source": "FEMA",
+        "title": "Are You Ready? An In-depth Guide to Citizen Preparedness (IS-22)",
+        "published": "2004",
+        "basis": "us-federal-work"
+      }
+    ],
+    "lastReviewed": "2026-11-14",
+    "hazards": [
+      "grid-down",
+      "earthquake",
+      "hurricane",
+      "wildfire",
+      "winter-storm"
     ]
   },
   {
