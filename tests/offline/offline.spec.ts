@@ -255,6 +255,36 @@ test.describe('offline release gate', () => {
     expect(limitsY).toBeLessThan(stepsY);
   });
 
+  test('the stamp stays inside its own die, measured in the real font', async ({ page }) => {
+    await installThenGoOffline(page);
+    // The longest stamp line in the library. On a phone this rendered as
+    // "EEDS OTHER NOD" — the die is 440 units wide and the row was 519, so it
+    // ran off both ends. Two more stamps were escaping the viewBox unnoticed
+    // and several were over the inner rule. The stamp is the one thing here
+    // that has to be impossible to misread, so it is measured rather than
+    // eyeballed, against the real font rather than the layout's estimate.
+    await page.goto('/skills/comms-mesh-network');
+
+    const rows = await page.locator('svg.stamp').evaluate((svg) =>
+      [...svg.querySelectorAll('text')].map((t) => {
+        const width = (t as SVGTextContentElement).getComputedTextLength();
+        return { text: t.textContent ?? '', left: 220 - width / 2, right: 220 + width / 2 };
+      }),
+    );
+
+    expect(rows.length).toBeGreaterThan(0);
+    for (const row of rows) {
+      // The inner rule runs 24..416. Outside that the text is on, or over,
+      // the border; outside 0..440 it is clipped off the element entirely.
+      expect(row.left, row.text).toBeGreaterThanOrEqual(24);
+      expect(row.right, row.text).toBeLessThanOrEqual(416);
+    }
+
+    // And the words are all still there, in order, for a screen reader and
+    // for anyone reading the die itself.
+    expect(rows.map((r) => r.text).join(' ')).toBe('NEEDS OTHER NODES TO EXIST');
+  });
+
   test('a step number sits clear of its text, including two-digit ones', async ({ page }) => {
     await installThenGoOffline(page);
     // Twelve steps, so the number is two digits down most of the page, which

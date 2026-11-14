@@ -203,6 +203,17 @@
     "valuePerDollar": 44
   },
   {
+    "id": "radio-ham-handheld",
+    "name": "VHF/UHF amateur handheld",
+    "spec": "5 W dual-band handheld for 2 m and 70 cm, with a replacement antenna. Transmitting needs an FCC amateur licence; listening does not",
+    "category": "comms",
+    "unit": "each",
+    "weightG": 250,
+    "typicalCostCents": 3500,
+    "costTier": "tier-200",
+    "valuePerDollar": 58
+  },
+  {
     "id": "firstaid-kit-household",
     "name": "Household first aid kit",
     "spec": "Trauma dressings, gauze, tape, irrigation syringe, tweezers, gloves, shears",
